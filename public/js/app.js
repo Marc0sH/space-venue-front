@@ -156,10 +156,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // Agregar dentro del DOMContentLoaded en app.js para el módulo de Oferentes
     document.getElementById("form-create-space").addEventListener("submit", async (e) => {
         e.preventDefault();
-        
+
+        // Almacenamos el DTO con los campos completos
         const dto = {
-            title: document.getElementById("space-title").value
-            // Agrega aquí más campos si tu backend los requiere para el Espacio (ej: price, basePrice, etc.)
+            idConsumerOwner: parseInt(localStorage.getItem("userId")) || 1,
+            idLocation: parseInt(document.getElementById("space-location").value),
+            idCancellationPolicies: parseInt(document.getElementById("space-cancellation").value),
+            nameSpace: document.getElementById("space-title").value,
+            description: document.getElementById("space-description").value,
+            basePrice: parseFloat(document.getElementById("space-price").value),
+            bufferTime: parseInt(document.getElementById("space-buffer").value),
+            active: document.getElementById("space-active") ? document.getElementById("space-active").checked : true
+            //no agregamos ni googleCalendarId ni publicationDate acá. El backend se deberia encargar.
         };
 
         try {

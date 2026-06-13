@@ -127,20 +127,48 @@
             </div>
         </section>
 
-        <!-- VISTA 4: PROPIETARIO (OWNER) - ALTA Y CONTROL DE ESPACIOS PROPIOS -->
+        <!-- VISTA 4: PROPIETARIO (OWNER) - ALTA Y CONTROL DE ESPACIOS PROPIOS (editada con los campos que le faltaban)-->
         <section id="view-owner-spaces" class="view-section">
             <h2>Módulo del Oferente / Propietario</h2>
             <p class="endpoint-label">GET /api/spaces/ownedspaces</p>
-            
+
             <div class="card-form-wrapper">
                 <h3>Publicar un Nuevo Espacio Comercial</h3>
                 <p class="endpoint-label">POST /api/spaces/ownedspace</p>
+
                 <form id="form-create-space">
                     <div class="form-group">
                         <label for="space-title">Nombre Comercial de la Locación</label>
                         <input type="text" id="space-title" required placeholder="Ej: Complejo Sky Pavilion Premium">
                     </div>
-                    <button type="submit" class="btn btn-primary">Dar de Alta Propiedad</button>
+
+                    <div class="form-group">
+                        <label for="space-description">Descripción del Espacio</label>
+                        <textarea id="space-description" required placeholder="Describí las dimensiones, equipamiento, etc." rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="space-location">ID de Locación (Ubicación)</label>
+                        <input type="number" id="space-location" min="1" required placeholder="Ej: 1">
+                    </div>
+
+                    <!--Las opciones deberian poder elejirse por un nobre(?) O poner un texto que diga cual es cual por id-->
+                    <div class="form-group">
+                        <label for="space-cancellation">ID de Política de Cancelación</label>
+                        <input type="number" id="space-cancellation" min="1" required placeholder="Ej: 1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="space-price">Precio Base ($)</label>
+                        <input type="number" id="space-price" step="0.01" min="0" required placeholder="0.00">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="space-buffer">Tiempo de Buffer (Minutos entre reservas)</label>
+                        <input type="number" id="space-buffer" min="0" required placeholder="Ej: 15, 30">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Dar de Alta Propiedad</button>
                 </form>
             </div>
 
