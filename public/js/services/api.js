@@ -52,7 +52,7 @@ const ApiService = {
     login(username, password) {
         return this.request('/api/auth/login', 'POST', { 
             username: username, 
-            passwordHash: password // Cambiar el nombre de la propiedad para acoplarse al DTO de Spring
+            password: password 
         });
     },
 

@@ -64,74 +64,65 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("form-login").addEventListener("submit", async (e) => {
         e.preventDefault();
         const user = document.getElementById("login-username").value.trim();
-        const pass = document.getElementById("login-password").value; // Texto plano que Spring encriptará para comparar
+        const pass = document.getElementById("login-password").value;
 
         try {
-            UI.logConsole(`Intentando iniciar sesión para el usuario: ${user}...`);
-            const result = await ApiService.login(user, pass);
+            console.log("Enviando Login Nativo para:", user);
             
-            // Validamos si la respuesta es el token JWT (ya sea un string plano o un objeto con Bearer)
-            if (typeof result === 'string' && result.includes("Bearer")) {
-                const token = result.replace("Bearer ", "").trim();
+            const response = await fetch('http://localhost:8080/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user, password: pass })
+            });
+
+            const data = await response.text(); // Leemos la respuesta como texto plano ("Bearer ...")
+            console.log("Respuesta del servidor:", data);
+
+            if (response.ok && data.includes("Bearer")) {
+                const token = data.replace("Bearer ", "").trim();
                 localStorage.setItem("jwt_token", token);
-                
                 UI.updateNavbar(token);
-                if (document.getElementById("nav-notifications")) {
-                    document.getElementById("nav-notifications").style.display = "inline-block";
-                }
-                
-                UI.logConsole("Autenticación exitosa. Token guardado correctamente.");
-                UI.switchView("view-spaces");
-                loadCatalog();
-            } else if (result && result.token) { 
-                // Por si tu backend devuelve un JSON del tipo { token: "Bearer ..." } o { token: "eyJ..." }
-                const rawToken = result.token.replace("Bearer ", "").trim();
-                localStorage.setItem("jwt_token", rawToken);
-                UI.updateNavbar(rawToken);
+                alert("¡Login exitoso!");
                 UI.switchView("view-spaces");
                 loadCatalog();
             } else {
-                UI.logConsole("Respuesta inesperada del control de accesos: " + JSON.stringify(result));
+                alert("Error en login: " + data);
             }
         } catch (err) {
-            UI.logConsole("Fallo de autenticación: " + err.message);
-            alert("Credenciales inválidas o error de emparejamiento con Spring Boot.");
+            console.error("Error de red o JS en Login:", err);
         }
     });
 
-    // 1. Corrección del Formulario de Registro en app.js
+    // 2. Corrección del Formulario de Registro en app.js
     document.getElementById("form-register").addEventListener("submit", async (e) => {
         e.preventDefault(); 
-        
-        const usernameInput = document.getElementById("reg-username").value;
+        const usernameInput = document.getElementById("reg-username").value.trim();
         const passwordInput = document.getElementById("reg-password").value;
 
-        // ALINEACIÓN CON EL BACKEND: Tu modelo espera 'passwordHash' en lugar de 'password'
-        const registerPayload = {
-            username: usernameInput,
-            passwordHash: passwordInput // Viaja en texto plano, CredentialService lo hashea
-        };
-
         try {
-            UI.logConsole("Enviando solicitud de alta de cuenta... POST /api/usuarios");
-            const userCreated = await ApiService.post("/api/usuarios", registerPayload);
-            
-            UI.logConsole("¡Cuenta registrada con éxito en la Base de Datos!", userCreated);
-            
-            // Manejo seguro por si el back devuelve un objeto JSON o texto plano
-            const registeredName = (userCreated && userCreated.username) ? userCreated.username : usernameInput;
-            alert(`¡Usuario '${registeredName}' registrado con éxito! Ya puedes iniciar sesión.`);
-            
-            document.getElementById("form-register").reset();
-            document.getElementById("login-username").value = usernameInput;
-            document.getElementById("login-password").value = "";
+            console.log("Enviando Registro Nativo para:", usernameInput);
+
+            const response = await fetch('http://localhost:8080/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: usernameInput, password: passwordInput })
+            });
+
+            const data = await response.text();
+            console.log("Respuesta del servidor al registro:", data);
+
+            if (response.ok) {
+                alert(`¡Usuario registrado con éxito!: ${data}`);
+                document.getElementById("form-register").reset();
+            } else {
+                alert("Error del backend al registrar: " + data);
+            }
         } catch (err) {
-            UI.logConsole("Fallo en el proceso de registro: " + err.message);
-            alert("Error al registrar cuenta: " + err.message);
+            console.error("Error de red o JS en Registro:", err);
         }
     });
 
-    // 2. Catálogo de Espacios
+    // 3. Catálogo de Espacios
     document.getElementById("btn-refresh-catalog").addEventListener("click", loadCatalog);
     
     async function loadCatalog() {
@@ -192,7 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
         UI.logConsole(`Formulario de reserva precargado con el espacio #${id}`);
     };
 
-    // 3. Crear Reserva Saliente
+    // 4. Crear Reserva Saliente
     document.getElementById("form-create-reservation").addEventListener("submit", async (e) => {
         e.preventDefault();
         const dto = {
@@ -247,7 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // 4. Módulo de Administración (CORRECCIÓN INCONSISTENCIA 4)
+    // 5. Módulo de Administración (CORRECCIÓN INCONSISTENCIA 4)
     document.getElementById("btn-admin-list-users").addEventListener("click", loadAdminUsers);
 
     async function loadAdminUsers() {
