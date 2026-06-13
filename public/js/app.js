@@ -63,59 +63,71 @@ document.addEventListener("DOMContentLoaded", () => {
     // 1. Autenticación: Login
     document.getElementById("form-login").addEventListener("submit", async (e) => {
         e.preventDefault();
-        const user = document.getElementById("login-username").value;
-        const pass = document.getElementById("login-password").value;
+        const user = document.getElementById("login-username").value.trim();
+        const pass = document.getElementById("login-password").value; // Texto plano que Spring encriptará para comparar
 
         try {
+            UI.logConsole(`Intentando iniciar sesión para el usuario: ${user}...`);
             const result = await ApiService.login(user, pass);
+            
+            // Validamos si la respuesta es el token JWT (ya sea un string plano o un objeto con Bearer)
             if (typeof result === 'string' && result.includes("Bearer")) {
                 const token = result.replace("Bearer ", "").trim();
                 localStorage.setItem("jwt_token", token);
                 
                 UI.updateNavbar(token);
-                document.getElementById("nav-notifications").style.display = "inline-block";
-                UI.logConsole("Autenticación exitosa. Token interceptado y guardado en memoria persistente.", { token });
+                if (document.getElementById("nav-notifications")) {
+                    document.getElementById("nav-notifications").style.display = "inline-block";
+                }
                 
+                UI.logConsole("Autenticación exitosa. Token guardado correctamente.");
+                UI.switchView("view-spaces");
+                loadCatalog();
+            } else if (result && result.token) { 
+                // Por si tu backend devuelve un JSON del tipo { token: "Bearer ..." } o { token: "eyJ..." }
+                const rawToken = result.token.replace("Bearer ", "").trim();
+                localStorage.setItem("jwt_token", rawToken);
+                UI.updateNavbar(rawToken);
                 UI.switchView("view-spaces");
                 loadCatalog();
             } else {
-                UI.logConsole("Respuesta inesperada del control de accesos: " + result);
+                UI.logConsole("Respuesta inesperada del control de accesos: " + JSON.stringify(result));
             }
         } catch (err) {
-            UI.logConsole("Fallo de red en autenticación: " + err.message);
-            alert("Credenciales inválidas o error de conexión con Spring Boot.");
+            UI.logConsole("Fallo de autenticación: " + err.message);
+            alert("Credenciales inválidas o error de emparejamiento con Spring Boot.");
         }
     });
 
-    // CORRECCIÓN INCONSISTENCIA 1: Flujo de Registro de Cuentas Asociado a /api/usuarios
+    // 1. Corrección del Formulario de Registro en app.js
     document.getElementById("form-register").addEventListener("submit", async (e) => {
-        e.preventDefault(); // Detiene la recarga de página por completo
+        e.preventDefault(); 
         
         const usernameInput = document.getElementById("reg-username").value;
         const passwordInput = document.getElementById("reg-password").value;
 
-        // Construimos el Payload limpio esperado por tu backend (Consumer / Cliente)
+        // ALINEACIÓN CON EL BACKEND: Tu modelo espera 'passwordHash' en lugar de 'password'
         const registerPayload = {
             username: usernameInput,
-            password: passwordInput,
-            isActive: true
+            passwordHash: passwordInput // Viaja en texto plano, CredentialService lo hashea
         };
 
         try {
-            UI.logConsole("Enviando solicitud de alta de cuenta a la API central... POST /api/usuarios");
-            // Se utiliza el método general de Axios/Fetch mapeado en tu ApiService
+            UI.logConsole("Enviando solicitud de alta de cuenta... POST /api/usuarios");
             const userCreated = await ApiService.post("/api/usuarios", registerPayload);
             
             UI.logConsole("¡Cuenta registrada con éxito en la Base de Datos!", userCreated);
-            alert(`¡Usuario '${userCreated.username}' registrado con éxito! Ya puedes iniciar sesión.`);
             
-            // Limpiar formulario y mover al login dentro de la misma tarjeta
+            // Manejo seguro por si el back devuelve un objeto JSON o texto plano
+            const registeredName = (userCreated && userCreated.username) ? userCreated.username : usernameInput;
+            alert(`¡Usuario '${registeredName}' registrado con éxito! Ya puedes iniciar sesión.`);
+            
             document.getElementById("form-register").reset();
             document.getElementById("login-username").value = usernameInput;
             document.getElementById("login-password").value = "";
         } catch (err) {
             UI.logConsole("Fallo en el proceso de registro: " + err.message);
-            alert("Error al registrar cuenta: El nombre de usuario ya existe o los datos son inválidos.");
+            alert("Error al registrar cuenta: " + err.message);
         }
     });
 
@@ -149,6 +161,30 @@ document.addEventListener("DOMContentLoaded", () => {
             UI.logConsole("Error al consultar catálogo: " + err.message);
         }
     }
+
+    // Agregar dentro del DOMContentLoaded en app.js para el módulo de Oferentes
+    document.getElementById("form-create-space").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        
+        const dto = {
+            title: document.getElementById("space-title").value
+            // Agrega aquí más campos si tu backend los requiere para el Espacio (ej: price, basePrice, etc.)
+        };
+
+        try {
+            UI.logConsole("Publicando nueva locación comercial... POST /api/spaces/ownedspace");
+            const res = await ApiService.createSpace(dto);
+            UI.logConsole("Propiedad dada de alta de forma exitosa en el servidor.", res);
+            alert("¡Espacio publicado con éxito!");
+            document.getElementById("form-create-space").reset();
+            
+            // En lugar de redirigir, refrescamos la sub-vista de locaciones del dueño
+            if (typeof loadOwnedSpaces === "function") loadOwnedSpaces(); 
+        } catch (err) {
+            UI.logConsole("Error al dar de alta el espacio: " + err.message);
+            alert("Error operacional: " + err.message);
+        }
+    });
 
     window.selectForReservation = (id) => {
         UI.switchView("view-reservations");
@@ -286,12 +322,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Función Helper para decodificar JWT de forma segura en el front y validar ROL_ADMIN
+    // Corrección de la lectura de Roles en app.js
     function isAdminToken(token) {
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
-            const roles = payload.roles || payload.authorities || [];
-            return roles.includes('ROLE_ADMIN');
+            UI.logConsole("Inspeccionando Claims del JWT para validación de privilegios:", payload);
+            
+            // Buscamos la propiedad 'rol' que inyecta tu JwtUtil (puede venir como "ROLE_ADMIN" o "ADMIN")
+            const userRol = payload.rol || payload.role || "";
+            return userRol.includes("ADMIN");
         } catch (e) {
             return false;
         }
