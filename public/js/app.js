@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             console.log("Enviando Login Nativo para:", user);
             
-            const response = await fetch('https://space-venue-front.onrender.com/api/auth/login', {
+            const response = await fetch('https://space-venue-api.onrender.com/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: user, password: pass })
