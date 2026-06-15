@@ -49,7 +49,16 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.target.hasAttribute("data-view")) {
             const targetView = e.target.getAttribute("data-view");
             
-            // ... (Mantené toda tu lógica de seguridad intacta de tu código previo) ...
+            if (targetView === "view-admin") {
+                const token = localStorage.getItem("jwt_token");
+                if (!token || !isAdminToken(token)) {
+                    UI.logConsole(`⛔ Acceso bloqueado a la vista protegida: ${targetView}`);
+                    alert("⛔ Acceso denegado: Esta sección es exclusiva para administradores.");
+                    UI.switchView("view-spaces"); // Forzamos redirección segura
+                    loadCatalog();
+                    return; // Frenamos por completo la ejecución del clic
+                }
+            }
 
             UI.switchView(targetView);
 
@@ -69,6 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
         UI.updateNavbar(null);
         // Ocultar dinámicamente el botón de notificaciones añadido
         document.getElementById("nav-notifications").style.display = "none";
+        gestionarNavegacionPorRol();
         UI.logConsole("Sesión destruida y credenciales revocadas del almacenamiento local.");
         UI.switchView("view-auth");
     });
@@ -77,6 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const savedToken = localStorage.getItem("jwt_token");
     if (savedToken) {
         UI.updateNavbar(savedToken);
+        gestionarNavegacionPorRol();
         // Mostrar botón de notificaciones si hay sesión
         document.getElementById("nav-notifications").style.display = "inline-block";
         UI.logConsole("Token JWT detectado de una sesión previa activa. Sincronizando estado...");
@@ -109,6 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const token = data.replace("Bearer ", "").trim();
                 localStorage.setItem("jwt_token", token);
                 UI.updateNavbar(token);
+                gestionarNavegacionPorRol();
                 alert("¡Login exitoso!");
                 UI.switchView("view-spaces");
                 loadCatalog();
@@ -548,6 +560,21 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         } catch (e) {
             // Fallback silencioso si el conteo no está completamente implementado en BD
+        }
+    }
+
+    // Oculta o muestra dinámicamente el botón de administración basándose en el rol del JWT
+    function gestionarNavegacionPorRol() {
+        const token = localStorage.getItem("jwt_token");
+        // Buscamos en el menú el elemento de navegación que apunta a la vista de admin
+        const btnAdmin = document.querySelector('#main-nav [data-view="view-admin"]');
+
+        if (!btnAdmin) return;
+
+        if (token && isAdminToken(token)) {
+            btnAdmin.style.display = "inline-block"; // Se muestra si es administrador
+        } else {
+            btnAdmin.style.display = "none"; // Desaparece para clientes o anónimos
         }
     }
 
