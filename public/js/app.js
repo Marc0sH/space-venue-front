@@ -381,6 +381,66 @@ document.addEventListener("DOMContentLoaded", () => {
         await fetchFilteredSpaces(filterDTO);
     };
 
+    window.abrirModalComentario = function(idSpace) {
+        console.log("¡Clic detectado! Desbloqueando formulario para el espacio:", idSpace);
+
+        // 1. Asignamos el ID
+        document.getElementById("comentario-space-id").value = idSpace;
+
+        // 2. Desbloqueamos campos
+        document.getElementById("comentario-score").disabled = false;
+        document.getElementById("comentario-desc").disabled = false;
+        document.getElementById("btn-submit-comentario").disabled = false;
+
+        // 3. Scroll para que el usuario vea el formulario (con un pequeño delay para que funcione bien)
+        setTimeout(() => {
+            document.getElementById("seccion-comentario").scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+    };
+
+    window.enviarComentario = async function(event) {
+        event.preventDefault();
+        console.log("Intentando enviar comentario...");
+
+        // Obtenemos los valores
+        const dto = {
+            // Asegurate de que esto coincida con cómo guardás el ID de tu usuario en el Front!
+            idConsumer: parseInt(localStorage.getItem("userId")) || 1,
+            idSpace: parseInt(document.getElementById("comentario-space-id").value),
+            description: document.getElementById("comentario-desc").value.trim(),
+            score: parseInt(document.getElementById("comentario-score").value)
+        };
+
+        try {
+            // IMPORTANTE: Revisá que tu API_BASE_URL esté bien definida en config.js
+            const response = await fetch(`http://localhost:8080/api/comments`, { // Cambiá esto si tu URL es otra
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("jwt_token")}`
+                },
+                body: JSON.stringify(dto)
+            });
+
+            if (!response.ok) {
+                const errorMsg = await response.text();
+                throw new Error(errorMsg);
+            }
+
+            alert("¡Éxito! Tu reseña fue publicada.");
+
+            // Limpiamos y bloqueamos de nuevo
+            document.getElementById("form-comentario").reset();
+            document.getElementById("comentario-score").disabled = true;
+            document.getElementById("comentario-desc").disabled = true;
+            document.getElementById("btn-submit-comentario").disabled = true;
+
+        } catch (err) {
+            console.error("Error al enviar el comentario:", err);
+            alert("Error al publicar: " + err.message);
+        }
+    };
+
 // 4 CONEXIÓN CON LA API
     async function fetchFilteredSpaces(dto) {
         const container = document.getElementById("spaces-list");
@@ -678,45 +738,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("btn-refresh-reservations").addEventListener("click", loadReservations);
 
+    // =========================================================
+    // VISTA CLIENTE: CARGA DE RESERVAS Y COMENTARIOS
+    // =========================================================
     async function loadReservations() {
         try {
-            UI.logConsole("Solicitando historial transaccional de alquileres propios...");
+            UI.logConsole("Cargando reservas...");
             const data = await ApiService.get("/api/reservations/me");
-            UI.logConsole("Historial de alquileres obtenido", data);
-            
+
             const tbody = document.getElementById("reservations-tbody");
-            if (!tbody) return; // Salvaguarda por si el elemento no existe en la vista actual
+            if (!tbody) return;
             tbody.innerHTML = "";
 
             if (!data || !data.length) {
-                tbody.innerHTML = "<tr><td colspan='4' class='text-center'>No posees alquileres salientes cargados en tu cuenta.</td></tr>";
+                tbody.innerHTML = "<tr><td colspan='5' class='text-center'>No posees alquileres.</td></tr>";
                 return;
             }
 
             data.forEach(res => {
                 const tr = document.createElement("tr");
-                
-                // Controlamos de forma segura que las propiedades existan antes de renderizar
+
                 const idReserva = res.id || res.idReservation || 'N/A';
-                const nombreEspacio = res.space?.nameSpace || `Salón #${res.idSpace || 'Asignado'}`;
+                const idEspacio = res.space?.idSpace || res.idSpace;
+                const nombreEspacio = res.space?.nameSpace || `Salón #${idEspacio || 'Asignado'}`;
                 const precioFinal = res.finalPrice != null ? parseFloat(res.finalPrice).toFixed(2) : '0.00';
-                const estado = res.status || 'TENTATIVE';
+
+                // ESTO ES CLAVE: Normalizamos a mayúsculas para comparar
+                const estadoRaw = res.status || 'TENTATIVE';
+                const estadoNormalizado = estadoRaw.toString().toUpperCase();
+
+                console.log(`DEBUG: Reserva #${idReserva} tiene estado: ${estadoNormalizado}`);
+
+                // Forzamos la lógica: Si es COMPLETED o CONFIRMED (incluso si viene en minúsculas)
+                const puedeComentar = (estadoNormalizado === 'COMPLETED' || estadoNormalizado === 'CONFIRMED');
+
+                // Si quieres ver el botón SIEMPRE para testear, descomenta la siguiente línea:
+                // const puedeComentar = true;
+
+                const btnComentar = puedeComentar
+                    ? `<button class="btn btn-sm btn-outline-primary" onclick="abrirModalComentario(${idEspacio})">💬 Comentar</button>`
+                    : `<small class="text-muted">No disponible</small>`;
 
                 tr.innerHTML = `
-                    <td>#${idReserva}</td>
-                    <td>${nombreEspacio}</td>
-                    <td style="font-weight: bold; color: green;">$${precioFinal}</td>
-                    <td><span class="status-badge ${estado}">${estado}</span></td>
-                `;
+                <td>#${idReserva}</td>
+                <td>${nombreEspacio}</td>
+                <td>$${precioFinal}</td>
+                <td><span class="badge ${estadoNormalizado}">${estadoRaw}</span></td>
+                <td>${btnComentar}</td> 
+            `;
                 tbody.appendChild(tr);
             });
         } catch (err) {
-            UI.logConsole("Error al listar alquileres: " + err.message);
-            // En lugar de un alert molesto con código, lo informamos directamente en la tabla de la UI
-            const tbody = document.getElementById("reservations-tbody");
-            if (tbody) {
-                tbody.innerHTML = `<tr><td colspan='4' class='text-center text-danger'>Error de comunicación con el servidor (502 / StackOverflow). Verificá recursividad en el Back.</td></tr>`;
-            }
+            console.error("Error en loadReservations:", err);
         }
     }
 
