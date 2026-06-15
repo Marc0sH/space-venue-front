@@ -311,6 +311,132 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // =========================================================
+    // FILTROS: FUNCIONES GLOBALES
+    // =========================================================
+    let filterLatitude = null;
+    let filterLongitude = null;
+
+    // Exponemos las funciones al entorno global (window) para que los onclick del HTML funcionen
+    window.activarGPS = function() {
+        const btnGetGps = document.getElementById("btn-get-gps");
+        const gpsStatus = document.getElementById("gps-status");
+        const radiusInput = document.getElementById("filter-radius");
+
+        if (!navigator.geolocation) {
+            alert("Tu navegador no soporta geolocalización.");
+            return;
+        }
+
+        gpsStatus.innerText = "Buscando satélites...";
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                filterLatitude = position.coords.latitude;
+                filterLongitude = position.coords.longitude;
+                gpsStatus.innerHTML = `✅ Ubicación fijada (${filterLatitude.toFixed(4)}, ${filterLongitude.toFixed(4)})`;
+                btnGetGps.classList.replace("btn-outline-secondary", "btn-success");
+                radiusInput.disabled = false;
+            },
+            (error) => {
+                console.error("Error GPS:", error);
+                gpsStatus.innerText = "❌ Permiso denegado o GPS falló.";
+                filterLatitude = null;
+                filterLongitude = null;
+                radiusInput.disabled = true;
+            }
+        );
+    };
+
+    window.limpiarFiltros = function() {
+        document.getElementById("filter-form").reset();
+        filterLatitude = null;
+        filterLongitude = null;
+        document.getElementById("gps-status").innerText = "GPS desactivado";
+        document.getElementById("btn-get-gps").classList.replace("btn-success", "btn-outline-secondary");
+
+        const radiusInput = document.getElementById("filter-radius");
+        radiusInput.disabled = true;
+        radiusInput.value = "5.0";
+
+        fetchFilteredSpaces({}); // Volver a traer todos
+    };
+
+    window.aplicarFiltros = async function(event) {
+        event.preventDefault(); // CLAVE para que no recargue la página
+
+        const radiusInput = document.getElementById("filter-radius");
+
+        const filterDTO = {
+            nameSpace: document.getElementById("filter-name").value.trim() || null,
+            minPrice: parseFloat(document.getElementById("filter-min-price").value) || null,
+            maxPrice: parseFloat(document.getElementById("filter-max-price").value) || null,
+            idLocation: parseInt(document.getElementById("filter-location-id").value) || null,
+            idConsumerOwner: null,
+            lat: filterLatitude,
+            lng: filterLongitude,
+            radious: filterLatitude ? parseFloat(radiusInput.value) : null
+        };
+
+        UI.logConsole("Enviando filtros:", filterDTO);
+        await fetchFilteredSpaces(filterDTO);
+    };
+
+// 4 CONEXIÓN CON LA API
+    async function fetchFilteredSpaces(dto) {
+        const container = document.getElementById("spaces-list");
+        container.innerHTML = "<p class='text-muted'>Filtrando espacios...</p>";
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/spaces/byfields`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("jwt_token")}`
+                },
+                body: JSON.stringify(dto)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error en filtros (Status ${response.status})`);
+            }
+
+            const spaces = await response.json();
+            container.innerHTML = "";
+
+            if (!spaces || spaces.length === 0) {
+                container.innerHTML = "<p class='placeholder-text'>Ningún salón coincide con los criterios de búsqueda.</p>";
+                return;
+            }
+
+            // Renderizamos las tarjetas dinámicamente
+            spaces.forEach(s => {
+                const card = document.createElement("div");
+                card.className = "card space-card m-2 p-3";
+
+                const politicaTexto = (s.cancellationPolicies && s.cancellationPolicies.type)
+                    ? s.cancellationPolicies.type
+                    : 'No definida';
+
+                card.innerHTML = `
+                <h4>${s.nameSpace || 'Salón Comercial'}</h4>
+                <p class="text-muted">${s.description || 'Sin descripción disponible.'}</p>
+                <hr>
+                <p><strong>Precio Base:</strong> $${s.basePrice || '0.00'}</p>
+                <p><strong>Política:</strong> <span class="badge bg-info text-dark">${politicaTexto}</span></p>
+                <button class="btn btn-sm btn-primary w-100 mt-2" onclick="initiateReservation(${s.idSpace})">
+                    Reservar este espacio
+                </button>
+            `;
+                container.appendChild(card);
+            });
+
+        } catch (err) {
+            console.error(err);
+            container.innerHTML = `<p class='text-danger'>Error al filtrar: ${err.message}</p>`;
+        }
+    }
+
+
     // ---------------------------------------------------------
     // VISTA OWNER: Refrescar Mis Locaciones
     // ---------------------------------------------------------

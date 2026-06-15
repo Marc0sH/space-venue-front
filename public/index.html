@@ -93,17 +93,64 @@
             </div>
         </section>
 
-        <!-- VISTA 2: PÚBLICA - CATÁLOGO DE ESPACIOS -->
+        <!-- VISTA 2: PÚBLICA - CATÁLOGO DE ESPACIOS (Con seccion de filtro de espacios) -->
         <section id="view-spaces" class="view-section">
             <div class="section-header">
                 <h2>Espacios Disponibles en la Plataforma</h2>
-                <button class="btn btn-primary" id="btn-refresh-catalog">Refrescar Catálogo</button>
+                <button class="btn btn-secondary" id="btn-refresh-catalog" onclick="limpiarFiltros()">Ver Todo / Limpiar</button>
             </div>
-            <p class="endpoint-label">GET /api/spaces</p>
+            <p class="endpoint-label">POST /api/spaces/byfields</p>
+
+            <form id="filter-form" class="filter-panel card p-3 mb-4 bg-light text-dark" style="margin-top: 15px;" onsubmit="aplicarFiltros(event)">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="filter-name" class="form-label font-weight-bold">Buscar por nombre</label>
+                        <input type="text" id="filter-name" class="form-control" placeholder="Ej: Hotel en la Boca...">
+                    </div>
+
+                    <div class="col-md-2">
+                        <label for="filter-min-price" class="form-label">Precio Mínimo</label>
+                        <input type="number" id="filter-min-price" class="form-control" placeholder="$ Mín">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="filter-max-price" class="form-label">Precio Máximo</label>
+                        <input type="number" id="filter-max-price" class="form-control" placeholder="$ Máx">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="filter-location-id" class="form-label">Zona / Edificio</label>
+                        <select id="filter-location-id" class="form-select">
+                            <option value="">Todas las locaciones</option>
+                            <option value="1">Shopping Paseo Aldrey</option>
+                            <option value="2">Centro Comercial Puerto</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mt-3 align-items-end border-top pt-2">
+                    <div class="col-md-4">
+                        <button type="button" id="btn-get-gps" class="btn btn-outline-secondary w-100" onclick="activarGPS()">
+                            📍 Usar mi ubicación actual
+                        </button>
+                        <small id="gps-status" class="text-muted d-block mt-1">GPS desactivado</small>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="filter-radius" class="form-label">Radio de búsqueda (Km)</label>
+                        <input type="number" id="filter-radius" class="form-control" value="5.0" step="0.5" disabled>
+                    </div>
+
+                    <div class="col-md-5 text-end">
+                        <button type="submit" class="btn btn-primary px-5">Aplicar Filtros</button>
+                    </div>
+                </div>
+            </form>
+
             <div id="spaces-list" class="grid-container">
-                <p class="placeholder-text">Presiona el botón para cargar el catálogo dinámico desde el servidor.</p>
+                <p class="placeholder-text">Usa los filtros o presiona "Ver Todo" para cargar el catálogo dinámico.</p>
             </div>
         </section>
+
 
         <!-- VISTA 3: CLIENTE - REGISTRO DE RESERVAS Y HISTORIAL -->
         <section id="view-reservations" class="view-section">
