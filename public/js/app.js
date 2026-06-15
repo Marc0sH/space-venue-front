@@ -502,9 +502,23 @@ document.addEventListener("DOMContentLoaded", () => {
         checkboxContainer.innerHTML = "<p class='placeholder-text'>Cargando servicios del espacio...</p>";
         document.getElementById("total-price-display").innerText = "$0.00";
 
+        // 🌟 Buscamos el botón de submit de la reserva para poder manipularlo
+        const submitReservationBtn = document.querySelector("#form-create-reservation button[type='submit']");
+
+        // 🌟 Intentamos recuperar el ID del usuario logueado de forma segura
+        let currentUserId = parseInt(localStorage.getItem("userId"));
+        if (!currentUserId) {
+            try {
+                const token = localStorage.getItem("jwt_token");
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                currentUserId = payload.idConsumer || payload.id;
+            } catch (e) { 
+                currentUserId = null; 
+            }
+        }
+
         try {
             // Buscamos el espacio específico utilizando tu ApiService o fetch nativo
-            // Nota: Si tu ApiService no tiene implementado getSpaceById, usamos fetch directamente:
             const response = await fetch(`${API_BASE_URL}/api/spaces/${id}`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem("jwt_token")}` }
             });
@@ -518,11 +532,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
             checkboxContainer.innerHTML = ""; // Limpiamos
 
-            // Renderizamos los servicios asociados que estén activos
+            // REGLA DE NEGOCIO: Si el dueño del espacio es el usuario actual, bloqueamos todo
+            if (currentUserId && space.idConsumerOwner === currentUserId) {
+                UI.logConsole(`⚠️ Auto-Reserva bloqueada: El usuario #${currentUserId} es dueño del espacio #${id}.`);
+                
+                // Inhabilitamos y cambiamos el aspecto estético del botón de confirmación
+                if (submitReservationBtn) {
+                    submitReservationBtn.disabled = true;
+                    submitReservationBtn.innerText = "❌ No puedes reservar tu propio espacio";
+                    submitReservationBtn.className = "btn btn-danger w-100";
+                }
+                
+                // Renderizamos un mensaje de advertencia limpio en lugar de los servicios
+                checkboxContainer.innerHTML = `
+                    <div class="alert alert-warning" style="background-color: #fff3cd; color: #856404; padding: 12px; border-radius: 6px; font-size: 0.95rem; border: 1px solid #ffeeba;">
+                        <strong>Aviso de Seguridad:</strong> Eres el propietario de esta locación comercial. El sistema impide que te auto-reserves espacios para resguardar la consistencia de las transacciones.
+                    </div>`;
+                return; // Cortamos el flujo acá para ignorar el armado de checkboxes
+            } 
+
+            // Si no es el dueño, nos aseguramos de que el botón de confirmación esté activo y normalizado
+            if (submitReservationBtn) {
+                submitReservationBtn.disabled = false;
+                submitReservationBtn.innerText = "Confirmar y Solicitar Reserva";
+                submitReservationBtn.className = "btn btn-success w-100";
+            }
+
             if (space.services && space.services.length > 0) {
                 space.services.forEach(serv => {
-                    // 🌟 CORRECCIÓN DE SEGURIDAD: Validamos si viene como active o isActive, 
-                    // o si directamente no está definido asumimos que está activo.
                     const isActive = serv.isActive !== false && serv.active !== false;
 
                     if (isActive) {
@@ -532,8 +569,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         div.style.gap = "8px";
                         div.style.marginBottom = "6px";
                         
-                        // 🌟 ADEMÁS: Verificá si tu backend devuelve 'idSpaceService' o 'id'. 
-                        // Usamos un fallback por las dudas:
                         const serviceId = serv.id || serv.idSpaceService;
 
                         div.innerHTML = `
