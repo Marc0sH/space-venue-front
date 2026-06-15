@@ -520,7 +520,7 @@ document.addEventListener("DOMContentLoaded", () => {
     async function loadReservations() {
         try {
             UI.logConsole("Solicitando historial transaccional de alquileres propios...");
-            const data = await ApiService.getReservations();
+            const data = await ApiService.get("/api/reservations/me");
             UI.logConsole("Historial de alquileres obtenido", data);
             
             const tbody = document.getElementById("reservations-tbody");
