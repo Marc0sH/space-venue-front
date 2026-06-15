@@ -99,6 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // SOLUCIÓN: Si está logueado va al catálogo, NO a la pantalla de Auth/Login
         UI.switchView("view-spaces"); 
         loadCatalog();
+        loadNotifications();
         loadUnreadNotificationsCount();
     } else {
         // Si no hay sesión, limpiamos todo y lo mandamos al login de forma limpia
@@ -134,6 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 UI.updateNavbar(token);
                 gestionarNavegacionPorRol();
+                loadNotifications();
                 loadUnreadNotificationsCount();
 
                 alert("¡Login exitoso!");
@@ -623,8 +625,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            console.log("🚀 Disparando conteo de alertas a: /api/notifications");
-            const data = await ApiService.get("/api/notifications");       
+            console.log("🚀 Disparando conteo de alertas a: /api/notifications/unread-count");
+            const data = await ApiService.get("/api/notifications/unread-count");       
 
             console.log("📦 Datos recibidos del Backend:", data);
 
@@ -634,21 +636,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            const count = (data && typeof data === 'object') ? data.count : parseInt(data);
-
-            if (count > 0) {
-                badge.innerText = count;
-                badge.style.display = "inline-block"; 
-            } else {
-                badge.innerText = "";
-                badge.style.display = "none"; 
-            }
+            const btnNotif = document.getElementById("nav-notifications");
 
             // Validamos la estructura del JSON que devuelve tu Spring Boot
             if (data && (data.count > 0 || data.count === 0)) {
                 if (data.count > 0) {
                     badge.innerText = data.count;
                     badge.style.display = "inline-block";
+
+                    if (btnNotif) {
+                        btnNotif.style.display = "inline-block";
+                    }
+
                     console.log(`🔴 Globo de alertas activado con ${data.count} notificaciones.`);
                 } else {
                     badge.innerText = "";
