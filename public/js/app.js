@@ -309,6 +309,60 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // ---------------------------------------------------------
+    // VISTA OWNER: Refrescar Mis Locaciones
+    // ---------------------------------------------------------
+    const btnRefreshOwnerSpaces = document.getElementById("btn-refresh-owner-spaces");
+    if (btnRefreshOwnerSpaces) {
+        btnRefreshOwnerSpaces.addEventListener("click", loadOwnedSpaces);
+    }
+
+    //Para mostrar los OwnedSpaces en la pestaña de owner
+    async function loadOwnedSpaces() {
+        try {
+            UI.logConsole("Buscando salones del propietario... GET /api/spaces/ownedspaces");
+
+            const response = await fetch(`${API_BASE_URL}/api/spaces/ownedspaces`, {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem("jwt_token")}` }
+            });
+
+            if (!response.ok) {
+                throw new Error("Error del servidor al obtener tus salones.");
+            }
+
+            const spaces = await response.json();
+            const container = document.getElementById("owner-spaces-list");
+            container.innerHTML = "";
+
+            if (!spaces || spaces.length === 0) {
+                container.innerHTML = "<p class='placeholder-text'>No tenés ningún salón registrado a tu nombre.</p>";
+                return;
+            }
+
+            spaces.forEach(s => {
+                const card = document.createElement("div");
+                card.className = "card";
+
+                // Extraemos el tipo de política de forma segura
+                const politicaTexto = (s.cancellationPolicies && s.cancellationPolicies.type)
+                    ? s.cancellationPolicies.type
+                    : 'No definida';
+
+                card.innerHTML = `
+        <h4>${s.nameSpace || s.title || 'Salón Comercial'}</h4>
+        <p style="color: var(--text-muted)">ID de Salón: ${s.idSpace || s.id}</p>
+        <p><strong>Precio Base:</strong> $${s.basePrice || s.price || '0.00'}</p>
+        <p><strong>Política:</strong> ${politicaTexto}</p>
+        <p><strong>Estado:</strong> ${s.active !== false ? '<span style="color: green; font-weight: bold;">ACTIVO</span>' : '<span style="color: red; font-weight: bold;">INACTIVO</span>'}</p>`;
+                container.appendChild(card);
+            });
+            UI.logConsole("Tus salones fueron listados exitosamente.");
+        } catch (err) {
+            UI.logConsole("Error al consultar salones propios: " + err.message);
+            document.getElementById("owner-spaces-list").innerHTML = `<p class='text-danger'>Hubo un error al cargar tus salones: ${err.message}</p>`;
+        }
+    }
+
     let currentSpaceBasePrice = 0;
 
     window.selectForReservation = async (id) => {
