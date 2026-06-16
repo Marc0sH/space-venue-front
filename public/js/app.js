@@ -563,7 +563,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <hr>
                 <p><strong>Precio Base:</strong> $${s.basePrice || '0.00'}</p>
                 <p><strong>Política:</strong> <span class="badge bg-info text-dark">${politicaTexto}</span></p>
-                <button class="btn btn-sm btn-primary w-100 mt-2" onclick="initiateReservation(${s.idSpace})">
+                <button class="btn btn-sm btn-primary w-100 mt-2" onclick="selectForReservation(${s.idSpace})">
                     Reservar este espacio
                 </button>
             `;
