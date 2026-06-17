@@ -1,9 +1,25 @@
 /**
- * Configuración de Entorno Global para la API Gateway de Space & Venue
- * Resuelve automáticamente la URL base dependiendo del host de despliegue.
+ * Configuración global de la aplicación Space & Venue.
  */
-const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:8080'
-    : 'https://space-venue-api.onrender.com'; // Inyectar URL de Render/AWS en producción
+const APP_CONFIG = {
+    apiBaseUrl:
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:8080'
+            : 'https://space-venue-api.onrender.com',
 
-console.log(`[Config] Ecosistema apuntando a: ${API_BASE_URL}`);
+    /** Muestra etiquetas de endpoints y consola de depuración HTTP. */
+    debugMode:
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1',
+
+    map: {
+        defaultCenter: [-34.6037, -58.3816],
+        defaultZoom: 13,
+        tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        tileAttribution: '&copy; OpenStreetMap contributors',
+    },
+};
+
+/** @deprecated Usar APP_CONFIG.apiBaseUrl */
+const API_BASE_URL = APP_CONFIG.apiBaseUrl;

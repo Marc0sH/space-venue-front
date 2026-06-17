@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space & Venue - Plataforma de Alquileres Temporales</title>
+    <meta name="description" content="Space & Venue — Plataforma de reserva y alquiler de espacios comerciales.">
+    <title>Space & Venue</title>
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <link rel="stylesheet" href="assets/css/variables.css">
@@ -14,364 +15,357 @@
 </head>
 <body>
 
-    <!-- COMPONENTE GLOBAL: HEADER Y NAVEGACIÓN -->
+    <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
     <header class="main-header">
         <div class="logo-area">
-            <h1 id="brand-title">Space & Venue Platform</h1>
-            <span id="user-info" class="user-badge" style="display: none;"></span>
+            <h1>Space & Venue</h1>
+            <span id="user-info" class="user-badge" hidden></span>
         </div>
-        <nav id="main-nav" class="nav-links">
-            <button class="nav-btn" data-view="view-spaces">Explorar Espacios</button>
-            <button id="nav-login" class="nav-btn" data-view="view-auth">Iniciar Sesión</button>
-            <button id="nav-my-reservations" class="nav-btn" data-view="view-reservations" style="display:none;">Mis Alquileres</button>
-            <button id="nav-owner-spaces" class="nav-btn" data-view="view-owner-spaces" style="display:none;">Mis Salones (Owner)</button>
-            <button id="nav-admin" class="nav-btn nav-btn-admin" data-view="view-admin" style="display:none;">Panel Admin</button>
-            <button id="nav-notifications" class="nav-btn" data-view="view-notifications" style="display:none;">🔔 Alertas <span id="notif-badge" class="badge" style="display:none; background:red; color:white; padding:2px 6px; border-radius:50%; font-size:0.75rem;">0</span></button>
-            <button id="nav-logout" class="nav-btn btn-danger" style="display:none;">Cerrar Sesión</button>
+        <nav id="main-nav" class="nav-links" aria-label="Navegación principal">
+            <button class="nav-btn" data-view="view-spaces">Explorar</button>
+            <button id="nav-login" class="nav-btn" data-view="view-auth">Iniciar sesión</button>
+            <button id="nav-my-reservations" class="nav-btn" data-view="view-reservations" hidden>Mis reservas</button>
+            <button id="nav-owner-spaces" class="nav-btn" data-view="view-owner-spaces" hidden>Mis espacios</button>
+            <button id="nav-notifications" class="nav-btn" data-view="view-notifications" hidden>
+                Notificaciones <span id="notif-badge" class="notif-badge" hidden>0</span>
+            </button>
+            <button id="nav-admin" class="nav-btn nav-btn-admin" data-view="view-admin" hidden>Administración</button>
+            <button id="nav-logout" class="nav-btn btn-danger" hidden>Cerrar sesión</button>
         </nav>
     </header>
 
-    <!-- CONTENEDOR PRINCIPAL DE VISTAS DINÁMICAS -->
     <main class="container">
 
-        <!-- VISTA 1: AUTENTICACIÓN (LOGIN / REGISTRO) -->
+        <!-- Autenticación -->
         <section id="view-auth" class="view-section active-view">
             <div class="auth-grid">
                 <div class="auth-card">
-                    <h2>Ingresar al Sistema</h2>
+                    <h2>Iniciar sesión</h2>
                     <p class="endpoint-label">POST /api/auth/login</p>
-                    <form id="form-login">
+                    <form id="form-login" novalidate>
                         <div class="form-group">
-                            <label for="login-username">Nombre de Usuario</label>
-                            <input type="text" id="login-username" required value="cliente_prueba">
+                            <label for="login-username">Usuario</label>
+                            <input type="text" id="login-username" required autocomplete="username" placeholder="Tu nombre de usuario">
                         </div>
                         <div class="form-group">
                             <label for="login-password">Contraseña</label>
-                            <input type="password" id="login-password" required value="password123">
+                            <input type="password" id="login-password" required autocomplete="current-password" placeholder="••••••••">
                         </div>
-                        <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                        <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
                     </form>
                 </div>
 
-                <hr>
-
                 <div class="auth-card">
-                    <h2>Registro de Nuevo Cliente</h2>
+                    <h2>Crear cuenta</h2>
                     <p class="endpoint-label">POST /api/auth/register</p>
-                    <form id="form-register">
-                        <div class="form-group">
-                            <label for="reg-firstname">Nombre</label>
-                            <input type="text" id="reg-firstname" required placeholder="Ej: Marcos">
+                    <form id="form-register" novalidate>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="reg-firstname">Nombre</label>
+                                <input type="text" id="reg-firstname" required placeholder="Marcos">
+                            </div>
+                            <div class="form-group">
+                                <label for="reg-lastname">Apellido</label>
+                                <input type="text" id="reg-lastname" required placeholder="García">
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label for="reg-lastname">Apellido</label>
-                            <input type="text" id="reg-lastname" required placeholder="Ej: Hoyuelos">
-                        </div>
-                        <div class="form-group">
-                            <label for="reg-email">Correo Electrónico</label>
+                            <label for="reg-email">Correo electrónico</label>
                             <input type="email" id="reg-email" required placeholder="usuario@email.com">
                         </div>
                         <div class="form-group">
-                            <label for="reg-phone">Teléfono de Contacto</label>
+                            <label for="reg-phone">Teléfono</label>
                             <input type="tel" id="reg-phone" required placeholder="223XXXXXXX">
                         </div>
-
-                        <hr style="border: 0; border-top: 1px dashed var(--text-muted, #ccc); margin: 15px 0;">
-
                         <div class="form-group">
-                            <label for="reg-username">Escribe un Username</label>
-                            <input type="text" id="reg-username" required placeholder="Tu usuario para loguearte">
+                            <label for="reg-username">Usuario</label>
+                            <input type="text" id="reg-username" required placeholder="nombre_usuario">
                         </div>
                         <div class="form-group">
-                            <label for="reg-password">Contraseña Segura</label>
-                            <input type="password" id="reg-password" required placeholder="Tu contraseña">
+                            <label for="reg-password">Contraseña</label>
+                            <input type="password" id="reg-password" required placeholder="Mínimo 8 caracteres">
                         </div>
-
-                        <button type="submit" class="btn btn-success">Registrar Cuenta</button>
+                        <button type="submit" class="btn btn-success btn-block">Registrarse</button>
                     </form>
                 </div>
             </div>
         </section>
 
-        <!-- VISTA 2: PÚBLICA - CATÁLOGO DE ESPACIOS (Con seccion de filtro de espacios) -->
+        <!-- Catálogo -->
         <section id="view-spaces" class="view-section">
             <div class="section-header">
-                <h2>Espacios Disponibles en la Plataforma</h2>
-                <button class="btn btn-secondary" id="btn-refresh-catalog" onclick="limpiarFiltros()">Ver Todo / Limpiar</button>
+                <div>
+                    <h2>Espacios disponibles</h2>
+                    <p class="section-subtitle">Encontrá el lugar ideal para tu evento</p>
+                </div>
+                <button class="btn btn-secondary" id="btn-refresh-catalog">Ver todos</button>
             </div>
-            <p class="endpoint-label">POST /api/spaces/byfields</p>
+            <p class="endpoint-label">GET /api/spaces · POST /api/spaces/byfields</p>
 
-            <form id="filter-form" class="filter-panel card p-3 mb-4 bg-light text-dark" style="margin-top: 15px;" onsubmit="aplicarFiltros(event)">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label for="filter-name" class="form-label font-weight-bold">Buscar por nombre</label>
-                        <input type="text" id="filter-name" class="form-control" placeholder="Ej: Salón en zona Güemes...">
+            <form id="filter-form" class="filter-panel card">
+                <div class="filter-grid">
+                    <div class="form-group">
+                        <label for="filter-name">Nombre</label>
+                        <input type="text" id="filter-name" placeholder="Ej: Salón en zona centro">
                     </div>
-
-                    <div class="col-md-2">
-                        <label for="filter-min-price" class="form-label">Precio Mínimo</label>
-                        <input type="number" id="filter-min-price" class="form-control" placeholder="$ Mín">
+                    <div class="form-group">
+                        <label for="filter-min-price">Precio mínimo</label>
+                        <input type="number" id="filter-min-price" min="0" step="0.01" placeholder="$0">
                     </div>
-                    <div class="col-md-2">
-                        <label for="filter-max-price" class="form-label">Precio Máximo</label>
-                        <input type="number" id="filter-max-price" class="form-control" placeholder="$ Máx">
+                    <div class="form-group">
+                        <label for="filter-max-price">Precio máximo</label>
+                        <input type="number" id="filter-max-price" min="0" step="0.01" placeholder="$99999">
                     </div>
-
-                    <div class="col-md-4">
-                        <label for="filter-location-id" class="form-label">Zona / Edificio</label>
-                        <select id="filter-location-id" class="form-select">
-                            <option value="">Todas las locaciones</option>
+                    <div class="form-group">
+                        <label for="filter-location-id">Zona</label>
+                        <select id="filter-location-id">
+                            <option value="">Todas las zonas</option>
                             <option value="1">Shopping Paseo Aldrey</option>
                             <option value="2">Centro Comercial Puerto</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="row mt-3 align-items-end border-top pt-2">
-                    <div class="col-md-4">
-                        <button type="button" id="btn-get-gps" class="btn btn-outline-secondary w-100" onclick="activarGPS()">
-                            📍 Usar mi ubicación actual
-                        </button>
-                        <small id="gps-status" class="text-muted d-block mt-1">GPS desactivado</small>
+                <div class="filter-grid filter-grid--gps">
+                    <div class="form-group">
+                        <button type="button" id="btn-get-gps" class="btn btn-secondary btn-block">Usar mi ubicación</button>
+                        <small id="gps-status" class="form-hint">GPS desactivado</small>
                     </div>
-
-                    <div class="col-md-3">
-                        <label for="filter-radius" class="form-label">Radio de búsqueda (Km)</label>
-                        <input type="number" id="filter-radius" class="form-control" value="5.0" step="0.5" disabled>
+                    <div class="form-group">
+                        <label for="filter-radius">Radio (km)</label>
+                        <input type="number" id="filter-radius" value="5" step="0.5" min="0.5" disabled>
                     </div>
-
-                    <div class="col-md-5 text-end">
-                        <button type="submit" class="btn btn-primary px-5">Aplicar Filtros</button>
+                    <div class="form-group form-group--actions">
+                        <button type="submit" class="btn btn-primary btn-block">Buscar</button>
                     </div>
                 </div>
             </form>
 
             <div id="spaces-list" class="grid-container">
-                <p class="placeholder-text">Usa los filtros o presiona "Ver Todo" para cargar el catálogo dinámico.</p>
+                <p class="placeholder-text">Usá los filtros o "Ver todos" para cargar el catálogo.</p>
             </div>
-
         </section>
 
-
-        <!-- VISTA 3: CLIENTE - REGISTRO DE RESERVAS Y HISTORIAL -->
+        <!-- Reservas -->
         <section id="view-reservations" class="view-section">
-            <h2>Gestión de Mis Alquileres Salientes</h2>
+            <h2>Mis reservas</h2>
+            <p class="section-subtitle">Gestioná tus alquileres y calificá los espacios</p>
 
             <div class="card-form-wrapper">
-                <h3>Solicitar Nueva Reserva</h3>
+                <h3>Nueva reserva</h3>
                 <p class="endpoint-label">POST /api/reservations</p>
-                <form id="form-create-reservation">
-                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                <form id="form-create-reservation" novalidate>
+                    <div class="form-row">
                         <div class="form-group">
-                            <label for="res-space-id">ID de Salón/Espacio</label>
-                            <input type="number" id="res-space-id" readonly style="background-color: #e9ecef;">
+                            <label for="res-space-id">Espacio</label>
+                            <input type="number" id="res-space-id" readonly>
                         </div>
                         <div class="form-group">
-                            <label for="res-title">Nombre del Evento / Título</label>
-                            <input type="text" id="res-title" required placeholder="Ej: Cumpleaños de 15 de Sofi">
+                            <label for="res-title">Título del evento</label>
+                            <input type="text" id="res-title" required placeholder="Ej: Cumpleaños de 15">
                         </div>
                     </div>
 
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label for="res-description">Descripción / Detalles del Evento</label>
-                        <textarea id="res-description" required placeholder="Contanos brevemente el uso que le vas a dar al espacio..." rows="2"></textarea>
+                    <div class="form-group">
+                        <label for="res-description">Descripción</label>
+                        <textarea id="res-description" required rows="2" placeholder="Detalles del evento..."></textarea>
                     </div>
 
-                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div class="form-row">
                         <div class="form-group">
-                            <label for="res-from">Fecha y Hora Desde</label>
+                            <label for="res-from">Desde</label>
                             <input type="datetime-local" id="res-from" required>
                         </div>
                         <div class="form-group">
-                            <label for="res-to">Fecha y Hora Hasta</label>
+                            <label for="res-to">Hasta</label>
                             <input type="datetime-local" id="res-to" required>
                         </div>
                     </div>
 
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label style="font-weight: bold; margin-bottom: 8px; display: block;">Servicios Opcionales Disponibles:</label>
-                        <div id="available-services-checkboxes" style="border: 1px solid #ccc; padding: 12px; border-radius: 6px; background: #f8f9fa; max-height: 150px; overflow-y: auto;">
-                            <p class="text-muted" style="font-size: 0.9rem; margin: 0;">Selecciona un espacio del catálogo para auditar sus servicios.</p>
+                    <div class="form-group">
+                        <label>Servicios adicionales</label>
+                        <div id="available-services-checkboxes" class="services-panel">
+                            <p class="text-muted">Seleccioná un espacio del catálogo para ver servicios.</p>
                         </div>
                     </div>
 
-                    <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                        <input type="checkbox" id="res-save-calendar" checked style="width: 18px; height: 18px; cursor: pointer;">
-                        <label for="res-save-calendar" style="cursor: pointer; font-weight: 500;">
-                            ¿Querés agendar el evento automáticamente en tu cuenta personal de Google Calendar?
-                        </label>
+                    <label class="checkbox-row">
+                        <input type="checkbox" id="res-save-calendar" checked>
+                        <span>Agregar automáticamente a Google Calendar</span>
+                    </label>
+
+                    <div class="price-summary">
+                        <span>Precio estimado</span>
+                        <strong id="total-price-display">$0.00</strong>
                     </div>
 
-                    <div style="background: #e3f2fd; padding: 12px; border-radius: 6px; margin-bottom: 15px; border-left: 5px solid #2196f3;">
-                        <h4 style="margin: 0; color: #0d47a1;">Precio Total Estimado: <span id="total-price-display">$0.00</span></h4>
-                    </div>
-
-                    <button type="submit" class="btn btn-success" style="width: 100%;">Confirmar Solicitud de Reserva</button>
+                    <button type="submit" class="btn btn-success btn-block">Confirmar reserva</button>
                 </form>
             </div>
 
-            <div class="section-header" style="margin-top: 30px;">
-                <h3>Historial y Estado de Solicitudes</h3>
-                <button class="btn btn-secondary" id="btn-refresh-reservations">Actualizar Mis Alquileres</button>
+            <div class="section-header section-header--spaced">
+                <h3>Historial</h3>
+                <button class="btn btn-secondary" id="btn-refresh-reservations">Actualizar</button>
             </div>
-            <p class="endpoint-label">GET /api/reservations</p>
+            <p class="endpoint-label">GET /api/reservations/me</p>
+
             <div class="table-responsive">
                 <table id="table-reservations">
                     <thead>
-                    <tr>
-                        <th>ID Reserva</th>
-                        <th>Ubicación / Salón</th>
-                        <th>Precio Final</th>
-                        <th>Estado de Gestión</th>
-                        <th>Acciones</th> </tr>
+                        <tr>
+                            <th>ID</th>
+                            <th>Espacio</th>
+                            <th>Precio</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
                     </thead>
                     <tbody id="reservations-tbody">
-                    <tr><td colspan="5" class="text-center">Inicia sesión para auditar tus solicitudes asociadas.</td></tr>
+                        <tr><td colspan="5" class="text-center">Iniciá sesión para ver tus reservas.</td></tr>
                     </tbody>
                 </table>
             </div>
 
-            <div id="seccion-comentario" class="card mt-4 p-4 border-primary mx-auto shadow-sm" style="max-width: 600px;">
-                <h3 class="text-center">⭐ Calificar Espacio</h3>
-                <p class="text-muted text-center small">Seleccioná "Comentar" en una reserva habilitada para activar este formulario.</p>
-
-                <form id="form-comentario" onsubmit="enviarComentario(event)">
+            <div id="seccion-comentario" class="card comment-form-card">
+                <h3>Calificar espacio</h3>
+                <p class="text-muted">Activá este formulario desde una reserva confirmada o completada.</p>
+                <form id="form-comentario" novalidate>
                     <input type="hidden" id="comentario-space-id">
-
-                    <div class="mb-3">
-                        <label class="form-label font-weight-bold">Puntuación (0 a 5)</label>
-                        <input type="number" class="form-control" id="comentario-score" min="0" max="5" required disabled>
+                    <div class="form-group">
+                        <label for="comentario-score">Puntuación (0–5)</label>
+                        <input type="number" id="comentario-score" min="0" max="5" required disabled>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label font-weight-bold">Tu experiencia</label>
-                        <textarea class="form-control" id="comentario-desc" rows="3" placeholder="Muy espacioso, el dueño súper atento..." required disabled></textarea>
+                    <div class="form-group">
+                        <label for="comentario-desc">Tu experiencia</label>
+                        <textarea id="comentario-desc" rows="3" required disabled placeholder="Contanos cómo fue tu experiencia..."></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100" id="btn-submit-comentario" disabled>Publicar Reseña</button>
+                    <button type="submit" class="btn btn-primary btn-block" id="btn-submit-comentario" disabled>Publicar reseña</button>
                 </form>
             </div>
         </section>
 
-        <!-- VISTA 4: PROPIETARIO (OWNER) - ALTA Y CONTROL DE ESPACIOS PROPIOS (editada con los campos que le faltaban)-->
+        <!-- Propietario -->
         <section id="view-owner-spaces" class="view-section">
-            <h2>Módulo del Oferente / Propietario</h2>
-            <p class="endpoint-label">GET /api/spaces/ownedspaces</p>
+            <h2>Mis espacios</h2>
+            <p class="section-subtitle">Publicá y administrá tus locaciones</p>
+            <p class="endpoint-label">GET /api/spaces/ownedspaces · POST /api/spaces/ownedspace</p>
 
             <div class="card-form-wrapper">
-                <h3>Publicar un Nuevo Espacio Comercial</h3>
-                <p class="endpoint-label">POST /api/spaces/ownedspace</p>
-
-                <form id="form-create-space">
+                <h3>Publicar espacio</h3>
+                <form id="form-create-space" novalidate>
                     <div class="form-group">
-                        <label for="space-title">Nombre Comercial de la Locación</label>
-                        <input type="text" id="space-title" required placeholder="Ej: Complejo Sky Pavilion Premium">
+                        <label for="space-title">Nombre comercial</label>
+                        <input type="text" id="space-title" required placeholder="Ej: Salón Premium">
+                    </div>
+                    <div class="form-group">
+                        <label for="space-description">Descripción</label>
+                        <textarea id="space-description" required rows="3" placeholder="Dimensiones, equipamiento, capacidad..."></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label for="space-description">Descripción del Espacio</label>
-                        <textarea id="space-description" required placeholder="Describí las dimensiones, equipamiento, etc." rows="3"></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label style="font-weight: bold; margin-bottom: 8px; display: block;">Ubicación geográfica del salón</label>
-                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0; margin-bottom: 8px;">
-                            Hacé clic en el mapa para marcar el punto exacto donde se encuentra tu espacio.
-                        </p>
-                        
-                        <div id="map" style="width: 100%; height: 320px; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 15px; z-index: 1;"></div>
-                        
+                        <label>Ubicación en el mapa</label>
+                        <p class="form-hint">Hacé clic en el mapa para marcar la ubicación exacta.</p>
+                        <div id="map" class="map-container"></div>
                         <input type="hidden" id="space-lat">
                         <input type="hidden" id="space-lng">
                     </div>
 
-                    <div class="form-group">
-                        <label for="space-cancellation">Política de Cancelación</label>
-                        <select id="space-cancellation" class="form-control" required>
-                            <option value="" disabled selected>-- Seleccioná una política --</option>
-                            <option value="FLEXIBLE">Flexible (Cancelación gratuita)</option>
-                            <option value="MODERATED">Moderada (Reembolso parcial)</option>
-                            <option value="STRICT">Estricta (Sin reembolso)</option>
-                        </select>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="space-cancellation">Política de cancelación</label>
+                            <select id="space-cancellation" required>
+                                <option value="" disabled selected>Seleccionar...</option>
+                                <option value="FLEXIBLE">Flexible</option>
+                                <option value="MODERATED">Moderada</option>
+                                <option value="STRICT">Estricta</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="space-price">Precio base ($)</label>
+                            <input type="number" id="space-price" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="space-buffer">Buffer (minutos)</label>
+                            <input type="number" id="space-buffer" min="0" required placeholder="15">
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="space-price">Precio Base ($)</label>
-                        <input type="number" id="space-price" step="0.01" min="0" required placeholder="0.00">
+                        <label>Servicios adicionales</label>
+                        <div id="services-container"></div>
+                        <button type="button" id="btn-add-service" class="btn btn-secondary btn-sm">+ Agregar servicio</button>
                     </div>
 
-                    <div class="form-group">
-                        <label for="space-buffer">Tiempo de Buffer (Minutos entre reservas)</label>
-                        <input type="number" id="space-buffer" min="0" required placeholder="Ej: 15, 30">
-                    </div>
-
-                    <div class="form-group mt-4">
-                        <label><strong>Servicios Adicionales Ofrecidos</strong></label>
-                        <div id="services-container">
-                            </div>
-                        <button type="button" id="btn-add-service" class="btn btn-secondary btn-sm mt-2">+ Agregar Servicio</button>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Dar de Alta Propiedad</button>
+                    <button type="submit" class="btn btn-primary btn-block">Publicar espacio</button>
                 </form>
             </div>
 
-            <div class="section-header" style="margin-top: 30px;">
-                <h3>Tus Salones Registrados</h3>
-                <button class="btn btn-secondary" id="btn-refresh-owner-spaces">Refrescar Mis Locaciones</button>
+            <div class="section-header section-header--spaced">
+                <h3>Espacios publicados</h3>
+                <button class="btn btn-secondary" id="btn-refresh-owner-spaces">Actualizar</button>
             </div>
             <div id="owner-spaces-list" class="grid-container"></div>
         </section>
 
-        <!-- VISTA 5: ADMINISTRADOR - AUDITORÍA GLOBAL Y INYECTOR WEBHOOK -->
+        <!-- Administración -->
         <section id="view-admin" class="view-section">
-            <h2>Módulo de Supervisión Central (ROLE_ADMIN)</h2>
-            
+            <h2>Panel de administración</h2>
+            <p class="section-subtitle">Herramientas exclusivas para ROLE_ADMIN</p>
+
             <div class="admin-grid">
-                <div class="admin-card">
-                    <h3>Usuarios del Sistema (Consumidores)</h3>
+                <div class="admin-card card">
+                    <h3>Usuarios</h3>
                     <p class="endpoint-label">GET /api/usuarios</p>
-                    <button class="btn btn-danger" id="btn-admin-list-users">Listar Cuentas Registradas</button>
+                    <button class="btn btn-danger" id="btn-admin-list-users">Listar usuarios</button>
                     <ul id="admin-users-list" class="styled-list"></ul>
                 </div>
-                
-                <div class="admin-card">
-                    <h3>Simulador Event-Driven: Webhook Mercado Pago</h3>
+
+                <div class="admin-card card">
+                    <h3>Simulador de webhook</h3>
                     <p class="endpoint-label">POST /api/v1/payments/webhook</p>
-                    <p class="card-desc">Emula el evento asíncrono e instantáneo que Mercado Pago envía al servidor backend una vez procesado el dinero en la pasarela externa.</p>
+                    <p class="card-desc">Simula la confirmación de pago de Mercado Pago para una reserva tentativa.</p>
                     <div class="form-group">
-                        <label for="webhook-payment-id">ID de Transacción Simulado</label>
+                        <label for="webhook-payment-id">ID de transacción</label>
                         <input type="number" id="webhook-payment-id" value="999888777">
                     </div>
-                    <button class="btn btn-success" id="btn-trigger-webhook">Inyectar Notificación Externa (Approved)</button>
+                    <button class="btn btn-success btn-block" id="btn-trigger-webhook">Simular pago aprobado</button>
                 </div>
             </div>
         </section>
 
-        <!-- VISTA 6: NOTIFICACIONES -->
+        <!-- Notificaciones -->
         <section id="view-notifications" class="view-section">
-            <h2>🔔 Historial de Alertas y Notificaciones del Sistema</h2>
+            <h2>Notificaciones</h2>
             <p class="endpoint-label">GET /api/notifications</p>
-            <div class="card-form-wrapper" style="background: var(--bg-card);">
-                <div id="notifications-list">
-                    <p class="placeholder-text">No tienes alertas o notificaciones registradas en este momento.</p>
-                </div>
+            <div id="notifications-list" class="notifications-list">
+                <p class="placeholder-text">Sin notificaciones por el momento.</p>
             </div>
         </section>
 
-        <!-- COMPONENTE FIJO: CONSOLA DE AUDITORÍA DE RED -->
+        <!-- Consola de depuración (solo en localhost) -->
         <section class="console-wrapper">
             <div class="console-header">
-                <h4>Consola de Red & Trazas HTTP Activas</h4>
-                <span class="console-badge">Live API Tracker</span>
+                <h4>Consola de depuración HTTP</h4>
+                <span class="console-badge">Dev only</span>
             </div>
-            <div id="console-output" class="console-box">Esperando interacciones de red con el ecosistema de Spring Boot...</div>
+            <div id="console-output" class="console-box">Esperando interacciones con la API...</div>
         </section>
 
     </main>
 
-    <!-- ARQUITECTURA JS DEL CLIENTE: SEPARACIÓN DE RESPONSABILIDADES -->
     <script src="js/config.js"></script>
+    <script src="js/utils/auth.js"></script>
     <script src="js/utils/ui.js"></script>
     <script src="js/services/api.js"></script>
+    <script src="js/modules/auth.js"></script>
+    <script src="js/modules/catalog.js"></script>
+    <script src="js/modules/owner.js"></script>
+    <script src="js/modules/reservations.js"></script>
+    <script src="js/modules/comments.js"></script>
+    <script src="js/modules/notifications.js"></script>
+    <script src="js/modules/admin.js"></script>
+    <script src="js/modules/navigation.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
