@@ -1,9 +1,14 @@
 <header>
     <h1>Space&Venue</h1>
+    @if (sessionService.isLoggedIn()) {
+        <button (click)="sessionService.logoutUser()">Logout</button>
+    }@else {
+        <a routerLink="/login">Login</a>
+    }
 </header>
 
 <router-outlet />
 
 <footer>
-    <p>&copy; 2026 Space&Venue. Todos los derechos reservdos.</p>
+    <p>&copy; 2026 Space&Venue. Todos los derechos reservados.</p>
 </footer>
