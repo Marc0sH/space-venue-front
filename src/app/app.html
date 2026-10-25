@@ -1,5 +1,8 @@
 <header>
     <h1>Space&Venue</h1>
+
+    <a routerLink="/espacios">Lista de espacios</a>
+
     @if (sessionService.isLoggedIn()) {
         <button (click)="sessionService.logoutUser()">Logout</button>
     }@else {
