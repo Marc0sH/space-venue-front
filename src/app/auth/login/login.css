@@ -1,0 +1,100 @@
+.loginContainer {
+  max-width: 420px;
+  margin: 40px auto;
+  padding: 32px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #1e293b;
+}
+
+.loginContainer h2 {
+  margin-top: 0;
+  margin-bottom: 24px;
+  font-size: 1.5rem;
+  color: #0f172a;
+  text-align: center;
+}
+
+/* Campos de entrada */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.form-group input {
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Botón de envío */
+button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #2563eb;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button[type="submit"]:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+
+button[type="submit"]:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Enlaces y pie del formulario */
+.loginContainer h3 {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #64748b;
+  text-align: center;
+  margin-top: 24px;
+  margin-bottom: 0;
+}
+
+.loginContainer a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.loginContainer a:hover {
+  text-decoration: underline;
+}
+
+/* Mensaje de error */
+.error {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 12px;
+  text-align: center;
+}

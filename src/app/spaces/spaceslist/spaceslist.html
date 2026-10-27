@@ -1,9 +1,12 @@
-<label for="orden">Ordenar: </label>
+<div class="sort-container">
+    <label for="orden">Ordenar: </label>
         <select id="orden" (change)="ordenSeleccionado.set($any($event.target).value)">
         <option value="Sin ordenar">Sin ordenar</option>
         <option value="Precio">Precio (Menor a Mayor)</option>
         <option value="Nombre">Nombre (A-Z)</option>
   </select> 
+</div>
+
 @for (s of productosFiltrados(); track s.idSpace) {
     <div>
     <app-spacescard [space]="s"></app-spacescard>
