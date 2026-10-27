@@ -11,7 +11,7 @@ import { ServiceCard } from '../service-card/service-card';
 export class ServiceList {
   list= input.required<service[]>()
 
-  filtedList = computed(()=>{
-    
+  filteredList = computed(()=>{
+    return this.list().filter((ser) => ser.isActive)    
   })
 }

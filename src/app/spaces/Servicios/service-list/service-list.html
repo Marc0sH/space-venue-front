@@ -1,6 +1,6 @@
 <article>
-    @if(list().length){
-        @for(ser of list(); track $index){
+    @if(filteredList().length > 0){
+        @for(ser of filteredList(); track $index){
             <app-service-card [servicio]="ser"></app-service-card>
         }
     }@else{
