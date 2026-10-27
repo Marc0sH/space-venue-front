@@ -2,7 +2,7 @@
 // el tipo de estructura de las políticas de cancelación se gestionan en el back y 
 // se asignan desde la BD
 
-export interface cancellationpolicies{
+export interface Cancellationpolicies{
     idCancellationPolicies: number,
     type: string,
     daysAnticipation: number,

@@ -1,24 +1,24 @@
-import { cancellationpolicies } from "./cancellationpolicies.model"
-import { location } from "./location.model"
-import { service } from "./service.model"
+// import { Cancellationpolicies } from "./cancellationpolicies.model"
+import { Location } from "./location.model"
+import { Service } from "./service.model"
 import { consumerOwner } from "./user.model"
 
-export interface space{
+export interface Space{
     idSpace: number,
     consumerOwner: consumerOwner,
-    location: location,
+    location: Location,
 
     // En el back, el atributo cancellationPolicies es un string y se compara como enum. 
     // Desde el front debemos asignar el valor enum y desde el back se compara la política entera (harcodeada desde la BD)
     cancellationPolicies: string,
-    
+
     nameSpace: string,
     description: string,
     basePrice: number,
     publicationDate: Date,
     bufferTime: number,
     isActive: boolean,
-    services: service[]
+    services: Service[]
 }
 
-export type newSpace = Omit<space, 'idSpace' | 'consumerOwner' | 'publicationDate' | 'isActive'>
+export type NewSpace = Omit<Space, 'idSpace' | 'consumerOwner' | 'publicationDate' | 'isActive'>
