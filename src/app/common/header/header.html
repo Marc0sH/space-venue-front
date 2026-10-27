@@ -5,10 +5,11 @@
         <a routerLink="/espacios">Lista de espacios</a>
     
         @if (sessionService.isLoggedIn()) {
-            <button (click)="sessionService.logoutUser()">Logout</button>
-
+            <a routerLink="/espacios/crear">Crear un espacio</a>
+            <a routerLink="/espacios/espaciospropios">Mis espacios</a>
+            <button class="redBtn" (click)="sessionService.logoutUser()">Cerrar sesión</button>
         }@else {
-            <a routerLink="/login">Login</a>
+            <a routerLink="/login">Iniciar sesión</a>
         }
     </nav>
 

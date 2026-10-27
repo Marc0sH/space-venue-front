@@ -1,0 +1,47 @@
+<h2>Creación de un espacio</h2>
+
+<form (submit)="onSubmit($event)">
+    <div>
+        <label for="nameSpace">Nombre del espacio</label>
+        <input type="text" [formField]="formSpaceCreation.nameSpace">
+    </div>
+    
+    <div>
+        <label for="description">Descripción</label>
+        <input type="text" [formField]="formSpaceCreation.description">
+    </div>
+    
+    <div>
+        <label for="basePrice">Precio base</label>
+        <input type="number" [formField]="formSpaceCreation.basePrice">
+    </div>
+    
+    <div>
+        <label for="bufferTime">Tiempo de receso entre reservas (min)</label>
+        <input type="number" [formField]="formSpaceCreation.bufferTime">
+    </div>
+    
+    <div>
+        <label for="location">
+            Ubicación
+            
+            <div>
+                <label for="latitude">Latitud</label>
+                <input type="number" [formField]="formSpaceCreation.location.latitude">
+            </div>
+            
+            <div>
+                <label for="longitude">Longitud</label>
+                <input type="number" [formField]="formSpaceCreation.location.longitude">
+            </div>
+        </label>
+    </div>
+
+    <button type="submit" [disabled]="formSpaceCreation().invalid()">Crear</button>
+
+    <app-form-error-message [campo]="formSpaceCreation.nameSpace()"></app-form-error-message>
+    <app-form-error-message [campo]="formSpaceCreation.description()"></app-form-error-message>
+    <app-form-error-message [campo]="formSpaceCreation.location.latitude()"></app-form-error-message>
+    <app-form-error-message [campo]="formSpaceCreation.location.longitude()"></app-form-error-message>
+    <app-form-error-message [campo]="formSpaceCreation.basePrice()"></app-form-error-message>
+</form>

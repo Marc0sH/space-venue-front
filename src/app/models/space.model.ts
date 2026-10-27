@@ -7,7 +7,11 @@ export interface space{
     idSpace: number,
     consumerOwner: consumerOwner,
     location: location,
-    cancellationPolicies: cancellationpolicies,
+
+    // En el back, el atributo cancellationPolicies es un string y se compara como enum. 
+    // Desde el front debemos asignar el valor enum y desde el back se compara la política entera (harcodeada desde la BD)
+    cancellationPolicies: string,
+    
     nameSpace: string,
     description: string,
     basePrice: number,
@@ -16,3 +20,5 @@ export interface space{
     isActive: boolean,
     services: service[]
 }
+
+export type newSpace = Omit<space, 'idSpace' | 'consumerOwner' | 'publicationDate' | 'isActive'>
