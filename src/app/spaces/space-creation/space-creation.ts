@@ -3,7 +3,7 @@ import { form, FormField, required } from '@angular/forms/signals';
 import { NewSpace } from '../../models/space.model';
 import { emptyLocation } from '../../models/location.model';
 // import { emptyPolicies } from '../../models/cancellationpolicies.model';
-import { Service } from '../../models/service.model';
+import { ServiceSpace } from '../../models/service.model';
 import { FormErrorMessage } from '../../common/form-error-message/form-error-message';
 import { Spaceservice } from '../spaceservice';
 
@@ -21,7 +21,7 @@ export class SpaceCreation {
     description:'', 
     basePrice:0, 
     bufferTime:0, 
-    services: [] as Service[]
+    services: [] as ServiceSpace[]
   })
   formSpaceCreation = form(this.model, (path) => {
     required(path.nameSpace, {message: 'El nombre del espacio es obligatorio'})

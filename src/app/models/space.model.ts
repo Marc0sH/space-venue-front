@@ -1,6 +1,6 @@
 // import { Cancellationpolicies } from "./cancellationpolicies.model"
 import { Location } from "./location.model"
-import { Service } from "./service.model"
+import { ServiceSpace } from "./service.model"
 import { consumerOwner } from "./user.model"
 
 export interface Space{
@@ -18,7 +18,7 @@ export interface Space{
     publicationDate: Date,
     bufferTime: number,
     isActive: boolean,
-    services: Service[]
+    services: ServiceSpace[]
 }
 
 export type NewSpace = Omit<Space, 'idSpace' | 'consumerOwner' | 'publicationDate' | 'isActive'>

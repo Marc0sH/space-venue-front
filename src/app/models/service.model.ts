@@ -1,4 +1,4 @@
-export interface Service{
+export interface ServiceSpace{
     id: number,
     description: string,
     price: number,
