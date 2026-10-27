@@ -1,0 +1,22 @@
+# Copilot instructions for SpaceVenueFront
+
+- This repo is an Angular 22 app; prefer the current standalone/component-signals style already used in `src/app/**` instead of NgModule patterns.
+- App bootstrap is in `src/app/app.config.ts`: it wires `provideRouter(routes, withComponentInputBinding())` and `provideHttpClient(withInterceptors([authInterceptor]))`.
+- Route structure is centralized in `src/app/app.routes.ts`: root redirects to `/espacios`, `/registro`, `/espacios`, `/espacios/:id`, and the fallback `**` route points to `NotFound`.
+- The main stateful services are `Session` (`src/app/auth/user/session.ts`) and `Spaceservice` (`src/app/spaces/spaceservice.ts`). They use Angular `signal()` and injectable services, not class fields plus manual subscriptions everywhere.
+- Auth flow: `Session.loginUser()` stores the backend payload in `localStorage` under `session`, updates the `_session` signal, and `logoutUser()` clears it and redirects to `/login`.
+- JWT/header behavior lives in `src/app/auth/interceptors/auth-interceptor.ts`: it adds `Authorization: "${tipo} ${token}"` to API calls and auto-logs the user out on HTTP 401.
+- `Spaceservice.load()` fetches `/spaces` and keeps `spaces`, `loading`, and `error` signals; call `load()` from `ngOnInit()` when a list screen needs data. `getById(id)` uses `httpResource` for detail pages.
+- Domain models live in `src/app/models/*.model.ts`; reuse them instead of defining ad hoc types. `space.model.ts` includes nested objects like `consumerOwner`, `location`, `cancellationPolicies`, and `services`.
+- API configuration is centralized in `src/environments/enviroment.ts`; use `environment.apiUrl` and do not hardcode the backend URL in components or services.
+- Form validation follows the Angular signals form API: `form(this.model, ...)` with rules like `required`, `email`, and `minLength` in `src/app/auth/login/login.ts` and `src/app/auth/register/register.ts`.
+- Keep Spanish validation and UI copy consistent with the existing app (`'El nombre de usuario es requerido'`, `'La contraseña es requerida'`, etc.).
+- Navigation uses `RouterLink` and `this.router.navigate(['/...'])`; examples include `Header`, `Login`, `Register`, and `Spacescard`.
+- The app uses `Session` for auth state and `Spaceservice` for space data; avoid inventing parallel services for the same responsibility unless absolutely required.
+- Keep state in signals and derive computed values with `computed()` rather than duplicating arrays or booleans in component fields.
+- `src/app/common/header/header.html` shows the pattern for conditionally rendering auth state with `sessionService.isLoggedIn()`.
+- The current route-level guard placeholders (`src/app/guard/*.ts`) are mostly stubs; do not assume guard logic is implemented unless you are explicitly editing that file.
+- Build/test workflow: use `npm start` or `ng serve`, `npm run build`, and `npm test` (`ng test`) from the repo root. This project is configured for Angular CLI + Vitest.
+- For backend integration, match the backend contract already modeled in `user.model.ts` and `space.model.ts` (for example `LoginResponse` has `token`, `tipo`, `rol`, and `consumerId`).
+- For new components, follow the existing pattern of `selector`, `styleUrl`, `templateUrl`, and `imports` in the component decorator rather than adding a module declaration.
+- Prefer minimal, local component state; keep cross-feature data in the service layer (`Session`, `Spaceservice`).

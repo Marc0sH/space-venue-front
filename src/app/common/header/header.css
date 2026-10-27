@@ -1,13 +1,72 @@
 header {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 40px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
+/* Título de la marca */
+header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+/* Contenedor de enlaces */
 .commonPaths {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Estilo de los links de navegación */
+.commonPaths a {
+  color: #334155;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.commonPaths a:hover {
+  color: #2563eb;
+}
+
+/* Botón de Logout para que coincida con el resto de la navegación */
+.commonPaths button {
+  background-color: transparent;
+  border: 1px solid #cbd5e1;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.commonPaths button:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.redBtn {
+    border: solid 1px rgb(73, 0, 0);
+    background-color: rgba(177, 0, 0, 0.836);
+}
+
+.redBtn:hover {
+    cursor: pointer;
+}
+
+.redBtn:active {
+    background-color: rgba(177, 0, 0, 0.705);
 }
 
 .redBtn {
