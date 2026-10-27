@@ -15,6 +15,9 @@ export class Spacescard {
   salida = output<space>()
 
   navigate(){
+    if(this.space().isActive){
   this.salida.emit(this.space());
-  this.router.navigate(['/espacios', this.space().idSpace]);  }
+  this.router.navigate(['/espacios', this.space().idSpace]);
+    }  
+  }
 }

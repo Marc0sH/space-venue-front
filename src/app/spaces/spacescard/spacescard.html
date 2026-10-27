@@ -1,4 +1,6 @@
-<div class="SpaceCard" (click)="navigate()">
-    <p>{{space().idSpace}}</p>
+<div class="SpaceCard" (click)="navigate()" [class.inactivo]="!space().isActive">
     <p>{{space().nameSpace}}</p>
+    <p>{{space().basePrice}}$</p>
+    <p>{{space().description}}</p>
+    <p>Estado: {{ space().isActive ? 'Aprobado 🟢' : 'Inactivo ⚫' }}</p>
 </div>
