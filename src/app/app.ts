@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Session } from './auth/user/session';
 import { Header } from './common/header/header';
+import { Session } from './auth/session/session';
 
 
 @Component({

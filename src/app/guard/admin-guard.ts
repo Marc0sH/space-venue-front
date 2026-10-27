@@ -1,6 +1,6 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { Session } from '../auth/user/session';
+import { Session } from '../auth/session/session';
 
 export const adminGuard: CanActivateFn = (route, state) => {
   let servUsuario = inject(Session)
