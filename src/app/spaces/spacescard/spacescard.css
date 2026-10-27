@@ -1,13 +1,74 @@
-.SpaceCard{
-    border: 1px solid black;
-    border-radius: 5px;
-    background-color:cadetblue;
-    max-width: 40vh;
-    max-height: 40vh;
-    margin-top: 10px;
-    text-align: center;
+.SpaceCard {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
 }
-.SpaceCard:hover{
-    background-color: rgb(81, 154, 156);
-    cursor:pointer;
+
+.SpaceCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-color: #cbd5e1;
+}
+
+/* Encabezado y Título */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: #0f172a;
+}
+
+/* Precio */
+.price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2563eb;
+  margin: 0;
+}
+
+/* Descripción */
+.description {
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Badge de Estado */
+.status-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 20px;
+  background-color: #f1f5f9;
+  color: #64748b;
+}
+
+.status-badge.active {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+/* Estado Inactivo */
+.SpaceCard.inactivo {
+  opacity: 0.7;
+  background-color: #f8fafc;
+}
+
+.SpaceCard.inactivo:hover {
+  cursor: not-allowed;
+  transform: none;
 }
