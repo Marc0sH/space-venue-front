@@ -1,5 +1,5 @@
 import { Component, computed, input } from '@angular/core';
-import { service } from '../../../models/service.model';
+import { ServiceSpace } from '../../../models/service.model';
 import { ServiceCard } from '../service-card/service-card';
 
 @Component({
@@ -9,7 +9,7 @@ import { ServiceCard } from '../service-card/service-card';
   templateUrl: './service-list.html',
 })
 export class ServiceList {
-  list= input.required<service[]>()
+  list= input.required<ServiceSpace[]>()
 
   filteredList = computed(()=>{
     return this.list().filter((ser) => ser.isActive)    

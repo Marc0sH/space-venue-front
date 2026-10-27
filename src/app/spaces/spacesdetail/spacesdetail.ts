@@ -1,9 +1,8 @@
 import { Component, inject, input } from '@angular/core';
 import { Spaceservice } from '../spaceservice';
-import { RouterLink } from '@angular/router';
 
 @Component({
-  imports: [RouterLink],
+  imports: [],
   selector: 'app-spacesdetail',
   styleUrl: './spacesdetail.css',
   templateUrl: './spacesdetail.html',

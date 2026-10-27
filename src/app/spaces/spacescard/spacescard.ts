@@ -1,6 +1,5 @@
 import { Component, inject, input, output } from '@angular/core';
-import { required } from '@angular/forms/signals';
-import { space } from '../../models/space.model';
+import { Space } from '../../models/space.model';
 import { Router } from '@angular/router';
 
 @Component({
@@ -10,9 +9,9 @@ import { Router } from '@angular/router';
   templateUrl: './spacescard.html',
 })
 export class Spacescard {
-  space = input.required<space>()
+  space = input.required<Space>()
   private router = inject(Router)
-  salida = output<space>()
+  salida = output<Space>()
 
   navigate(){
     if(this.space().isActive){

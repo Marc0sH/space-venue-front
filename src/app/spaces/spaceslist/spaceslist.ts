@@ -1,7 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { Spaceservice } from '../spaceservice';
-import { space } from '../../models/space.model';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { Spacescard } from '../spacescard/spacescard';
 
 @Component({

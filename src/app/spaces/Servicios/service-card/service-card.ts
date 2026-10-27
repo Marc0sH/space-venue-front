@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { service } from '../../../models/service.model';
+import { ServiceSpace } from '../../../models/service.model';
 
 @Component({
   imports: [],
@@ -8,7 +8,7 @@ import { service } from '../../../models/service.model';
   templateUrl: './service-card.html',
 })
 export class ServiceCard {
-    servicio = input.required<service>()
+    servicio = input.required<ServiceSpace>()
 
     
 }
