@@ -1,15 +1,19 @@
 @if (space.isLoading()) {
-  <p>Cargando...</p>
+  <div class="status-message">
+    <p>Cargando...</p>
+  </div>
 } @else if (space.error()) {
-  <p>No se pudo cargar el espacio</p>
+  <div class="status-message error">
+    <p>No se pudo cargar el espacio</p>
+  </div>
 } @else if (space.value(); as s) {
-    <div class="spaceDetail">
-        <p>Nombre del espacio: {{space.value()?.nameSpace}}</p>
-        <p>Precio:{{space.value()?.basePrice}}</p>
-        <p>Descripcion:{{space.value()?.description}}</p>
-        <p>Fecha de publicacion:{{space.value()?.publicationDate}}</p>
-
+  <div class="spaceDetail">
+    <h2>{{ s.nameSpace }}</h2>
+    <p class="price">${{ s.basePrice }}</p>
+    
+    <div class="info-group">
+      <p><strong>Descripción:</strong> {{ s.description }}</p>
+      <p class="meta-date"><strong>Publicado:</strong> {{ s.publicationDate }}</p>
     </div>
-    <a routerLink="/espacios">Volver a la lista (provisorio para mejor experiencia durante testeo)</a>
-
+  </div>
 }
