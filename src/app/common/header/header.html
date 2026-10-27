@@ -1,0 +1,15 @@
+<header>
+    <h1>Space&Venue</h1>
+
+    <nav class="commonPaths">
+        <a routerLink="/espacios">Lista de espacios</a>
+    
+        @if (sessionService.isLoggedIn()) {
+            <button (click)="sessionService.logoutUser()">Logout</button>
+
+        }@else {
+            <a routerLink="/login">Login</a>
+        }
+    </nav>
+
+</header>
