@@ -1,6 +1,11 @@
 <div class="SpaceCard" (click)="navigate()" [class.inactivo]="!space().isActive">
-    <p>{{space().nameSpace}}</p>
-    <p>{{space().basePrice}}$</p>
-    <p>{{space().description}}</p>
-    <p>Estado: {{ space().isActive ? 'Aprobado 🟢' : 'Inactivo ⚫' }}</p>
+  <div class="card-header">
+    <h3>{{ space().nameSpace }}</h3>
+    <span class="status-badge" [class.active]="space().isActive">
+      {{ space().isActive ? 'Aprobado' : 'Inactivo' }}
+    </span>
+  </div>
+
+  <p class="price">${{ space().basePrice }}</p>
+  <p class="description">{{ space().description }}</p>
 </div>

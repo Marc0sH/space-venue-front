@@ -1,9 +1,31 @@
-.spaceDetail{
-    border: 1px solid black;
-    border-radius: 5px;
-    background-color:cadetblue;
-    max-width: 60vh;
-    max-height: 50vh;
-    margin-top: 10px;
+.spaceDetail {
+  /* Tamaño y centrado */
+  max-width: 500px;
+  margin: 40px auto;
+  
+  /* Relleno interno (clave para que el texto no toque los bordes) */
+  padding: 24px;
+  
+  /* Estilo visual y tarjetas */
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  
+  /* Tipografía */
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #1e293b;
+  line-height: 1.6;
+}
 
+/* Opcional: si querés darle más estilo a las etiquetas y al precio dentro del HTML */
+.spaceDetail strong {
+  color: #0f172a;
+}
+
+.spaceDetail .price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2563eb;
+  margin: 12px 0;
 }
