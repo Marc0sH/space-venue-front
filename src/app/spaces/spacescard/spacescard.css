@@ -11,3 +11,11 @@
     background-color: rgb(81, 154, 156);
     cursor:pointer;
 }
+.inactivo{
+    background-color: gray;
+    opacity: 0.8;
+}
+.inactivo:hover{
+    cursor: not-allowed;
+    opacity: 0.8;
+}

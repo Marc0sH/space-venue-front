@@ -4,9 +4,11 @@
   <p>No se pudo cargar el espacio</p>
 } @else if (space.value(); as s) {
     <div class="spaceDetail">
-        <p>{{space.value()?.idSpace}}</p>
-        <p>{{space.value()?.nameSpace}}</p>
-        <p>{{space.value()?.description}}</p>   
+        <p>Nombre del espacio: {{space.value()?.nameSpace}}</p>
+        <p>Precio:{{space.value()?.basePrice}}</p>
+        <p>Descripcion:{{space.value()?.description}}</p>
+        <p>Fecha de publicacion:{{space.value()?.publicationDate}}</p>
+
     </div>
     <a routerLink="/espacios">Volver a la lista (provisorio para mejor experiencia durante testeo)</a>
 
