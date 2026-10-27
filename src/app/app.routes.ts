@@ -7,6 +7,9 @@ import { Spacescard } from './spaces/spacescard/spacescard';
 import { Spacesdetail } from './spaces/spacesdetail/spacesdetail';
 import { SpaceCreation } from './spaces/space-creation/space-creation';
 import { ListMySpaces } from './spaces/list-my-spaces/list-my-spaces';
+import { UserProfile } from './user/user-profile/user-profile';
+import { logInGuard } from './guard/log-in-guard';
+import { UserEdit } from './user/user-edit/user-edit';
 
 export const routes: Routes = [
     {path: '', redirectTo: 'espacios', pathMatch: 'full'},
@@ -16,5 +19,7 @@ export const routes: Routes = [
     {path: 'espacios/crear', component: SpaceCreation},
     {path: 'espacios/espaciospropios', component: ListMySpaces},
     {path: 'espacios/:id', component: Spacesdetail},
+    {path: 'perfil', component: UserProfile, canActivate: [logInGuard]},
+    {path: 'perfil/editar', component: UserEdit, canActivate: [logInGuard]},
     {path:'**', component: NotFound}
 ];

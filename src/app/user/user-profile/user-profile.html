@@ -1,1 +1,46 @@
-<p>user-profile works!</p>
+<div class="profile-container">
+  @if (perfil.isLoading()) {
+    <p class="status-message">Cargando...</p>
+  } @else if (perfil.error()) {
+    <p class="status-message error">No se pudo cargar el perfil</p>
+  } @else if (perfil.value(); as u) {
+    <h2>{{ u.firstname }} {{ u.lastname }}</h2>
+
+    <dl class="profile-data">
+      <div class="data-row">
+        <dt>Nombre de usuario</dt>
+        <dd>{{ u.credentials.username }}</dd>
+      </div>
+      <div class="data-row">
+        <dt>Email</dt>
+        <dd>{{ u.email }}</dd>
+      </div>
+      <div class="data-row">
+        <dt>Teléfono</dt>
+        <dd>{{ u.phone }}</dd>
+      </div>
+    </dl>
+
+    <a routerLink="/perfil/editar" class="primaryBtn">Editar perfil</a>
+
+    <div class="danger-zone">
+      @if (!confirmingDeletion()) {
+        <button class="redBtn" (click)="confirmingDeletion.set(true)">Dar de baja mi cuenta</button>
+      } @else {
+        <div class="confirmacion-baja">
+          <p><strong>¿Estás seguro?</strong> No vas a poder volver a iniciar sesión con esta cuenta.</p>
+          <div class="confirm-actions">
+            <button class="secondaryBtn" [disabled]="deleting()" (click)="confirmingDeletion.set(false)">Cancelar</button>
+            <button class="redBtn solid" [disabled]="deleting()" (click)="softDeleteUser()">
+              {{ deleting() ? 'Procesando...' : 'Sí, dar de baja' }}
+            </button>
+          </div>
+        </div>
+      }
+
+      @if (deletionError()) {
+        <p class="error">{{ deletionError() }}</p>
+      }
+    </div>
+  }
+</div>

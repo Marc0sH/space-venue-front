@@ -7,6 +7,7 @@
         @if (sessionService.isLoggedIn()) {
             <a routerLink="/espacios/crear">Crear un espacio</a>
             <a routerLink="/espacios/espaciospropios">Mis espacios</a>
+            <a routerLink="/perfil">Mi perfil</a>
             <button class="redBtn" (click)="sessionService.logoutUser()">Cerrar sesión</button>
         }@else {
             <a routerLink="/login">Iniciar sesión</a>

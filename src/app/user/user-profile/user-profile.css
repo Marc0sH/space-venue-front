@@ -1,0 +1,166 @@
+.profile-container {
+  max-width: 480px;
+  margin: 40px auto;
+  padding: 32px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #1e293b;
+}
+
+.profile-container h2 {
+  margin: 0 0 24px;
+  font-size: 1.5rem;
+  color: #0f172a;
+  text-align: center;
+}
+
+.username {
+  margin: 4px 0 24px;
+  font-size: 0.95rem;
+  color: #64748b;
+  text-align: center;
+}
+
+/* Datos del usuario */
+.profile-data {
+  margin: 0 0 24px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.data-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+}
+
+.data-row + .data-row {
+  border-top: 1px solid #e2e8f0;
+}
+
+.data-row dt {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.data-row dd {
+  margin: 0;
+  color: #0f172a;
+  text-align: right;
+  word-break: break-word;
+}
+
+/* Botón principal, igual al submit de los formularios */
+.primaryBtn {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  color: #ffffff;
+  background-color: #2563eb;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.primaryBtn:hover {
+  background-color: #1d4ed8;
+}
+
+/* Zona de baja de cuenta */
+.danger-zone {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.redBtn,
+.secondaryBtn {
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.redBtn {
+  width: 100%;
+  color: #dc2626;
+  background-color: transparent;
+  border: 1px solid #fca5a5;
+}
+
+.redBtn:hover:not(:disabled) {
+  background-color: #fef2f2;
+  border-color: #dc2626;
+}
+
+.redBtn.solid {
+  width: auto;
+  color: #ffffff;
+  background-color: #dc2626;
+  border-color: #dc2626;
+}
+
+.redBtn.solid:hover:not(:disabled) {
+  background-color: #b91c1c;
+}
+
+.secondaryBtn {
+  color: #334155;
+  background-color: transparent;
+  border: 1px solid #cbd5e1;
+}
+
+.secondaryBtn:hover:not(:disabled) {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.redBtn:disabled,
+.secondaryBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.confirmacion-baja {
+  padding: 16px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+}
+
+.confirmacion-baja p {
+  margin: 0 0 16px;
+  font-size: 0.95rem;
+  color: #7f1d1d;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* Estados y errores */
+.status-message {
+  margin: 0;
+  text-align: center;
+  color: #64748b;
+}
+
+.error {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 12px;
+  text-align: center;
+}
