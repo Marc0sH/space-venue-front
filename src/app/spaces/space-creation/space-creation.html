@@ -4,22 +4,22 @@
     
     <form (submit)="onSubmit($event)">
         <div>
-            <label for="nameSpace">Nombre del espacio</label>
+            <label for="nameSpace">Nombre del espacio: </label>
             <input type="text" [formField]="formSpaceCreation.nameSpace">
         </div>
         
         <div>
-            <label for="description">Descripción</label>
+            <label for="description">Descripción: </label>
             <input type="text" [formField]="formSpaceCreation.description">
         </div>
         
         <div>
-            <label for="basePrice">Precio base</label>
+            <label for="basePrice">Precio base: </label>
             <input type="number" [formField]="formSpaceCreation.basePrice">
         </div>
         
         <div>
-            <label for="bufferTime">Tiempo de receso entre reservas (min)</label>
+            <label for="bufferTime">Tiempo de receso entre reservas (min): </label>
             <input type="number" [formField]="formSpaceCreation.bufferTime">
         </div>
         
@@ -28,18 +28,22 @@
                 Ubicación
                 
                 <div>
-                    <label for="latitude">Latitud</label>
+                    <label for="latitude">Latitud: </label>
                     <input type="number" [formField]="formSpaceCreation.location.latitude">
                 </div>
                 
                 <div>
-                    <label for="longitude">Longitud</label>
+                    <label for="longitude">Longitud: </label>
                     <input type="number" [formField]="formSpaceCreation.location.longitude">
                 </div>
             </label>
         </div>
     
         <button type="submit" [disabled]="formSpaceCreation().invalid()">Crear</button>
+
+        @if (error() != "") {
+            <p class="error">{{error()}}</p>
+        }
     
         <app-form-error-message [campo]="formSpaceCreation.nameSpace()"></app-form-error-message>
         <app-form-error-message [campo]="formSpaceCreation.description()"></app-form-error-message>
