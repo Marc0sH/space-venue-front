@@ -4,10 +4,11 @@ import { Session } from '../session/session';
 import { environment } from '../../../environments/enviroment';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
+import { Session } from '../session/session';
 
 //Este interceptor manda la info de la sesion para las peticiones donde es necesaria
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const sessionService = inject(Session);
+  const sessionService = inject(Session)
   const session = sessionService.session();
   
 
