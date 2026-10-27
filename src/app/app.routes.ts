@@ -8,7 +8,6 @@ import { Spacesdetail } from './spaces/spacesdetail/spacesdetail';
 
 export const routes: Routes = [
     {path: '', redirectTo: 'espacios', pathMatch: 'full'},
-    {path: 'login', component: Login},
     {path:'registro', component: Register},
     {path: 'espacios', component: Spaceslist},
     {path: 'espacios/:id', component: Spacesdetail},
