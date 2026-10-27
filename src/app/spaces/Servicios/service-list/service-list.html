@@ -1,0 +1,9 @@
+<article>
+    @if(list().length){
+        @for(ser of list(); track $index){
+            <app-service-card [servicio]="ser"></app-service-card>
+        }
+    }@else{
+        <p>No tiene servicios opcionales </p>
+    }
+</article>
