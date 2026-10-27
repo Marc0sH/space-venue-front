@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { Session } from '../../auth/user/session';
 import { RouterLink } from '@angular/router';
+import { Session } from '../../auth/session/session';
 
 @Component({
   imports: [RouterLink],

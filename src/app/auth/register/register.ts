@@ -1,9 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
 import { CredentialRegister } from '../../models/user.model';
 import { email, form, FormField, minLength, required } from '@angular/forms/signals';
-import { Session } from '../user/session';
 import { FormErrorMessage } from '../../common/form-error-message/form-error-message';
 import { Router, RouterLink } from '@angular/router';
+import { Session } from '../session/session';
 
 @Component({
   imports: [FormField, FormErrorMessage, RouterLink],
