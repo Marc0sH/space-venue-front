@@ -1,1 +1,17 @@
-<p>list-my-spaces works!</p>
+@if (cargando()) {
+    <div class="loading-container">
+        <p>Cargando espacios...</p>
+    </div>
+} @else if (error()) {
+    <div class="error-container">
+        <p class="error">{{ error() }}</p>
+    </div>
+} @else {
+    <app-space-filter (ordenSalida)="cambiarOrden($event)"></app-space-filter>
+
+    @for (s of spacesOrdenados(); track s.idSpace) {
+        <div class="space-card-container">
+            <app-spacescard [space]="s"></app-spacescard>
+        </div>
+    }
+}

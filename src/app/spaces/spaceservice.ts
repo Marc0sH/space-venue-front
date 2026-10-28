@@ -6,31 +6,22 @@ import { NewSpace, Space } from '../models/space.model';
 @Service()
 export class Spaceservice {
     protected readonly http = inject(HttpClient)
-    private readonly _spaces = signal<Space[]>([] as Space[]);
-    private readonly _loading = signal(false);
-    private readonly _error = signal<string | null>(null);
-    private loaded = false;
-    readonly spaces = this._spaces.asReadonly();
-    readonly loading = this._loading.asReadonly();
-    readonly error = this._error.asReadonly();
 
-    load(force = false) {
-      if (this._loading() || (this.loaded && !force)) return;
+    //Filtrado de espacios (permite reutilización)
+    spaceListFiltration(spaces : Space[], order : string){
+      let lista = [...spaces];
+      if (order === 'Precio') {
+        lista.sort((a, b) => a.basePrice - b.basePrice);
+      } else if (order === 'Nombre') {
+        lista.sort((a, b) => a.nameSpace.localeCompare(b.nameSpace));
+      }
 
-      this._loading.set(true);
-      this._error.set(null);
+      return lista;
+    }
 
-      this.http.get<Space[]>(`${environment.apiUrl}/spaces`).subscribe({
-        next: data => {
-          this._spaces.set(data);
-          this.loaded = true;
-          this._loading.set(false);
-        },
-        error: () => {
-          this._error.set('No se pudieron cargar los espacios');
-          this._loading.set(false);
-        },
-      });
+    // Llamadas HTTP
+    getSpaces() {
+      return httpResource<Space[]>(() => `${environment.apiUrl}/spaces`);
     }
 
     getById(id: Signal<string>) {
@@ -39,5 +30,9 @@ export class Spaceservice {
 
     createSpace(space : NewSpace){
       return this.http.post<Space>(`${environment.apiUrl}/spaces/ownedspace`, space)
+    }
+
+    getSpacesByOwnerLogged() {
+      return this.http.get<Space[]>(`${environment.apiUrl}/spaces/ownedspaces`);
     }
 }
