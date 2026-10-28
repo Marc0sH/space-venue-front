@@ -1,32 +1,33 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { Spaceservice } from '../spaceservice';
 import { Spacescard } from '../spacescard/spacescard';
+import { SpaceFilter } from '../space-filter/space-filter';
 
 @Component({
-  imports: [Spacescard],
+  imports: [Spacescard, SpaceFilter],
   selector: 'app-spaceslist',
   styleUrl: './spaceslist.css',
   templateUrl: './spaceslist.html',
 })
 export class Spaceslist {
-  protected readonly spaceService = inject(Spaceservice)
-  lista = this.spaceService.spaces;
-  loading = this.spaceService.loading;
+  private readonly spaceService = inject(Spaceservice)
+  private readonly spacesResource = this.spaceService.getSpaces();
 
-  ngOnInit() {
-    this.spaceService.load(); // 
+  readonly spaces = computed(() => this.spacesResource.value() ?? []);
+
+  readonly orden = signal('Sin ordenar');
+  readonly spacesOrdenados = computed(() =>
+    this.spaceService.spaceListFiltration(this.spaces(), this.orden()),
+  );
+
+  readonly loading = this.spacesResource.isLoading;
+  readonly error = computed(() =>
+    this.spacesResource.error()
+      ? 'No se pudieron cargar los espacios'
+      : null,
+  );
+
+  cambiarOrden(orden: string) {
+    this.orden.set(orden)
   }
-  ordenSeleccionado = signal<string>('Sin ordenar');
-
-  productosFiltrados = computed(() => {
-    let lista = [...this.lista()];
-     if (this.ordenSeleccionado() === 'Precio') {
-      lista.sort((a, b) => a.basePrice - b.basePrice);
-    } else if (this.ordenSeleccionado() === 'Nombre') {
-      lista.sort((a, b) => a.nameSpace.localeCompare(b.nameSpace));
-    }
-    return lista;
-    }); 
-
-
 }

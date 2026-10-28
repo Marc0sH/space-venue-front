@@ -1,15 +1,13 @@
-<div class="sort-container">
-    <label for="orden">Ordenar: </label>
-        <select id="orden" (change)="ordenSeleccionado.set($any($event.target).value)">
-        <option value="Sin ordenar">Sin ordenar</option>
-        <option value="Precio">Precio (Menor a Mayor)</option>
-        <option value="Nombre">Nombre (A-Z)</option>
-  </select> 
-</div>
+@if (loading()) {
+    <p>Cargando espacios...</p>
+} @else if (error()){
+    <p class="error">{{ error() }}</p>
+} @else {
+    <app-space-filter (ordenSalida)="cambiarOrden($event)"></app-space-filter>
 
-@for (s of productosFiltrados(); track s.idSpace) {
-    <div>
-    <app-spacescard [space]="s"></app-spacescard>
-    </div>
-
+    @for (s of spacesOrdenados(); track s.idSpace) {
+        <div>
+            <app-spacescard [space]="s"></app-spacescard>
+        </div>
+    }
 }
