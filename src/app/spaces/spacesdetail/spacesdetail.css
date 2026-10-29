@@ -30,7 +30,7 @@
   margin: 12px 0;
 }
 
-/* Galería: se desliza horizontalmente y cada imagen ocupa todo el ancho */
+/* Galería: se desliza horizontalmente y cada imagen ocupa todo el ancho sin recortarse */
 .gallery {
   display: flex;
   gap: 8px;
@@ -42,7 +42,9 @@
 .gallery img {
   flex: 0 0 100%;
   aspect-ratio: 4 / 3;
-  object-fit: cover;
+  /* contain muestra la imagen entera; el fondo rellena las franjas que sobran */
+  object-fit: contain;
+  background-color: #f1f5f9;
   border-radius: 8px;
   scroll-snap-align: center;
 }

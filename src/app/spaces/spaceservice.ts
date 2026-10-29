@@ -31,6 +31,16 @@ export class Spaceservice {
       return httpResource<Space[]>(() => `${environment.apiUrl}/spaces`);
     }
 
+    //Solo ADMIN: incluye los espacios inactivos
+    getAllSpaces() {
+      return httpResource<Space[]>(() => `${environment.apiUrl}/spaces/showinactives`);
+    }
+
+    //Solo ADMIN: activa o desactiva un espacio
+    setActive(id: number, active: boolean) {
+      return this.http.put<{ mensaje: string }>(`${environment.apiUrl}/spaces/${id}/active`, null, { params: { active } });
+    }
+
     getById(id: Signal<string>) {
      return httpResource<Space>(() => `${environment.apiUrl}/spaces/${id()}`);
     }

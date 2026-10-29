@@ -14,6 +14,7 @@ export class Session {
     private _session = signal<LoginResponse | null>(this.loadFromStorage());
     session = this._session.asReadonly();
     isLoggedIn = computed(() => this._session() != null);
+    isAdmin = computed(() => this._session()?.rol === 'ROLE_ADMIN');
 
     registerUser(user: CredentialRegister) {
         return this.http.post(`${this.baseUrl}/register`, user);
