@@ -2,7 +2,8 @@
     <h1 (click)="navigate()" class="nombre">Space&Venue</h1>
 
     <nav class="commonPaths">
-        <a routerLink="/espacios">Lista de espacios</a>
+
+
     
         @if (sessionService.isLoggedIn()) {
             <a routerLink="/espacios/crear">Crear un espacio</a>
@@ -19,6 +20,7 @@
             
             <button class="redBtn" (click)="sessionService.logoutUser()">Cerrar sesión</button>
         }@else {
+            <a routerLink="/espacios">Lista de espacios</a>
             <a routerLink="/login">Iniciar sesión</a>
         }
     </nav>
