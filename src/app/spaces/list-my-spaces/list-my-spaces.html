@@ -7,11 +7,13 @@
         <p class="error">{{ error() }}</p>
     </div>
 } @else {
-    <app-space-filter (ordenSalida)="cambiarOrden($event)"></app-space-filter>
-
-    @for (s of spacesOrdenados(); track s.idSpace) {
-        <div class="space-card-container">
-            <app-spacescard [space]="s"></app-spacescard>
+    <section class="spaces-section">
+        <app-space-filter (ordenSalida)="cambiarOrden($event)"></app-space-filter>
+ 
+        <div class="spaces-grid">
+            @for (s of spacesOrdenados(); track s.idSpace) {
+                <app-spacescard [space]="s"></app-spacescard>
+            }
         </div>
-    }
+    </section>
 }

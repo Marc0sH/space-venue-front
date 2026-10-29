@@ -1,44 +1,221 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+/* Fondo de la página (se aplica al propio componente, no requiere tocar el HTML) */
+:host {
+    display: block;
+    padding: 2.5rem 1rem;
+    background-color: #f7f9ff;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+/* Colores en un solo lugar: si el equipo quiere cambiar la paleta, es acá */
 .create-space-container {
-    max-width: 600px;
+    --sv-primary: #00667f;
+    --sv-primary-hover: #2f7f99;
+    --sv-text: #121d26;
+    --sv-text-soft: #3f484c;
+    --sv-field: #edf4ff;
+    --sv-field-border: #e4effd;
+    --sv-disabled: #bfc8cd;
+    --sv-error: #ba1a1a;
+    --sv-error-bg: #ffdad6;
+    --sv-error-text: #93000a;
+
+    max-width: 40rem;
     margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+    padding: 2rem;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 5%), 0 4px 12px rgb(0 0 0 / 4%);
+    color: var(--sv-text);
 }
 
 .create-space-container h2 {
-    text-align: center;
-    color: #333;
+    margin: 0 0 1.5rem;
+    font-size: 24px;
+    line-height: 32px;
+    letter-spacing: -0.01em;
+    font-weight: 600;
+    text-align: left;
+    color: var(--sv-text);
 }
 
+/* ---------- Formulario ----------
+   Cualquier bloque nuevo que se agregue como <div> dentro del form
+   (fotos, mapa, servicios...) hereda automáticamente este espaciado. */
 .create-space-container form {
     display: flex;
     flex-direction: column;
 }
 
+.create-space-container form > div {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.25rem;
+}
+
+/* ---------- Labels ---------- */
 .create-space-container label {
-    margin-bottom: 5px;
-    font-weight: bold;
+    margin-bottom: 0.5rem;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--sv-text);
 }
 
-.create-space-container input {
-    margin-bottom: 15px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.create-space-container button {
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
+/* ---------- Campos ---------- */
+.create-space-container input:not([type='file']):not([type='checkbox']):not([type='radio']),
+.create-space-container textarea,
+.create-space-container select {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 3rem;
+    margin: 0;
+    padding: 0 1rem;
     border: none;
-    border-radius: 4px;
+    border-radius: 0.75rem;
+    background-color: var(--sv-field);
+    color: var(--sv-text);
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 20px;
+    outline: none;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.create-space-container textarea {
+    padding: 0.75rem 1rem;
+    resize: vertical;
+}
+
+.create-space-container input::placeholder,
+.create-space-container textarea::placeholder {
+    color: var(--sv-disabled);
+}
+
+.create-space-container input:not([type='file']):not([type='checkbox']):not([type='radio']):focus,
+.create-space-container textarea:focus,
+.create-space-container select:focus {
+    background-color: #ffffff;
+    box-shadow: 0 0 0 2px var(--sv-primary);
+}
+
+.create-space-container input[aria-invalid='true'],
+.create-space-container textarea[aria-invalid='true'] {
+    box-shadow: 0 0 0 2px var(--sv-error);
+}
+
+/* ---------- Grupo "Ubicación" (el label que envuelve latitud y longitud) ---------- */
+.create-space-container label[for='location'] {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 1rem 1.25rem 1.25rem;
+    border: 1px solid var(--sv-field-border);
+    border-radius: 0.75rem;
+    background-color: #f7f9ff;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Labels de latitud / longitud dentro del grupo */
+.create-space-container label label {
+    font-weight: 500;
+    color: var(--sv-text-soft);
+}
+
+.create-space-container label[for='location'] > div {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ---------- Mensajes de error ----------
+   Se muestran antes del botón aunque en el HTML estén después. */
+.create-space-container app-form-error-message {
+    order: 1;
+    display: block;
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--sv-error);
+}
+
+.create-space-container p.error {
+    order: 3;
+    margin: 1rem 0 0;
+    padding: 0.875rem 1rem;
+    border-radius: 0.75rem;
+    background-color: var(--sv-error-bg);
+    color: var(--sv-error-text);
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
+}
+
+/* ---------- Botones ---------- */
+.create-space-container button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 9999px;
+    background-color: var(--sv-field);
+    color: var(--sv-text);
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
     cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.create-space-container button:hover:not(:disabled) {
+    background-color: var(--sv-field-border);
+}
+
+/* Botón principal (enviar) */
+.create-space-container button[type='submit'] {
+    order: 2;
+    align-self: flex-end;
+    margin-top: 0.5rem;
+    padding: 0.875rem 2rem;
+    background-color: var(--sv-primary);
+    color: #ffffff;
+    font-weight: 700;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -2px rgb(0 0 0 / 10%);
+}
+
+.create-space-container button[type='submit']:hover:not(:disabled) {
+    background-color: var(--sv-primary-hover);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -4px rgb(0 0 0 / 10%);
+}
+
+.create-space-container button[type='submit']:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+.create-space-container button:focus-visible {
+    outline: 3px solid #87d1ed;
+    outline-offset: 2px;
 }
 
 .create-space-container button:disabled {
-    background-color: #ccc;
+    background-color: var(--sv-disabled);
+    color: #ffffff;
+    box-shadow: none;
     cursor: not-allowed;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 480px) {
+    .create-space-container {
+        padding: 1.5rem 1.25rem;
+    }
+
+    .create-space-container button[type='submit'] {
+        align-self: stretch;
+    }
 }

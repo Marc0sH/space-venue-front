@@ -1,58 +1,80 @@
+:host {
+  display: block;
+  height: 100%;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
 .SpaceCard {
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 15rem;
   background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  border-radius: 0.75rem;
   padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 5%);
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   text-align: left;
 }
 
 .SpaceCard:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  border-color: #cbd5e1;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 10%), 0 8px 10px -6px rgb(0 0 0 / 10%);
 }
 
 /* Encabezado y Título */
 .card-header {
+  order: 1;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 12px;
 }
 
 .card-header h3 {
   margin: 0;
-  font-size: 1.15rem;
-  color: #0f172a;
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 600;
+  color: #121d26;
+  transition: color 0.2s ease;
 }
 
-/* Precio */
-.price {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #2563eb;
-  margin: 0;
+.SpaceCard:hover .card-header h3 {
+  color: #00667f;
 }
 
-/* Descripción */
+/* Descripción: ocupa el espacio libre */
 .description {
-  color: #64748b;
-  font-size: 0.9rem;
-  line-height: 1.4;
+  order: 2;
+  flex: 1 1 auto;
+  color: #3f484c;
+  font-size: 14px;
+  line-height: 20px;
   margin: 0;
+}
+
+/* Precio: abajo de todo */
+.price {
+  order: 3;
+  margin: auto 0 0;
+  padding-top: 8px;
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 700;
+  color: #121d26;
 }
 
 /* Badge de Estado */
 .status-badge {
-  font-size: 0.75rem;
+  flex-shrink: 0;
+  font-size: 11px;
+  line-height: 16px;
   font-weight: 600;
-  padding: 4px 8px;
-  border-radius: 20px;
+  padding: 4px 10px;
+  border-radius: 9999px;
   background-color: #f1f5f9;
   color: #64748b;
 }
@@ -70,5 +92,9 @@
 
 .SpaceCard.inactivo:hover {
   cursor: not-allowed;
-  transform: none;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 5%);
+}
+
+.SpaceCard.inactivo:hover .card-header h3 {
+  color: #121d26;
 }

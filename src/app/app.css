@@ -3,3 +3,23 @@ header {
     flex-direction: column;
     align-items: flex-start; 
 }
+.site-footer {
+    width: 100%;
+    margin-top: 2.5rem;
+    background-color: #ffffff;
+    border-top: 1px solid rgb(191 200 205 / 30%);
+}
+ 
+.footer-inner {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    font-size: 12px;
+    line-height: 18px;
+    color: #3f484c;
+}
+ 
+@media (min-width: 1024px) {
+    .footer-inner { padding-left: 3rem; padding-right: 3rem; }
+}

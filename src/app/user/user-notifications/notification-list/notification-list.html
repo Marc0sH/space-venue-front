@@ -1,0 +1,13 @@
+<div class="notificacionContainer">
+    @if (notificaciones().hasValue()){
+        @for (noti of notificaciones().value(); track $index) {
+            <div>
+                <app-notification-card [notification]="noti"></app-notification-card>
+            </div>
+            
+        }
+    }
+    @else{
+            <p class="fail">No se encontraron nuevas notificaciones</p>
+    }
+</div>

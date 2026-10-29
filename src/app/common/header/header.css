@@ -1,4 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
+
 header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -8,6 +13,8 @@ header {
   font-family: system-ui, -apple-system, sans-serif;
 }
 
+
+
 /* Título de la marca */
 header h1 {
   margin: 0;
@@ -15,6 +22,12 @@ header h1 {
   font-weight: 700;
   color: #0f172a;
   letter-spacing: -0.02em;
+  cursor: pointer;
+}
+header h1:hover{
+  transform: translateY(-3px);
+  border-color: #cbd5e1;
+  font-size: 1.35rem;
 }
 
 /* Contenedor de enlaces */
@@ -69,6 +82,35 @@ header h1 {
     background-color: rgba(177, 0, 0, 0.705);
 }
 
+.scrollTopBtn {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1001;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  color: #ffffff;
+  background-color: #6daef8;;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgb(15 23 42 / 25%);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.scrollTopBtn:hover {
+  background-color: #3662db;
+  transform: translateY(-2px);
+}
+
+.scrollTopBtn:focus-visible {
+  outline: 3px solid #aed4ff;
+  outline-offset: 3px;
+}
+
 .redBtn {
     border: solid 1px rgb(73, 0, 0);
     background-color: rgba(177, 0, 0, 0.836);
@@ -80,4 +122,44 @@ header h1 {
 
 .redBtn:active {
     background-color: rgba(177, 0, 0, 0.705);
+}
+.cant{
+  color: red;
+}
+
+/* ================= Estilos agregados (no modifican los anteriores) ================= */
+header {
+  min-height: 80px;
+  box-sizing: border-box;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 4%);
+}
+
+header h1 {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  line-height: 26px;
+  transition: color 0.2s ease;
+}
+
+.commonPaths a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  line-height: 20px;
+  letter-spacing: 0.01em;
+}
+
+.commonPaths a:hover {
+  background-color: rgb(190 234 246 / 30%);
+}
+
+.commonPaths a svg {
+  display: block;
+}
+
+.commonPaths button {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  line-height: 20px;
 }
