@@ -20,5 +20,18 @@
     <div class="owner-name">
       <p><strong>Dueño:</strong> {{s.consumerOwner.firstname + ' ' + s.consumerOwner.lastname}}</p>
     </div>
+
+    <strong>Servicios disponibles</strong>
+
+    @if (s.services?.length) {
+      @for (s of s.services; track s.id) {
+        <div>
+          <p>Descripcion: {{s.description}}</p>
+          <p>Precio: {{s.price}}</p>
+        </div>
+      }
+    } @else {
+      <p>No hay servicios</p>
+    }
   </div>
 }

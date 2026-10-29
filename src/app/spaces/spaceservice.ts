@@ -25,6 +25,9 @@ export class Spaceservice {
     }
 
     getById(id: Signal<string>) {
+      console.log(
+       httpResource<Space>(() => `${environment.apiUrl}/spaces/${id()}`));
+
      return httpResource<Space>(() => `${environment.apiUrl}/spaces/${id()}`);
     }
 

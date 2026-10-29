@@ -8,19 +8,19 @@ export class ServiceServicios {
     private url = `${environment.apiUrl}/service`
     private http = inject(HttpClient)
 
-    getServicio(id: Signal<string>){
-        return httpResource<Service>(() => ({
+    getServicio(idSpace: string){
+        return httpResource<ServiceSpace[]>(() => ({
             url: this.url,
-            params: {id: id()}
+            params: {id: idSpace}
         }))
     }/// no lo uso por ahora
 
     postServicio(newSer: ServiceReg){
-        return this.http.post<Service>(`${this.url}/insert`, newSer)
+        return this.http.post<ServiceSpace>(`${this.url}/insert`, newSer)
     }
 
     updateServicio(ser: Service){
-        return this.http.put<Service>(`${this.url}/update`, ser)
+        return this.http.put<ServiceSpace>(`${this.url}/update`, ser)
     }
 
     deleteServicio(idSpace:string,idSer: string){

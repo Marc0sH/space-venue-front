@@ -17,7 +17,7 @@ export const routes: Routes = [
     {path: 'login', component: Login},
     {path: 'registro', component: Register},
     {path: 'espacios', component: Spaceslist},
-    {path: 'espacios/crear', component: SpaceCreation},
+    {path: 'espacios/crear', component: SpaceCreation, canActivate: [logInGuard]},
     {path: 'espacios/espaciospropios', component: ListMySpaces},
     {path: 'espacios/:id', component: Spacesdetail},
     {path: 'perfil', component: UserProfile, canActivate: [logInGuard]},

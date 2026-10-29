@@ -22,6 +22,10 @@
             <label for="bufferTime">Tiempo de receso entre reservas (min): </label>
             <input type="number" [formField]="formSpaceCreation.bufferTime">
         </div>
+
+        <div>
+            <app-service-creation (dataEntry)="addServices($event)"></app-service-creation>
+        </div>
         
         <div>
             <label for="location">
