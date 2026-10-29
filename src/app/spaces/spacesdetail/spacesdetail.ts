@@ -11,6 +11,7 @@ export class Spacesdetail {
   readonly service = inject(Spaceservice)
   readonly id = input.required<string>();
   protected readonly space = this.service.getById(this.id);
+  protected readonly images = this.service.getImagesBySpaceId(this.id);
 
   protected formatName(name: string): string {
     if (!/[ÃÂ][\u0080-\u00bf]/u.test(name)) {
