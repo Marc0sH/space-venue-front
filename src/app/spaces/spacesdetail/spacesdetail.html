@@ -8,11 +8,11 @@
   </div>
 } @else if (space.value(); as s) {
   <div class="spaceDetail">
-    <h2>{{ s.nameSpace }}</h2>
+    <h2>{{ formatName(s.nameSpace) }}</h2>
     <p class="price">${{ s.basePrice }}</p>
     
     <div class="info-group">
-      <p><strong>Descripción:</strong> {{ s.description }}</p>
+      <p><strong>Descripción:</strong> {{ formatName(s.description) }}</p>
       <p class="meta-date"><strong>Publicado:</strong> {{ s.publicationDate }}</p> 
       
     </div>

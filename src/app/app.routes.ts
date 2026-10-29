@@ -10,6 +10,7 @@ import { ListMySpaces } from './spaces/list-my-spaces/list-my-spaces';
 import { UserProfile } from './user/user-profile/user-profile';
 import { logInGuard } from './guard/log-in-guard';
 import { UserEdit } from './user/user-edit/user-edit';
+import { NotificationList } from './user/user-notifications/notification-list/notification-list';
 
 export const routes: Routes = [
     {path: '', redirectTo: 'espacios', pathMatch: 'full'},
@@ -21,5 +22,6 @@ export const routes: Routes = [
     {path: 'espacios/:id', component: Spacesdetail},
     {path: 'perfil', component: UserProfile, canActivate: [logInGuard]},
     {path: 'perfil/editar', component: UserEdit, canActivate: [logInGuard]},
+    {path: 'notificaciones', component: NotificationList, canActivate: [logInGuard]},
     {path:'**', component: NotFound}
 ];

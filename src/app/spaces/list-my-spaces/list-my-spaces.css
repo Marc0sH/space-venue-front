@@ -3,3 +3,34 @@
    font-weight: bold;
    margin-top: 10px;
  }
+.spaces-section {
+    width: 100%;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 3.5rem;
+    box-sizing: border-box;
+}
+ 
+.spaces-section app-space-filter {
+    display: block;
+    margin-bottom: 1.5rem;
+}
+ 
+.spaces-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+ 
+.spaces-grid app-spacescard {
+    display: block;
+}
+ 
+@media (min-width: 640px) {
+    .spaces-grid { grid-template-columns: repeat(2, 1fr); }
+}
+ 
+@media (min-width: 1024px) {
+    .spaces-section { padding-left: 3rem; padding-right: 3rem; }
+    .spaces-grid { grid-template-columns: repeat(4, 1fr); }
+}
