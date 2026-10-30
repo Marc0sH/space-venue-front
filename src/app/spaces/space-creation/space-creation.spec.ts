@@ -10,14 +10,16 @@ describe('SpaceCreation', () => {
   let component: SpaceCreation;
   let fixture: ComponentFixture<SpaceCreation>;
   let createSpace: ReturnType<typeof vi.fn>;
+  let uploadImage: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
-    createSpace = vi.fn(() => of({}));
+    createSpace = vi.fn(() => of({ idSpace: 1 }));
+    uploadImage = vi.fn(() => of(undefined));
 
     await TestBed.configureTestingModule({
       imports: [SpaceCreation],
       providers: [
-        { provide: Spaceservice, useValue: { createSpace } },
+        { provide: Spaceservice, useValue: { createSpace, uploadImage } },
         { provide: Router, useValue: { navigate: vi.fn() } },
       ],
     }).compileComponents();

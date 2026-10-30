@@ -55,6 +55,14 @@ export class SpaceCreation {
 
   error = signal('');
   saving = signal(false);
+  errorImagenes = signal<string>("")
+  imagenes = signal<ImagenSeleccionada[]>([])
+  // Si el espacio se creó pero fallaron imágenes, no se permite reenviar para no duplicarlo
+  espacioCreado = signal<boolean>(false)
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.imagenes().forEach(i => URL.revokeObjectURL(i.preview)))
+  }
 
   addServices(servicio: ServiceReg) {
     this.model.update((current) => ({
@@ -69,15 +77,6 @@ export class SpaceCreation {
       ...current,
       services: current.services.filter((_, serviceIndex) => serviceIndex !== index),
     }));
-  }
-  errorImagenes = signal<string>("")
-  imagenes = signal<ImagenSeleccionada[]>([])
-  enviando = signal<boolean>(false)
-  // Si el espacio se creó pero fallaron imágenes, no se permite reenviar para no duplicarlo
-  espacioCreado = signal<boolean>(false)
-
-  constructor() {
-    inject(DestroyRef).onDestroy(() => this.imagenes().forEach(i => URL.revokeObjectURL(i.preview)))
   }
 
   onImagenesSeleccionadas(event: Event) {
@@ -107,16 +106,12 @@ export class SpaceCreation {
 
   onSubmit(event: Event) {
     event.preventDefault();
-    this.enviando.set(true)
+    this.saving.set(true);
 
     this.spaceService.createSpace(this.model()).subscribe({
       next: (res) => {
-        this.saving.set(false);
         this.error.set('');
-        console.log('Espacio creado correctamente:', res);
-        this.router.navigate(['/espacios']);
-        this.error.set("")
-        this.subirImagenes(res.idSpace)
+        this.subirImagenes(res.idSpace);
       },
       error: (e: HttpErrorResponse) => {
         this.saving.set(false);
@@ -144,7 +139,7 @@ export class SpaceCreation {
       )),
       toArray()
     ).subscribe(resultados => {
-      this.enviando.set(false)
+      this.saving.set(false)
       const fallidas = resultados.filter(ok => !ok).length
 
       if (fallidas === 0) {
