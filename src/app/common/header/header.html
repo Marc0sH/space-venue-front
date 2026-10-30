@@ -8,6 +8,9 @@
         @if (sessionService.isLoggedIn()) {
             <a routerLink="/espacios/crear">Crear un espacio</a>
             <a routerLink="/espacios/espaciospropios">Mis espacios</a>
+            @if (sessionService.isAdmin()) {
+                <a routerLink="/admin/espacios">Administrar espacios</a>
+            }
             <a routerLink="/perfil">Mi perfil</a>
             @if(notificaciones().value() == undefined){
                 <a routerLink="/notificaciones"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope-open-fill" viewBox="0 0 16 16">

@@ -6,8 +6,9 @@ export const adminGuard: CanActivateFn = (route, state) => {
   let servUsuario = inject(Session)
   let router = inject(Router)
 
-  if(servUsuario.isLoggedIn()){  
+  if(servUsuario.isAdmin()){
     return true;
   }
-  return router.createUrlTree(['/login'])
+  //Si está logueado pero no es admin lo mandamos a la lista, si no al login
+  return router.createUrlTree([servUsuario.isLoggedIn() ? '/espacios' : '/login'])
 };
