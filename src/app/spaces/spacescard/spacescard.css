@@ -90,11 +90,6 @@
   background-color: #f8fafc;
 }
 
-.SpaceCard.inactivo:hover {
-  cursor: not-allowed;
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 5%);
-}
-
 .SpaceCard.inactivo:hover .card-header h3 {
   color: #121d26;
 }

@@ -6,6 +6,15 @@ export interface ServiceSpace{
 }
 export interface ServiceReg{
     description: string,
+    price: number
+}
+export interface ServiceSpaceItemDTO{
+    id?: number | null,
+    description: string,
     price: number,
-    isActive: boolean
+    isActive: boolean,
+    idSpace: number
+}
+export interface ServiceSpaceUpdateDTO extends ServiceSpaceItemDTO{
+    id: number
 }

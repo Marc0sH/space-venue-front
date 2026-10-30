@@ -1,14 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { form, FormField, max, min, required } from '@angular/forms/signals';
 import { NewSpace } from '../../models/space.model';
-import { emptyLocation } from '../../models/location.model';
-import { ServiceReg, ServiceSpace } from '../../models/service.model';
+import { ServiceReg } from '../../models/service.model';
 import { FormErrorMessage } from '../../common/form-error-message/form-error-message';
 import { Spaceservice } from '../spaceservice';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ServiceCreation } from '../Servicios/service-creation/service-creation';
-import { ServiceServicios } from '../Servicios/service-servicios';
 
 @Component({
   imports: [FormField, FormErrorMessage, ServiceCreation],
@@ -18,13 +16,13 @@ import { ServiceServicios } from '../Servicios/service-servicios';
 })
 export class SpaceCreation {
   model = signal<NewSpace>({
-    location: emptyLocation(),
+    location: { latitude: 0, longitude: 0 },
     cancellationPolicies: 'FLEXIBLE',
     nameSpace: '',
     description: '',
     basePrice: 0,
     bufferTime: 0,
-    services: [] as ServiceSpace[],
+    services: [],
   });
 
   formSpaceCreation = form(this.model, (path) => {
@@ -42,52 +40,65 @@ export class SpaceCreation {
   });
 
   private spaceService = inject(Spaceservice);
-  private serviceService = inject(ServiceServicios);
   private router = inject(Router);
 
   error = signal('');
+  saving = signal(false);
 
   addServices(servicio: ServiceReg) {
-    this.serviceService.postServicio(servicio).subscribe({
-      next: (createdService) => {
-        this.model.update((current) => ({
-          ...current,
-          services: [
-            ...current.services,
-            {
-              id: createdService.id,
-              description: createdService.description ?? '',
-              price: Number(createdService.price ?? 0),
-              isActive: createdService.isActive ?? true,
-            },
-          ],
-        }));
-      },
-      error: (e) => console.error('Error creando servicio', e),
-    });
+    this.model.update((current) => ({
+      ...current,
+      services: [...current.services, servicio],
+    }));
+    this.error.set('');
+  }
+
+  removeService(index: number) {
+    this.model.update((current) => ({
+      ...current,
+      services: current.services.filter((_, serviceIndex) => serviceIndex !== index),
+    }));
   }
 
   onSubmit(event: Event) {
     event.preventDefault();
 
-    const payload = {
-      ...this.model(),
-      services: this.model().services.map((s) => ({
-        id: s.id,
-        description: s.description,
-        price: s.price,
-        isActive: s.isActive,
-      })),
+    if (this.formSpaceCreation().invalid() || this.saving()) {
+      return;
+    }
+
+    const current = this.model();
+    const payload: NewSpace = {
+      location: {
+        latitude: current.location.latitude,
+        longitude: current.location.longitude,
+      },
+      cancellationPolicies: current.cancellationPolicies,
+      nameSpace: current.nameSpace,
+      description: current.description,
+      basePrice: current.basePrice,
+      bufferTime: current.bufferTime,
+      services: current.services.map(({ description, price }) => ({ description, price })),
     };
 
+    this.saving.set(true);
+    this.error.set('');
     this.spaceService.createSpace(payload).subscribe({
       next: (res) => {
+        this.saving.set(false);
         this.error.set('');
         console.log('Espacio creado correctamente:', res);
         this.router.navigate(['/espacios']);
       },
       error: (e: HttpErrorResponse) => {
-        this.error.set('Error al crear un espacio: ' + e.message);
+        this.saving.set(false);
+        const validationDetail = e.error?.errores
+          ? JSON.stringify(e.error.errores)
+          : undefined;
+        const detail = typeof e.error === 'string'
+          ? e.error
+          : validationDetail ?? e.error?.mensaje ?? e.error?.message ?? e.message;
+        this.error.set('Error al crear un espacio: ' + detail);
         console.error('Error ' + e.status + ' al crear espacio:', e);
       },
     });

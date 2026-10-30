@@ -6,7 +6,7 @@ import { Notificacion } from '../../models/notification.model';
 
 @Service()
 export class Notificationservice {
-    private baseUrl = environment.apiUrl + "/notifications/consumer";
+    private baseUrl = environment.apiUrl + "/notifications";
 
     private http = inject(HttpClient);
     private sessionService = inject(Session);
@@ -15,6 +15,6 @@ export class Notificationservice {
         return httpResource<Notificacion[]>(() => `${this.baseUrl}/me`)
     }
     getUnseen(){
-        return httpResource<number>(() => `${this.baseUrl}/unread-count`)
+        return httpResource<Notificacion[]>(() => `${this.baseUrl}/consumer/onlyunseen`)
     }
 }

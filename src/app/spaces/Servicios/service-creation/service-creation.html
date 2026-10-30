@@ -1,7 +1,7 @@
 <section class="service-creation">
     <h3>Agregar servicio</h3>
 
-    <form (submit)="onSubmit($event)">
+    <div>
         <div>
             <label for="description">Descripcion</label>
             <input type="text" [formField]="serviceForm.description" (input)="updateDescription($any($event.target).value)">
@@ -12,9 +12,9 @@
             <input type="number" [formField]="serviceForm.price" (input)="updatePrice($any($event.target).value)">
         </div>
 
-        <button type="button" [disabled]="serviceForm().invalid()">Crear servicio</button>
+        <button type="button" (click)="addService()" [disabled]="serviceForm().invalid()">Agregar servicio</button>
 
         <app-form-error-message [campo]="serviceForm.description()"></app-form-error-message>
         <app-form-error-message [campo]="serviceForm.price()"></app-form-error-message>
-    </form>
+    </div>
 </section>

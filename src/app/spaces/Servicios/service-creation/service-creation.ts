@@ -10,7 +10,7 @@ import { FormErrorMessage } from '../../../common/form-error-message/form-error-
   templateUrl: './service-creation.html',
 })
 export class ServiceCreation {
-  serviceModel = signal<ServiceReg>({description: '', price: 0, isActive: true})
+  serviceModel = signal<ServiceReg>({description: '', price: 0})
   serviceForm = form(this.serviceModel, (path) => {
     required(path.description, {message: 'La descripción es obligatoria'})
     required(path.price, {message: 'El precio es obligatorio'})
@@ -30,9 +30,7 @@ export class ServiceCreation {
     }))
   }
 
-  onSubmit(event : Event){
-    event.preventDefault()
-
+  addService(){
     if (this.serviceForm().invalid()) {
       return;
     }
@@ -43,5 +41,6 @@ export class ServiceCreation {
     };
 
     this.dataEntry.emit(servicio)
+    this.serviceModel.set({description: ' ', price: 0})
   }
 }

@@ -1,26 +1,23 @@
 import { inject, Service, Signal } from '@angular/core';
 import { environment } from '../../../environments/enviroment';
 import { HttpClient, httpResource } from '@angular/common/http';
-import { ServiceSpace, ServiceReg } from '../../models/service.model';
+import { ServiceSpace, ServiceSpaceItemDTO, ServiceSpaceUpdateDTO } from '../../models/service.model';
 
 @Service()
 export class ServiceServicios {
-    private url = `${environment.apiUrl}/service`
+    private url = `${environment.apiUrl}/services`
     private http = inject(HttpClient)
 
     getServicio(idSpace: string){
-        return httpResource<ServiceSpace[]>(() => ({
-            url: this.url,
-            params: {id: idSpace}
-        }))
-    }/// no lo uso por ahora
+        return httpResource<ServiceSpace[]>(() => `${this.url}/space/${idSpace}`)
+    }
 
-    postServicio(newSer: ServiceReg){
+    postServicio(newSer: ServiceSpaceItemDTO){
         return this.http.post<ServiceSpace>(`${this.url}/insert`, newSer)
     }
 
-    updateServicio(ser: Service){
-        return this.http.put<ServiceSpace>(`${this.url}/update`, ser)
+    updateServicio(ser: ServiceSpaceUpdateDTO){
+        return this.http.put<ServiceSpace>(`${this.url}/update/${ser.id}`, ser)
     }
 
     deleteServicio(idSpace:string,idSer: string){
