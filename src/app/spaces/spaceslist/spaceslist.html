@@ -9,6 +9,8 @@
         <div class="spaces-grid">
             @for (s of spacesOrdenados(); track s.idSpace) {
                 <app-spacescard [space]="s"></app-spacescard>
+            } @empty {
+                <p>No hay espacios publicados</p>
             }
         </div>
     </section>

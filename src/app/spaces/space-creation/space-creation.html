@@ -22,6 +22,25 @@
             <label for="bufferTime">Tiempo de receso entre reservas (min): </label>
             <input type="number" [formField]="formSpaceCreation.bufferTime">
         </div>
+
+        <div>
+            <app-service-creation (dataEntry)="addServices($event)"></app-service-creation>
+        </div>
+
+        @if (model().services.length > 0) {
+            <section aria-label="Servicios agregados al espacio">
+                <h3>Servicios del espacio</h3>
+                <ul>
+                    @for (servicio of model().services; track $index; let index = $index) {
+                        <li>
+                            {{servicio.description}} — {{servicio.price}}
+                            <button type="button" (click)="removeService(index)">Quitar</button>
+                        </li>
+                    }
+                </ul>
+                <p>Los servicios se guardarán junto con el espacio.</p>
+            </section>
+        }
         
         <div>
             <label for="location">
@@ -39,30 +58,8 @@
             </label>
         </div>
     
-        <div class="imagenes">
-            <label for="imagenes">Imágenes (JPG, PNG o WEBP, hasta 5 MB cada una)</label>
-            <input id="imagenes" type="file" accept="image/jpeg,image/png,image/webp" multiple
-                (change)="onImagenesSeleccionadas($event)" [disabled]="enviando() || espacioCreado()">
-
-            @if (errorImagenes() != "") {
-                <p class="imagenes-error">{{errorImagenes()}}</p>
-            }
-
-            @if (imagenes().length > 0) {
-                <ul class="previews">
-                    @for (imagen of imagenes(); track imagen.preview; let i = $index) {
-                        <li>
-                            <img [src]="imagen.preview" [alt]="imagen.file.name">
-                            <button type="button" (click)="quitarImagen(i)" [disabled]="enviando()"
-                                [attr.aria-label]="'Quitar ' + imagen.file.name">✕</button>
-                        </li>
-                    }
-                </ul>
-            }
-        </div>
-
-        <button type="submit" [disabled]="formSpaceCreation().invalid() || enviando() || espacioCreado()">
-            {{ enviando() ? 'Creando...' : 'Crear' }}
+        <button type="submit" [disabled]="formSpaceCreation().invalid() || saving()">
+            {{saving() ? 'Creando...' : 'Crear'}}
         </button>
 
         @if (error() != "") {

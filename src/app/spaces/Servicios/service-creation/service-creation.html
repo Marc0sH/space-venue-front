@@ -1,0 +1,20 @@
+<section class="service-creation">
+    <h3>Agregar servicio</h3>
+
+    <div>
+        <div>
+            <label for="description">Descripcion</label>
+            <input type="text" [formField]="serviceForm.description" (input)="updateDescription($any($event.target).value)">
+        </div>
+        
+        <div>
+            <label for="price">Precio</label>
+            <input type="number" [formField]="serviceForm.price" (input)="updatePrice($any($event.target).value)">
+        </div>
+
+        <button type="button" (click)="addService()" [disabled]="serviceForm().invalid()">Agregar servicio</button>
+
+        <app-form-error-message [campo]="serviceForm.description()"></app-form-error-message>
+        <app-form-error-message [campo]="serviceForm.price()"></app-form-error-message>
+    </div>
+</section>

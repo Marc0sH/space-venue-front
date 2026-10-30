@@ -34,10 +34,8 @@ export class Spacescard {
     }
   }
 
-  navigate(){
-    if(this.space().isActive){
-  this.salida.emit(this.space());
-  this.router.navigate(['/espacios', this.space().idSpace]);
-    }  
+  navigate(){  
+    this.salida.emit(this.space());
+    this.router.navigate(['/espacios', this.space().idSpace]);
   }
 }

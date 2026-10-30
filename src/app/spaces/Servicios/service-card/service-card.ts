@@ -8,7 +8,5 @@ import { ServiceSpace } from '../../../models/service.model';
   templateUrl: './service-card.html',
 })
 export class ServiceCard {
-    servicio = input.required<ServiceSpace>()
-
-    
+    servicio = input.required<ServiceSpace>() 
 }
