@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, signal } from '@angular/core';
+import { Component, computed, HostListener, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Session } from '../../auth/session/session';
 import { Notificationservice } from '../../user/user-notifications/notificationservice';
@@ -13,6 +13,7 @@ export class Header {
   protected notiService = inject(Notificationservice)
   protected sessionService = inject(Session);
   readonly notificaciones = signal(this.notiService.getUnseen())
+  readonly notificacionesCount = computed(() => this.notificaciones().value()?.count ?? 0)
   readonly showScrollTop = signal(false);
   private router = inject(Router)
 

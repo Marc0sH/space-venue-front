@@ -8,3 +8,7 @@ export interface Notificacion{
     idConsumer: number,
     consumerOwner: UserProfileData
 }
+
+export interface NotificacionCount{
+    count:number
+}

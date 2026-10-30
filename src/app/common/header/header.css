@@ -1,4 +1,16 @@
 
+#redBtn {
+    border: solid 1px rgb(73, 0, 0);
+    background-color: rgba(177, 0, 0, 0.836);
+}
+
+#redBtn:hover {
+    cursor: pointer;
+}
+
+#redBtn:active {
+    background-color: rgba(177, 0, 0, 0.705);
+}
 header {
   position: sticky;
   top: 0;
@@ -36,6 +48,8 @@ header h1:hover{
   gap: 24px;
 }
 
+
+
 /* Estilo de los links de navegación */
 .commonPaths a {
   color: #334155;
@@ -68,18 +82,7 @@ header h1:hover{
   color: #0f172a;
 }
 
-.redBtn {
-    border: solid 1px rgb(73, 0, 0);
-    background-color: rgba(177, 0, 0, 0.836);
-}
 
-.redBtn:hover {
-    cursor: pointer;
-}
-
-.redBtn:active {
-    background-color: rgba(177, 0, 0, 0.705);
-}
 
 .scrollTopBtn {
   position: fixed;
@@ -110,18 +113,6 @@ header h1:hover{
   outline-offset: 3px;
 }
 
-.redBtn {
-    border: solid 1px rgb(73, 0, 0);
-    background-color: rgba(177, 0, 0, 0.836);
-}
-
-.redBtn:hover {
-    cursor: pointer;
-}
-
-.redBtn:active {
-    background-color: rgba(177, 0, 0, 0.705);
-}
 .cant{
   color: red;
 }
