@@ -50,8 +50,8 @@ export class SpaceCreation {
     max(path.location.longitude, 180, { message: 'La longitud debe ser menor o igual a 180' });
   });
 
-  private spaceService = inject(Spaceservice);
-  private router = inject(Router);
+  private spaceService = inject(Spaceservice)
+  private router = inject(Router)
 
   error = signal('');
   saving = signal(false);
@@ -109,33 +109,14 @@ export class SpaceCreation {
     event.preventDefault();
     this.enviando.set(true)
 
-    if (this.formSpaceCreation().invalid() || this.saving()) {
-      return;
-    }
-
-    const current = this.model();
-    const payload: NewSpace = {
-      location: {
-        latitude: current.location.latitude,
-        longitude: current.location.longitude,
-      },
-      cancellationPolicies: current.cancellationPolicies,
-      nameSpace: current.nameSpace,
-      description: current.description,
-      basePrice: current.basePrice,
-      bufferTime: current.bufferTime,
-      services: current.services.map(({ description, price }) => ({ description, price })),
-    };
-
-    this.saving.set(true);
-    this.error.set('');
-    this.subirImagenes(res.idSpace)
-    this.spaceService.createSpace(payload).subscribe({
+    this.spaceService.createSpace(this.model()).subscribe({
       next: (res) => {
         this.saving.set(false);
         this.error.set('');
         console.log('Espacio creado correctamente:', res);
         this.router.navigate(['/espacios']);
+        this.error.set("")
+        this.subirImagenes(res.idSpace)
       },
       error: (e: HttpErrorResponse) => {
         this.saving.set(false);
@@ -149,30 +130,6 @@ export class SpaceCreation {
         console.error('Error ' + e.status + ' al crear espacio:', e);
       },
     });
-  }
-
-  //Sube las imágenes de a una; si alguna falla se siguen subiendo las demás
-  private subirImagenes(idSpace: number) {
-    from(this.imagenes()).pipe(
-      concatMap(({ file }) => this.spaceService.uploadImage(idSpace, file).pipe(
-        map(() => true),
-        catchError(e => {
-          console.error('Error al subir la imagen ' + file.name, e)
-          return of(false)
-        })
-      )),
-      toArray()
-    ).subscribe(resultados => {
-      this.enviando.set(false)
-      const fallidas = resultados.filter(ok => !ok).length
-
-      if (fallidas === 0) {
-        this.router.navigate(['/espacios'])
-      } else {
-        this.espacioCreado.set(true)
-        this.error.set(`El espacio se creó, pero no se pudieron subir ${fallidas} de ${resultados.length} imágenes`)
-      }
-    })
   }
 
   //Sube las imágenes de a una; si alguna falla se siguen subiendo las demás
