@@ -65,6 +65,10 @@
         @if (error() != "") {
             <p class="error">{{error()}}</p>
         }
+
+        @if (espacioCreado()) {
+            <a class="volver" routerLink="/espacios/espaciospropios">Ir a mis espacios</a>
+        }
     
         <app-form-error-message [campo]="formSpaceCreation.nameSpace()"></app-form-error-message>
         <app-form-error-message [campo]="formSpaceCreation.description()"></app-form-error-message>

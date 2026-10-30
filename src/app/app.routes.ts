@@ -11,6 +11,8 @@ import { UserProfile } from './user/user-profile/user-profile';
 import { logInGuard } from './guard/log-in-guard';
 import { UserEdit } from './user/user-edit/user-edit';
 import { NotificationList } from './user/user-notifications/notification-list/notification-list';
+import { AdminSpaces } from './spaces/admin-spaces/admin-spaces';
+import { adminGuard } from './guard/admin-guard';
 
 export const routes: Routes = [
     {path: '', redirectTo: 'espacios', pathMatch: 'full'},
@@ -23,5 +25,6 @@ export const routes: Routes = [
     {path: 'perfil', component: UserProfile, canActivate: [logInGuard]},
     {path: 'perfil/editar', component: UserEdit, canActivate: [logInGuard]},
     {path: 'notificaciones', component: NotificationList, canActivate: [logInGuard]},
+    {path: 'admin/espacios', component: AdminSpaces, canActivate: [adminGuard]},
     {path:'**', component: NotFound}
 ];

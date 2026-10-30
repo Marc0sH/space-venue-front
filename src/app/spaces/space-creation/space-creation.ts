@@ -1,15 +1,26 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { form, FormField, max, min, required } from '@angular/forms/signals';
 import { NewSpace } from '../../models/space.model';
 import { ServiceReg } from '../../models/service.model';
 import { FormErrorMessage } from '../../common/form-error-message/form-error-message';
 import { Spaceservice } from '../spaceservice';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ServiceCreation } from '../Servicios/service-creation/service-creation';
+import { catchError, concatMap, from, map, of, toArray } from 'rxjs';
+
+// Mismos límites que valida el back en /spaceimages/upload-url
+const TIPOS_IMAGEN = ['image/jpeg', 'image/png', 'image/webp'];
+const TAMANIO_MAX_IMAGEN = 5 * 1024 * 1024;
+const CANTIDAD_MAX_IMAGENES = 10;
+
+interface ImagenSeleccionada {
+  file: File,
+  preview: string
+}
 
 @Component({
-  imports: [FormField, FormErrorMessage, ServiceCreation],
+  imports: [FormField, FormErrorMessage, RouterLink, ServiceCreation],
   selector: 'app-space-creation',
   styleUrl: './space-creation.css',
   templateUrl: './space-creation.html',
@@ -59,9 +70,44 @@ export class SpaceCreation {
       services: current.services.filter((_, serviceIndex) => serviceIndex !== index),
     }));
   }
+  errorImagenes = signal<string>("")
+  imagenes = signal<ImagenSeleccionada[]>([])
+  enviando = signal<boolean>(false)
+  // Si el espacio se creó pero fallaron imágenes, no se permite reenviar para no duplicarlo
+  espacioCreado = signal<boolean>(false)
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.imagenes().forEach(i => URL.revokeObjectURL(i.preview)))
+  }
+
+  onImagenesSeleccionadas(event: Event) {
+    const input = event.target as HTMLInputElement
+    const archivos = Array.from(input.files ?? [])
+    input.value = "" // Permite volver a elegir el mismo archivo
+
+    const validos = archivos.filter(f => TIPOS_IMAGEN.includes(f.type) && f.size <= TAMANIO_MAX_IMAGEN)
+    const lugares = CANTIDAD_MAX_IMAGENES - this.imagenes().length
+    const agregados = validos.slice(0, lugares)
+
+    if (validos.length < archivos.length) {
+      this.errorImagenes.set("Algunas imágenes no se agregaron: solo se permiten JPG, PNG o WEBP de hasta 5 MB")
+    } else if (agregados.length < validos.length) {
+      this.errorImagenes.set(`Se pueden subir hasta ${CANTIDAD_MAX_IMAGENES} imágenes`)
+    } else {
+      this.errorImagenes.set("")
+    }
+
+    this.imagenes.update(lista => [...lista, ...agregados.map(file => ({ file, preview: URL.createObjectURL(file) }))])
+  }
+
+  quitarImagen(index: number) {
+    URL.revokeObjectURL(this.imagenes()[index].preview)
+    this.imagenes.update(lista => lista.filter((_, i) => i !== index))
+  }
 
   onSubmit(event: Event) {
     event.preventDefault();
+    this.enviando.set(true)
 
     if (this.formSpaceCreation().invalid() || this.saving()) {
       return;
@@ -83,6 +129,7 @@ export class SpaceCreation {
 
     this.saving.set(true);
     this.error.set('');
+    this.subirImagenes(res.idSpace)
     this.spaceService.createSpace(payload).subscribe({
       next: (res) => {
         this.saving.set(false);
@@ -102,5 +149,53 @@ export class SpaceCreation {
         console.error('Error ' + e.status + ' al crear espacio:', e);
       },
     });
+  }
+
+  //Sube las imágenes de a una; si alguna falla se siguen subiendo las demás
+  private subirImagenes(idSpace: number) {
+    from(this.imagenes()).pipe(
+      concatMap(({ file }) => this.spaceService.uploadImage(idSpace, file).pipe(
+        map(() => true),
+        catchError(e => {
+          console.error('Error al subir la imagen ' + file.name, e)
+          return of(false)
+        })
+      )),
+      toArray()
+    ).subscribe(resultados => {
+      this.enviando.set(false)
+      const fallidas = resultados.filter(ok => !ok).length
+
+      if (fallidas === 0) {
+        this.router.navigate(['/espacios'])
+      } else {
+        this.espacioCreado.set(true)
+        this.error.set(`El espacio se creó, pero no se pudieron subir ${fallidas} de ${resultados.length} imágenes`)
+      }
+    })
+  }
+
+  //Sube las imágenes de a una; si alguna falla se siguen subiendo las demás
+  private subirImagenes(idSpace: number) {
+    from(this.imagenes()).pipe(
+      concatMap(({ file }) => this.spaceService.uploadImage(idSpace, file).pipe(
+        map(() => true),
+        catchError(e => {
+          console.error('Error al subir la imagen ' + file.name, e)
+          return of(false)
+        })
+      )),
+      toArray()
+    ).subscribe(resultados => {
+      this.enviando.set(false)
+      const fallidas = resultados.filter(ok => !ok).length
+
+      if (fallidas === 0) {
+        this.router.navigate(['/espacios'])
+      } else {
+        this.espacioCreado.set(true)
+        this.error.set(`El espacio se creó, pero no se pudieron subir ${fallidas} de ${resultados.length} imágenes`)
+      }
+    })
   }
 }

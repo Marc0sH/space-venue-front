@@ -5,6 +5,9 @@
         @if (sessionService.isLoggedIn()) {
             <a routerLink="/espacios/crear">Crear un espacio</a>
             <a routerLink="/espacios/espaciospropios">Mis espacios</a>
+            @if (sessionService.isAdmin()) {
+                <a routerLink="/admin/espacios">Administrar espacios</a>
+            }
             <a routerLink="/perfil">Mi perfil</a>
 
             @if(notificaciones().value() == undefined){

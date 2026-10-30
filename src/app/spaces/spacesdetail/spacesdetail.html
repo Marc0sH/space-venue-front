@@ -8,6 +8,14 @@
   </div>
 } @else if (space.value(); as s) {
   <div class="spaceDetail">
+    @if (images.hasValue() && images.value().length > 0) {
+      <div class="gallery">
+        @for (img of images.value(); track img.idSpaceImages) {
+          <img [src]="service.imageUrl(img.urlImage)" [alt]="img.fileName" loading="lazy">
+        }
+      </div>
+    }
+
     <h2>{{ formatName(s.nameSpace) }}</h2>
     <p class="price">${{ s.basePrice }}</p>
     
