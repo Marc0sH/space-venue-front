@@ -6,26 +6,37 @@
   max-width: 120px;
   margin: 0 auto;
 }
-/* Contenedor del filtro */
-.sort-container {
+/* Contenedor de los filtros: cercanía a la izquierda, orden a la derecha sobre las tarjetas */
+.filtros {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-end; /* Alineado a la derecha sobre las tarjetas */
-  gap: 10px;
+  justify-content: space-between;
+  gap: 12px;
   max-width: 1200px;
   margin: 20px auto 10px auto;
   padding: 0 10px;
   font-family: system-ui, -apple-system, sans-serif;
 }
 
-.sort-container label {
+.sort-container,
+.cercania {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.sort-container label,
+.cercania label {
   font-size: 0.9rem;
   font-weight: 600;
   color: #475569;
 }
 
 /* Selector estilizado */
-.sort-container select {
+.sort-container select,
+.cercania select {
   padding: 8px 14px;
   font-size: 0.9rem;
   font-weight: 500;
@@ -40,7 +51,60 @@
 }
 
 .sort-container select:focus,
-.sort-container select:hover {
+.sort-container select:hover,
+.cercania select:focus,
+.cercania select:hover {
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+/* Botones del filtro por cercanía */
+.cercania button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cercania .cerca {
+  border: none;
+  background-color: #00667f;
+  color: #ffffff;
+}
+
+.cercania .cerca:hover:not(:disabled) {
+  background-color: #2f7f99;
+}
+
+.cercania .cerca:disabled {
+  background-color: #bfc8cd;
+  cursor: not-allowed;
+}
+
+.cercania .quitar {
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #1e293b;
+}
+
+.cercania button:focus-visible {
+  outline: 3px solid #87d1ed;
+  outline-offset: 2px;
+}
+
+.cercania .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.error {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 10px;
+  font-size: 0.85rem;
+  color: #ba1a1a;
 }

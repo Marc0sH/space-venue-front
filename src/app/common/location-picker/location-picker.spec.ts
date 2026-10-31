@@ -28,14 +28,14 @@ describe('LocationPicker', () => {
     expect(component).toBeTruthy();
   });
 
-  it('uses the current location as the value', () => {
+  it('uses the current location as the value', async () => {
     const touch = vi.fn();
     component.touch.subscribe(touch);
     getCurrentPosition.mockImplementation((ok: PositionCallback) =>
       ok({ coords: { latitude: -34.60372345, longitude: -58.38159123 } } as GeolocationPosition),
     );
 
-    component.usarUbicacionActual();
+    await component.usarUbicacionActual();
 
     expect(component.value()).toEqual({ latitude: -34.603723, longitude: -58.381591 });
     expect(touch).toHaveBeenCalled();
@@ -50,12 +50,12 @@ describe('LocationPicker', () => {
     expect(fixture.nativeElement.querySelector('.ayuda')).toBeNull();
   });
 
-  it('shows a message when location permission is denied', () => {
+  it('shows a message when location permission is denied', async () => {
     getCurrentPosition.mockImplementation((_: PositionCallback, error: PositionErrorCallback) =>
       error({ code: 1 } as GeolocationPositionError),
     );
 
-    component.usarUbicacionActual();
+    await component.usarUbicacionActual();
 
     expect(component.value()).toEqual({ latitude: 0, longitude: 0 });
     expect(component.errorUbicacion()).toBe('No diste permiso para acceder a tu ubicación');

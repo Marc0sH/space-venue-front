@@ -1,8 +1,32 @@
-<div class="sort-container">
-    <label for="orden">Ordenar: </label>
-    <select id="orden" (change)="seleccionarOrden($event)">
-        <option value="Sin ordenar">Sin ordenar</option>
-        <option value="Precio">Precio (Menor a Mayor)</option>
-        <option value="Nombre">Nombre (A-Z)</option>
-  </select> 
+<div class="filtros">
+    <div class="cercania">
+        <button type="button" class="cerca" (click)="buscarCerca()" [disabled]="buscando()">
+            <span class="material-symbols-outlined" aria-hidden="true">my_location</span>
+            {{ buscando() ? 'Buscando tu ubicación...' : (ubicacion() ? 'Actualizar ubicación' : 'Cerca mío') }}
+        </button>
+
+        <label for="radio">Radio: </label>
+        <select id="radio" (change)="seleccionarRadio($event)">
+            @for (km of radios; track km) {
+                <option [value]="km" [selected]="km === radioKm()">{{km}} km</option>
+            }
+        </select>
+
+        @if (ubicacion()) {
+            <button type="button" class="quitar" (click)="quitarCercania()">Quitar filtro</button>
+        }
+    </div>
+
+    <div class="sort-container">
+        <label for="orden">Ordenar: </label>
+        <select id="orden" (change)="seleccionarOrden($event)">
+            <option value="Sin ordenar">Sin ordenar</option>
+            <option value="Precio">Precio (Menor a Mayor)</option>
+            <option value="Nombre">Nombre (A-Z)</option>
+        </select>
+    </div>
 </div>
+
+@if (errorUbicacion() != "") {
+    <p class="error" role="alert">{{errorUbicacion()}}</p>
+}

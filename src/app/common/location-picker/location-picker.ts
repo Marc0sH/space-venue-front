@@ -2,6 +2,7 @@ import { afterNextRender, Component, DestroyRef, effect, ElementRef, inject, inp
 import { FormValueControl } from '@angular/forms/signals';
 import * as L from 'leaflet';
 import { Coordenadas, sinUbicacion } from '../../models/location.model';
+import { obtenerUbicacionActual } from '../geolocation';
 
 // Mientras no se elige una ubicación el mapa se centra en Buenos Aires
 const CENTRO_DEFAULT: L.LatLngTuple = [-34.6037, -58.3816]
@@ -17,12 +18,6 @@ const ICONO = L.icon({
   iconAnchor: [12, 41],
   shadowSize: [41, 41],
 })
-
-const ERRORES_GEOLOCALIZACION: Record<number, string> = {
-  1: 'No diste permiso para acceder a tu ubicación',
-  2: 'No se pudo determinar tu ubicación',
-  3: 'Se agotó el tiempo para obtener tu ubicación',
-}
 
 // Control de formulario: se usa con [formField] igual que un input.
 // Con [readonly]="true" solo muestra la ubicación (por ejemplo, en el detalle de un espacio)
@@ -72,26 +67,16 @@ export class LocationPicker implements FormValueControl<Coordenadas> {
   }
 
   usarUbicacionActual() {
-    if (!('geolocation' in navigator)) {
-      this.errorUbicacion.set('Tu navegador no permite obtener la ubicación actual')
-      return
-    }
-
     this.buscando.set(true)
     this.errorUbicacion.set('')
 
-    navigator.geolocation.getCurrentPosition(
-      ({ coords }) => {
-        this.buscando.set(false)
-        this.seleccionar(L.latLng(coords.latitude, coords.longitude))
-        this.mapa?.setView([coords.latitude, coords.longitude], ZOOM_SELECCION)
-      },
-      e => {
-        this.buscando.set(false)
-        this.errorUbicacion.set(ERRORES_GEOLOCALIZACION[e.code] ?? 'No se pudo obtener tu ubicación')
-      },
-      { enableHighAccuracy: true, timeout: 10000 },
-    )
+    return obtenerUbicacionActual()
+      .then(({ latitude, longitude }) => {
+        this.seleccionar(L.latLng(latitude, longitude))
+        this.mapa?.setView([latitude, longitude], ZOOM_SELECCION)
+      })
+      .catch((e: Error) => this.errorUbicacion.set(e.message))
+      .finally(() => this.buscando.set(false))
   }
 
   private bloqueado() {

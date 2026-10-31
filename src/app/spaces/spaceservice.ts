@@ -1,15 +1,16 @@
-import { HttpClient, httpResource } from '@angular/common/http';
+import { HttpClient, httpResource, HttpResourceRequest } from '@angular/common/http';
 import { inject, Service, Signal, signal } from '@angular/core';
 import { switchMap } from 'rxjs';
 import { environment } from '../../environments/enviroment';
 import { NewSpace, Space } from '../models/space.model';
 import { ImageUploadUrl, SpaceImage } from '../models/space-image.model';
+import { FiltroCercania } from '../models/location.model';
 
 @Service()
 export class Spaceservice {
     protected readonly http = inject(HttpClient)
 
-    //Filtrado de espacios (permite reutilización)
+    //Filtrado de espacios 
     spaceListFiltration(spaces : Space[], order : string){
       let lista = [...spaces];
       if (order === 'Precio') {
@@ -26,9 +27,21 @@ export class Spaceservice {
       return key.startsWith('http') ? key : `${environment.mediaUrl}/${key}`;
     }
 
-    // Llamadas HTTP
-    getSpaces() {
-      return httpResource<Space[]>(() => `${environment.apiUrl}/spaces`);
+    
+    //Sin filtro trae todos los espacios activos; con filtro, solo los que están dentro del radio
+    //Se puede respetar esta logica para futuros filtros que se sumen
+    //El back calcula la distancia y recibe el radio como "radious"
+    getSpaces(cercania: Signal<FiltroCercania | null> = signal(null)) {
+      return httpResource<Space[]>((): HttpResourceRequest => {
+        const filtro = cercania();
+        if (!filtro) return { url: `${environment.apiUrl}/spaces` };
+
+        return {
+          url: `${environment.apiUrl}/spaces/byfields`,
+          method: 'POST',
+          body: { lat: filtro.latitude, lng: filtro.longitude, radious: filtro.radioKm },
+        };
+      });
     }
 
     //Solo ADMIN: incluye los espacios inactivos

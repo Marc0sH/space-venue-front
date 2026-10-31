@@ -1,21 +1,26 @@
-@if (loading()) {
-    <p class="state">Cargando espacios...</p>
-} @else if (error()){
-    <p class="error">{{ error() }}</p>
-} @else {
-    <section class="spaces-section">
-        <app-space-filter (ordenSalida)="cambiarOrden($event)"></app-space-filter>
- 
+<!-- El filtro queda fuera del estado de carga para no perder lo elegido cada vez que se vuelve a buscar -->
+<section class="spaces-section">
+    <app-space-filter (ordenSalida)="cambiarOrden($event)" (cercaniaSalida)="cambiarCercania($event)"></app-space-filter>
+
+    @if (loading()) {
+        <p class="state">Cargando espacios...</p>
+    } @else if (error()) {
+        <p class="error">{{ error() }}</p>
+    } @else {
         <div class="spaces-grid">
             @for (s of spacesOrdenados(); track s.idSpace) {
                 <app-spacescard [space]="s"></app-spacescard>
             } @empty {
-                <p>No hay espacios publicados</p>
+                @if (cercania(); as c) {
+                    <p>No hay espacios a menos de {{ c.radioKm }} km de tu ubicación</p>
+                } @else {
+                    <p>No hay espacios publicados</p>
+                }
             }
         </div>
-    </section>
-}
- 
+    }
+</section>
+
 <!-- CÓMO FUNCIONA -->
 <section class="how-it-works">
     <div class="how-header">
