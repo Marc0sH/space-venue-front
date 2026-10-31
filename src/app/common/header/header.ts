@@ -11,10 +11,14 @@ import { Notificationservice } from '../../user/user-notifications/notifications
 })
 export class Header {
   protected notiService = inject(Notificationservice)
-  protected sessionService = inject(Session);
-  readonly notificaciones = signal(this.notiService.getUnseen())
-  readonly notificacionesCount = computed(() => this.notificaciones().value()?.count ?? 0)
+
+  readonly notificaciones = this.notiService.getUnseen();
+  readonly notificacionesCount = computed(
+    () => this.notificaciones.value()?.length ?? 0
+  );
   readonly showScrollTop = signal(false);
+   
+  protected sessionService = inject(Session);
   private router = inject(Router)
 
   @HostListener('window:scroll')

@@ -11,3 +11,11 @@
   gap: 10px;
   text-align: left;
 }
+
+.notification-message {
+  white-space: pre-line;
+}
+
+.is-seen {
+  background-color: #dadada;
+} 
