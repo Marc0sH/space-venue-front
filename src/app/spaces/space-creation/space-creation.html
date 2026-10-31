@@ -58,7 +58,29 @@
             </label>
         </div>
     
-        <button type="submit" [disabled]="formSpaceCreation().invalid() || saving()">
+        <div class="imagenes">
+            <label for="imagenes">Imágenes (JPG, PNG o WEBP, hasta 5 MB cada una)</label>
+            <input id="imagenes" type="file" accept="image/jpeg,image/png,image/webp" multiple
+                (change)="onImagenesSeleccionadas($event)" [disabled]="saving() || espacioCreado()">
+
+            @if (errorImagenes() != "") {
+                <p class="imagenes-error">{{errorImagenes()}}</p>
+            }
+
+            @if (imagenes().length > 0) {
+                <ul class="previews">
+                    @for (imagen of imagenes(); track imagen.preview; let i = $index) {
+                        <li>
+                            <img [src]="imagen.preview" [alt]="imagen.file.name">
+                            <button type="button" (click)="quitarImagen(i)" [disabled]="saving()"
+                                [attr.aria-label]="'Quitar ' + imagen.file.name">✕</button>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+
+        <button type="submit" [disabled]="formSpaceCreation().invalid() || saving() || espacioCreado()">
             {{saving() ? 'Creando...' : 'Crear'}}
         </button>
 
