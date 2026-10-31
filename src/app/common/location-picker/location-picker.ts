@@ -24,7 +24,8 @@ const ERRORES_GEOLOCALIZACION: Record<number, string> = {
   3: 'Se agotó el tiempo para obtener tu ubicación',
 }
 
-// Control de formulario: se usa con [formField] igual que un input
+// Control de formulario: se usa con [formField] igual que un input.
+// Con [readonly]="true" solo muestra la ubicación (por ejemplo, en el detalle de un espacio)
 @Component({
   selector: 'app-location-picker',
   styleUrl: './location-picker.css',
@@ -33,6 +34,7 @@ const ERRORES_GEOLOCALIZACION: Record<number, string> = {
 export class LocationPicker implements FormValueControl<Coordenadas> {
   value = model<Coordenadas>({ latitude: 0, longitude: 0 })
   disabled = input(false)
+  readonly = input(false)
   touch = output<void>()
 
   contenedor = viewChild.required<ElementRef<HTMLDivElement>>('mapa')
@@ -44,20 +46,27 @@ export class LocationPicker implements FormValueControl<Coordenadas> {
 
   constructor() {
     afterNextRender(() => {
-      this.mapa = L.map(this.contenedor().nativeElement).setView(CENTRO_DEFAULT, ZOOM_DEFAULT)
+      // Si ya hay una ubicación (por ejemplo, en modo solo lectura) se arranca centrado en ella
+      const inicial = this.value()
+      const [centro, zoom] = sinUbicacion(inicial)
+        ? [CENTRO_DEFAULT, ZOOM_DEFAULT]
+        : [L.latLng(inicial.latitude, inicial.longitude), ZOOM_SELECCION]
+
+      // En solo lectura la rueda del mouse no hace zoom, para no "atrapar" el scroll de la página
+      this.mapa = L.map(this.contenedor().nativeElement, { scrollWheelZoom: !this.readonly() }).setView(centro, zoom)
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(this.mapa)
 
       this.mapa.on('click', e => {
-        if (!this.disabled()) this.seleccionar(e.latlng.wrap())
+        if (!this.bloqueado()) this.seleccionar(e.latlng.wrap())
       })
-      this.sincronizarMarcador(this.value(), this.disabled())
+      this.sincronizarMarcador(this.value(), this.bloqueado())
     })
 
     // Mantiene el marcador al día si el valor cambia desde afuera (por ejemplo, editando latitud/longitud a mano)
-    effect(() => this.sincronizarMarcador(this.value(), this.disabled()))
+    effect(() => this.sincronizarMarcador(this.value(), this.bloqueado()))
 
     inject(DestroyRef).onDestroy(() => this.mapa?.remove())
   }
@@ -85,13 +94,17 @@ export class LocationPicker implements FormValueControl<Coordenadas> {
     )
   }
 
+  private bloqueado() {
+    return this.disabled() || this.readonly()
+  }
+
   private seleccionar({ lat, lng }: L.LatLng) {
     // 6 decimales alcanzan para una precisión de ~10 cm
     this.value.set({ latitude: redondear(lat), longitude: redondear(lng) })
     this.touch.emit()
   }
 
-  private sincronizarMarcador(coordenadas: Coordenadas, deshabilitado: boolean) {
+  private sincronizarMarcador(coordenadas: Coordenadas, bloqueado: boolean) {
     if (!this.mapa) return
 
     if (sinUbicacion(coordenadas)) {
@@ -105,11 +118,11 @@ export class LocationPicker implements FormValueControl<Coordenadas> {
     if (this.marcador) {
       this.marcador.setLatLng(punto)
     } else {
-      this.marcador = L.marker(punto, { icon: ICONO, draggable: true, keyboard: false }).addTo(this.mapa)
+      this.marcador = L.marker(punto, { icon: ICONO, draggable: !bloqueado, keyboard: false }).addTo(this.mapa)
       this.marcador.on('dragend', () => this.seleccionar(this.marcador!.getLatLng().wrap()))
     }
 
-    if (deshabilitado) this.marcador.dragging?.disable()
+    if (bloqueado) this.marcador.dragging?.disable()
     else this.marcador.dragging?.enable()
 
     if (!this.mapa.getBounds().contains(punto)) this.mapa.panTo(punto)

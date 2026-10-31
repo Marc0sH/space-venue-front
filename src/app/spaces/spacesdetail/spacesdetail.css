@@ -48,3 +48,20 @@
   border-radius: 8px;
   scroll-snap-align: center;
 }
+
+/* Mapa de ubicación (solo lectura) */
+.ubicacion {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.mapa-placeholder {
+  display: grid;
+  place-items: center;
+  height: 18rem;
+  border-radius: 12px;
+  background-color: #f1f5f9;
+  color: #64748b;
+}

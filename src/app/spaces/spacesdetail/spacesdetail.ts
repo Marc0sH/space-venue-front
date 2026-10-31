@@ -1,8 +1,10 @@
 import { Component, inject, input } from '@angular/core';
 import { Spaceservice } from '../spaceservice';
+import { LocationPicker } from '../../common/location-picker/location-picker';
+import { sinUbicacion } from '../../models/location.model';
 
 @Component({
-  imports: [],
+  imports: [LocationPicker],
   selector: 'app-spacesdetail',
   styleUrl: './spacesdetail.css',
   templateUrl: './spacesdetail.html',
@@ -12,6 +14,7 @@ export class Spacesdetail {
   readonly id = input.required<string>();
   protected readonly space = this.service.getById(this.id);
   protected readonly images = this.service.getImagesBySpaceId(this.id);
+  protected readonly sinUbicacion = sinUbicacion;
 
   protected formatName(name: string): string {
     if (!/[ÃÂ][\u0080-\u00bf]/u.test(name)) {

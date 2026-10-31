@@ -42,6 +42,14 @@ describe('LocationPicker', () => {
     expect(component.buscando()).toBe(false);
   });
 
+  it('hides the current location button in readonly mode', async () => {
+    fixture.componentRef.setInput('readonly', true);
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('button')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.ayuda')).toBeNull();
+  });
+
   it('shows a message when location permission is denied', () => {
     getCurrentPosition.mockImplementation((_: PositionCallback, error: PositionErrorCallback) =>
       error({ code: 1 } as GeolocationPositionError),
