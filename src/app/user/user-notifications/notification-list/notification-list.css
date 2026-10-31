@@ -9,7 +9,13 @@
   font-family: system-ui, -apple-system, sans-serif;
   color: #1e293b;
   text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 10px;
 }
+
 .fail{
     color: rgba(253, 67, 67, 0.712);
 }
