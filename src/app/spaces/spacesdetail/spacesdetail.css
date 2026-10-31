@@ -48,3 +48,15 @@
   border-radius: 8px;
   scroll-snap-align: center;
 }
+
+.floating-action {
+  position: fixed;
+  right: 1rem;
+  bottom: calc(1rem + env(safe-area-inset-bottom));
+  z-index: 1000;
+}
+
+.floating-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}

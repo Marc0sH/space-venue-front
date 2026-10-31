@@ -1,3 +1,20 @@
+<button
+  class="floating-action"
+  type="button"
+  [disabled]="space.isLoading() || !!space.error() || !space.hasValue()"
+  (click)="onReserve()"
+>
+  @if (space.isLoading()) {
+    Cargando...
+  } @else if (space.error()) {
+    No disponible
+  } @else if (space.hasValue()) {
+    Reservar
+  } @else {
+    No disponible
+  }
+</button>
+
 @if (space.isLoading()) {
   <div class="status-message">
     <p>Cargando...</p>
