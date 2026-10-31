@@ -1,0 +1,66 @@
+/* Las variables --sv-* se heredan del formulario que contiene al mapa; los valores de respaldo son los mismos */
+:host {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.mapa {
+    height: 18rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--sv-field-border, #e4effd);
+    /* Leaflet usa z-index altos internamente; así no tapa al header ni a otros elementos */
+    isolation: isolate;
+}
+
+.ubicacion-actual {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border: none;
+    border-radius: 9999px;
+    background-color: var(--sv-primary, #00667f);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.ubicacion-actual:hover:not(:disabled) {
+    background-color: var(--sv-primary-hover, #2f7f99);
+}
+
+.ubicacion-actual:focus-visible {
+    outline: 3px solid #87d1ed;
+    outline-offset: 2px;
+}
+
+.ubicacion-actual:disabled {
+    background-color: var(--sv-disabled, #bfc8cd);
+    cursor: not-allowed;
+}
+
+.ubicacion-actual .material-symbols-outlined {
+    font-size: 20px;
+}
+
+.ayuda,
+.error {
+    margin: 0;
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 400;
+}
+
+.ayuda {
+    color: var(--sv-text-soft, #3f484c);
+}
+
+.error {
+    color: var(--sv-error, #ba1a1a);
+}

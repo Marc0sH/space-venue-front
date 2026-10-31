@@ -43,19 +43,30 @@
         }
         
         <div>
-            <label for="location">
-                Ubicación
-                
-                <div>
-                    <label for="latitude">Latitud: </label>
-                    <input type="number" [formField]="formSpaceCreation.location.latitude">
+            <fieldset class="ubicacion">
+                <legend>Ubicación</legend>
+
+                <!-- Leaflet se descarga en un chunk aparte recién cuando el mapa entra en pantalla -->
+                @defer (on viewport) {
+                    <app-location-picker [formField]="formSpaceCreation.location" />
+                } @placeholder {
+                    <div class="mapa-placeholder">Cargando mapa...</div>
+                } @error {
+                    <div class="mapa-placeholder">No se pudo cargar el mapa. Podés ingresar la latitud y longitud a mano.</div>
+                }
+
+                <div class="coordenadas">
+                    <div>
+                        <label for="latitude">Latitud: </label>
+                        <input id="latitude" type="number" step="any" [formField]="formSpaceCreation.location.latitude">
+                    </div>
+
+                    <div>
+                        <label for="longitude">Longitud: </label>
+                        <input id="longitude" type="number" step="any" [formField]="formSpaceCreation.location.longitude">
+                    </div>
                 </div>
-                
-                <div>
-                    <label for="longitude">Longitud: </label>
-                    <input type="number" [formField]="formSpaceCreation.location.longitude">
-                </div>
-            </label>
+            </fieldset>
         </div>
     
         <div class="imagenes">
@@ -94,6 +105,7 @@
     
         <app-form-error-message [campo]="formSpaceCreation.nameSpace()"></app-form-error-message>
         <app-form-error-message [campo]="formSpaceCreation.description()"></app-form-error-message>
+        <app-form-error-message [campo]="formSpaceCreation.location()"></app-form-error-message>
         <app-form-error-message [campo]="formSpaceCreation.location.latitude()"></app-form-error-message>
         <app-form-error-message [campo]="formSpaceCreation.location.longitude()"></app-form-error-message>
         <app-form-error-message [campo]="formSpaceCreation.basePrice()"></app-form-error-message>

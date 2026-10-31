@@ -1,8 +1,10 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
-import { form, FormField, max, min, required } from '@angular/forms/signals';
+import { form, FormField, max, min, required, validate } from '@angular/forms/signals';
 import { NewSpace } from '../../models/space.model';
 import { ServiceReg } from '../../models/service.model';
 import { FormErrorMessage } from '../../common/form-error-message/form-error-message';
+import { LocationPicker } from '../../common/location-picker/location-picker';
+import { sinUbicacion } from '../../models/location.model';
 import { Spaceservice } from '../spaceservice';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
@@ -20,7 +22,7 @@ interface ImagenSeleccionada {
 }
 
 @Component({
-  imports: [FormField, FormErrorMessage, RouterLink, ServiceCreation],
+  imports: [FormField, FormErrorMessage, RouterLink, ServiceCreation, LocationPicker],
   selector: 'app-space-creation',
   styleUrl: './space-creation.css',
   templateUrl: './space-creation.html',
@@ -48,6 +50,10 @@ export class SpaceCreation {
     max(path.location.latitude, 90, { message: 'La latitud debe ser menor o igual a 90' });
     min(path.location.longitude, -180, { message: 'La longitud debe ser mayor o igual a -180' });
     max(path.location.longitude, 180, { message: 'La longitud debe ser menor o igual a 180' });
+
+    validate(path.location, ({ value }) =>
+      sinUbicacion(value()) ? { kind: 'sinUbicacion', message: 'Seleccioná la ubicación del espacio en el mapa' } : null
+    );
   });
 
   private spaceService = inject(Spaceservice)
