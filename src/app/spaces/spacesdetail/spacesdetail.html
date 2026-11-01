@@ -1,30 +1,13 @@
-<button
-  class="floating-action"
-  type="button"
-  [disabled]="space.isLoading() || !!space.error() || !space.hasValue()"
-  (click)="onReserve()"
->
+<div class="spaceDetail">
   @if (space.isLoading()) {
-    Cargando...
+    <div class="status-message">
+      <p>Cargando...</p>
+    </div>
   } @else if (space.error()) {
-    No disponible
-  } @else if (space.hasValue()) {
-    Reservar
-  } @else {
-    No disponible
-  }
-</button>
-
-@if (space.isLoading()) {
-  <div class="status-message">
-    <p>Cargando...</p>
-  </div>
-} @else if (space.error()) {
-  <div class="status-message error">
-    <p>No se pudo cargar el espacio</p>
-  </div>
-} @else if (space.value(); as s) {
-  <div class="spaceDetail">
+    <div class="status-message error">
+      <p>No se pudo cargar el espacio</p>
+    </div>
+  } @else if (space.value(); as s) {
     @if (images.hasValue() && images.value().length > 0) {
       <div class="gallery">
         @for (img of images.value(); track img.idSpaceImages) {
@@ -58,5 +41,22 @@
     } @else {
       <p>No hay servicios</p>
     }
-  </div>
-}
+  }
+
+  <button
+    class="reserve-button"
+    [class.loading]="space.isLoading()"
+    [class.unavailable]="!space.isLoading() && (space.error() || !space.hasValue())"
+    type="button"
+    [disabled]="space.isLoading() || !!space.error() || !space.hasValue()"
+    (click)="onReserve()"
+  >
+    @if (space.isLoading()) {
+      Cargando...
+    } @else if (space.error() || !space.hasValue()) {
+      No disponible
+    } @else {
+      Reservar
+    }
+  </button>
+</div>

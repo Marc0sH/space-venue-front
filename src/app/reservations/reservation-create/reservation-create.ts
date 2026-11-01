@@ -57,17 +57,20 @@ export class ReservationCreate {
     return (space?.basePrice ?? 0) + (servicesTotal ?? 0);
   });
 
-  onServicesChange(event: Event): void {
-    const select = event.currentTarget as HTMLSelectElement;
-    const selectedIds = Array.from(
-      select.selectedOptions,
-      option => Number(option.value)
-    );
+  onServiceToggle(serviceId: number, event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
 
-    this.model.update(reservation => ({
-      ...reservation,
-      idServicesSelect: selectedIds
-    }));
+    this.model.update(reservation => {
+      const selectedIds = new Set(reservation.idServicesSelect);
+
+      if (checked) {
+        selectedIds.add(serviceId);
+      } else {
+        selectedIds.delete(serviceId);
+      }
+
+      return { ...reservation, idServicesSelect: [...selectedIds] };
+    });
 
     this.formReservation.idServicesSelect().markAsTouched();
   }

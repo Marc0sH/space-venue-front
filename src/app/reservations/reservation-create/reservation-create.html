@@ -29,24 +29,25 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <label for="services">Servicios adicionales</label>
-            <select id="services"
-                multiple
-                size="4"
-                (change)="onServicesChange($event)"
-                (blur)="formReservation.idServicesSelect().markAsTouched()">
-                @for (service of spaceToReserve.value()?.services; track service.id) {
-                    @if (service.isActive) {
-                        <option [value]="service.id">
-                            {{ service.description }} — {{ service.price | currency:'ARS':'symbol':'1.2-2' }}
-                        </option>
-                    }
-                } 
-            </select>
-            <small class="field-help">Podés seleccionar más de un servicio.</small>
+        <fieldset class="form-group">
+            <legend>Servicios adicionales</legend>
+
+            @for (service of spaceToReserve.value()?.services; track service.id) {
+                @if (service.isActive) {
+                <label class="service-option">
+                    <input
+                    type="checkbox"
+                    [checked]="model().idServicesSelect.includes(service.id)"
+                    (change)="onServiceToggle(service.id, $event)">
+                    <span>{{ service.description }}</span>
+                    <span>{{ service.price | currency:'ARS':'symbol':'1.2-2' }}</span>
+                </label>
+                }
+            }
+
+            <small class="field-help">Seleccioná todos los servicios que quieras agregar.</small>
             <app-form-error-message [campo]="formReservation.idServicesSelect()" />
-        </div>
+        </fieldset>
 
         <div class="reservation-total">
             <span>Precio final</span>
