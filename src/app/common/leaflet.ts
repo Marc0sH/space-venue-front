@@ -14,3 +14,10 @@ export function cargarLeaflet() {
   })
   return leaflet
 }
+
+export function capaOpenStreetMap(L: typeof Leaflet) {
+  return L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  })
+}

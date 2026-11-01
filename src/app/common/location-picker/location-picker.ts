@@ -2,7 +2,7 @@ import { afterNextRender, Component, DestroyRef, effect, ElementRef, inject, inp
 import { FormValueControl } from '@angular/forms/signals';
 import type * as Leaflet from 'leaflet';
 import { Coordinates } from '../../models/location.model';
-import { cargarLeaflet } from '../leaflet';
+import { cargarLeaflet, capaOpenStreetMap } from '../leaflet';
 
 // Vista inicial cuando todavía no hay ubicación: Ciudad de Buenos Aires
 const CENTRO_INICIAL: Leaflet.LatLngTuple = [-34.6037, -58.3816]
@@ -95,10 +95,7 @@ export class LocationPicker implements FormValueControl<Coordinates | null> {
       ? this.L.map(this.contenedor().nativeElement).setView([ubicacion.latitude, ubicacion.longitude], ZOOM_UBICACION)
       : this.L.map(this.contenedor().nativeElement).setView(CENTRO_INICIAL, ZOOM_INICIAL)
 
-    this.L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(mapa)
+    capaOpenStreetMap(this.L).addTo(mapa)
 
     mapa.on('click', (e: Leaflet.LeafletMouseEvent) => this.elegir(e.latlng))
     this.mapa.set(mapa)
