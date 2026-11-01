@@ -1,7 +1,5 @@
-<div class="notificacioncard"> 
-    <a routerLink=""></a>
-    {{notification().createdAt.getDay()}}
-    {{notification().message}}
-    {{notification().isSeen}}
-    llega
+<div class="notificacioncard" [class.is-seen] ="notification().isSeen" (click)="cambiarEstado()"> 
+    <a [routerLink]="['notificaciones', notification().idNotification]"></a>
+    <time>{{notification().createdAt | date:'dd/MM/yyyy HH:mm'}}</time>
+    <p class="notification-message">{{notification().message}}</p>
 </div>

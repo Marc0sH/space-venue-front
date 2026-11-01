@@ -105,8 +105,8 @@
     box-shadow: 0 0 0 2px var(--sv-error);
 }
 
-/* ---------- Grupo "Ubicación" (mapa + latitud y longitud) ---------- */
-.ubicacion {
+/* ---------- Grupo "Ubicación" (el label que envuelve latitud y longitud) ---------- */
+.create-space-container label[for='location'] {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
@@ -115,37 +115,19 @@
     border: 1px solid var(--sv-field-border);
     border-radius: 0.75rem;
     background-color: #f7f9ff;
-}
-
-.ubicacion legend {
-    padding: 0 0.25rem;
     font-size: 14px;
     font-weight: 600;
 }
 
-.mapa-placeholder {
-    display: grid;
-    place-items: center;
-    height: 18rem;
-    border-radius: 0.75rem;
-    background-color: var(--sv-field);
+/* Labels de latitud / longitud dentro del grupo */
+.create-space-container label label {
+    font-weight: 500;
     color: var(--sv-text-soft);
-    font-size: 14px;
 }
 
-.coordenadas {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-}
-
-.coordenadas > div {
+.create-space-container label[for='location'] > div {
     display: flex;
     flex-direction: column;
-}
-
-.coordenadas label {
-    color: var(--sv-text-soft);
 }
 
 /* ---------- Imágenes ---------- */
@@ -274,10 +256,6 @@
 @media (max-width: 480px) {
     .create-space-container {
         padding: 1.5rem 1.25rem;
-    }
-
-    .coordenadas {
-        grid-template-columns: 1fr;
     }
 
     .create-space-container button[type='submit'] {

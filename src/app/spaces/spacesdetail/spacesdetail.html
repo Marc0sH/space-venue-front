@@ -29,21 +29,6 @@
       <p><strong>Dueño:</strong> {{s.consumerOwner.firstname + ' ' + s.consumerOwner.lastname}}</p>
     </div>
 
-    @if (!sinUbicacion(s.location)) {
-      <section class="ubicacion" aria-label="Ubicación del espacio">
-        <strong>Ubicación</strong>
-        <!-- Leaflet se descarga en un chunk aparte cuando la página queda libre. No se usa "on viewport": en una app
-             zoneless ese trigger solo se registra en un render posterior, y al llegar navegando no hay otro render -->
-        @defer (on idle) {
-          <app-location-picker [value]="s.location" [readonly]="true" />
-        } @placeholder {
-          <div class="mapa-placeholder">Cargando mapa...</div>
-        } @error {
-          <div class="mapa-placeholder">No se pudo cargar el mapa</div>
-        }
-      </section>
-    }
-
     <strong>Servicios disponibles</strong>
 
     @if (s.services?.length) {

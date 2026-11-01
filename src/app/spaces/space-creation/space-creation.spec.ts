@@ -1,4 +1,4 @@
-import { ComponentFixture, DeferBlockBehavior, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -18,8 +18,6 @@ describe('SpaceCreation', () => {
 
     await TestBed.configureTestingModule({
       imports: [SpaceCreation],
-      // El mapa (Leaflet) queda en el placeholder: jsdom no puede renderizarlo
-      deferBlockBehavior: DeferBlockBehavior.Manual,
       providers: [
         { provide: Spaceservice, useValue: { createSpace, uploadImage } },
         { provide: Router, useValue: { navigate: vi.fn() } },
@@ -33,19 +31,6 @@ describe('SpaceCreation', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('requires a location to be selected', () => {
-    component.model.update((current) => ({
-      ...current,
-      nameSpace: 'Salón',
-      description: 'Salón de eventos',
-      basePrice: 100,
-    }));
-    expect(component.formSpaceCreation.location().invalid()).toBe(true);
-
-    component.model.update((current) => ({ ...current, location: { latitude: -34, longitude: -58 } }));
-    expect(component.formSpaceCreation.location().invalid()).toBe(false);
   });
 
   it('sends staged services as space service items', () => {

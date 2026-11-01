@@ -1,15 +1,18 @@
 <div class="notificacionContainer">
-    @if (notificaciones().hasValue()){
-        @for (noti of notificaciones().value(); track noti.idNotification) {
+    @if (notificaciones.hasValue()){
+        @for (noti of notificacionesOrdenadas(); track noti.idNotification) {
             <div>
-                <app-notification-card [notification]="noti"></app-notification-card>
+                <app-notification-card [notification]="noti" (markedAsSeen)="recargarNotificaciones()"></app-notification-card>
             </div>
             
         }@empty {
             <p class="fail">No se encontraron nuevas notificaciones</p>
         }
     }
-    @else{
-            <p class="fail">No se encontraron nuevas notificaciones</p>
+    @else if (notificaciones.error()){
+        <p class="fail">Error al cargar las notificaciones</p>
+    }
+    @else if(notificaciones.isLoading()) {
+        <p>Cargando notificaciones...</p>
     }
 </div>

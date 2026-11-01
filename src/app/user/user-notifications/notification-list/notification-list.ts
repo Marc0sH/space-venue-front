@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Notificationservice } from '../notificationservice';
 import { NotificationCard } from '../notification-card/notification-card';
 
@@ -10,5 +10,14 @@ import { NotificationCard } from '../notification-card/notification-card';
 })
 export class NotificationList {
   private notiservice = inject(Notificationservice)
-  protected readonly notificaciones = signal(this.notiservice.getNotification())
+  protected readonly notificaciones = this.notiservice.getNotification();
+
+  protected readonly notificacionesOrdenadas = computed(() =>
+    [...(this.notificaciones.value() ?? [])]
+      .sort((a, b) => b.createdAt - a.createdAt)
+  );
+
+  protected recargarNotificaciones(): void {
+    this.notificaciones.reload();
+  }
 }

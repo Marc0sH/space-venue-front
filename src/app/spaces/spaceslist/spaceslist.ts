@@ -2,7 +2,6 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { Spaceservice } from '../spaceservice';
 import { Spacescard } from '../spacescard/spacescard';
 import { SpaceFilter } from '../space-filter/space-filter';
-import { FiltroCercania } from '../../models/location.model';
 
 @Component({
   imports: [Spacescard, SpaceFilter],
@@ -12,9 +11,7 @@ import { FiltroCercania } from '../../models/location.model';
 })
 export class Spaceslist {
   private readonly spaceService = inject(Spaceservice)
-  // Cambiar el filtro de cercanía vuelve a pedir los espacios al back
-  readonly cercania = signal<FiltroCercania | null>(null);
-  private readonly spacesResource = this.spaceService.getSpaces(this.cercania);
+  private readonly spacesResource = this.spaceService.getSpaces();
 
   readonly spaces = computed(() => this.spacesResource.value() ?? []);
 
@@ -32,9 +29,5 @@ export class Spaceslist {
 
   cambiarOrden(orden: string) {
     this.orden.set(orden)
-  }
-
-  cambiarCercania(cercania: FiltroCercania | null) {
-    this.cercania.set(cercania)
   }
 }

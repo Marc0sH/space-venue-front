@@ -4,6 +4,7 @@ import { CredentialRegister, LoginRequest, LoginResponse } from '../../models/us
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
 import { Router } from '@angular/router';
+import { Notificationservice } from '../../user/user-notifications/notificationservice';
 
 @Service()
 export class Session {
