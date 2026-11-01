@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
-import { form, FormField, max, min, required } from '@angular/forms/signals';
+import { form, FormField, required } from '@angular/forms/signals';
 import { NewSpace } from '../../models/space.model';
 import { ServiceReg } from '../../models/service.model';
 import { FormErrorMessage } from '../../common/form-error-message/form-error-message';
@@ -8,11 +8,16 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
 import { ServiceCreation } from '../Servicios/service-creation/service-creation';
 import { catchError, concatMap, from, map, of, toArray } from 'rxjs';
+import { Coordinates } from '../../models/location.model';
+import { LocationPicker } from '../../common/location-picker/location-picker';
 
 // Mismos límites que valida el back en /spaceimages/upload-url
 const TIPOS_IMAGEN = ['image/jpeg', 'image/png', 'image/webp'];
 const TAMANIO_MAX_IMAGEN = 5 * 1024 * 1024;
 const CANTIDAD_MAX_IMAGENES = 10;
+
+// La ubicación queda vacía hasta que se marca en el mapa
+type SpaceForm = Omit<NewSpace, 'location'> & { location: Coordinates | null }
 
 interface ImagenSeleccionada {
   file: File,
@@ -20,14 +25,14 @@ interface ImagenSeleccionada {
 }
 
 @Component({
-  imports: [FormField, FormErrorMessage, RouterLink, ServiceCreation],
+  imports: [FormField, FormErrorMessage, RouterLink, ServiceCreation, LocationPicker],
   selector: 'app-space-creation',
   styleUrl: './space-creation.css',
   templateUrl: './space-creation.html',
 })
 export class SpaceCreation {
-  model = signal<NewSpace>({
-    location: { latitude: 0, longitude: 0 },
+  model = signal<SpaceForm>({
+    location: null,
     cancellationPolicies: 'FLEXIBLE',
     nameSpace: '',
     description: '',
@@ -41,13 +46,7 @@ export class SpaceCreation {
     required(path.description, { message: 'La descripción del espacio es obligatoria' });
     required(path.basePrice, { message: 'El precio base es obligatorio' });
     required(path.bufferTime, { message: 'El tiempo de espera entre reservas es obligatorio' });
-    required(path.location.latitude, { message: 'La latitud es obligatoria' });
-    required(path.location.longitude, { message: 'La longitud es obligatoria' });
-
-    min(path.location.latitude, -90, { message: 'La latitud debe ser mayor o igual a -90' });
-    max(path.location.latitude, 90, { message: 'La latitud debe ser menor o igual a 90' });
-    min(path.location.longitude, -180, { message: 'La longitud debe ser mayor o igual a -180' });
-    max(path.location.longitude, 180, { message: 'La longitud debe ser menor o igual a 180' });
+    required(path.location, { message: 'Marcá la ubicación del espacio en el mapa' });
   });
 
   private spaceService = inject(Spaceservice)
@@ -106,9 +105,11 @@ export class SpaceCreation {
 
   onSubmit(event: Event) {
     event.preventDefault();
+    const { location, ...datos } = this.model();
+    if (!location) return;
     this.saving.set(true);
 
-    this.spaceService.createSpace(this.model()).subscribe({
+    this.spaceService.createSpace({ ...datos, location }).subscribe({
       next: (res) => {
         this.error.set('');
         this.subirImagenes(res.idSpace);

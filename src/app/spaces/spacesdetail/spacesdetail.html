@@ -29,6 +29,13 @@
       <p><strong>Dueño:</strong> {{s.consumerOwner.firstname + ' ' + s.consumerOwner.lastname}}</p>
     </div>
 
+    @if (hasLocation(s.location)) {
+      <div class="location">
+        <strong>Ubicación</strong>
+        <app-location-map [ubicacion]="s.location"></app-location-map>
+      </div>
+    }
+
     <strong>Servicios disponibles</strong>
 
     @if (s.services?.length) {

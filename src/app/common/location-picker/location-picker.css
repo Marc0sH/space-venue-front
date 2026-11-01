@@ -1,0 +1,54 @@
+:host {
+    display: block;
+}
+
+.ubicacion-actual {
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 9999px;
+    background-color: #edf4ff;
+    color: #00667f;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.ubicacion-actual:hover:not(:disabled) {
+    background-color: #e4effd;
+}
+
+.ubicacion-actual:focus-visible {
+    outline: 3px solid #87d1ed;
+    outline-offset: 2px;
+}
+
+.ubicacion-actual:disabled {
+    color: #3f484c;
+    cursor: wait;
+}
+
+.mapa {
+    height: 20rem;
+    border-radius: 0.75rem;
+    /* Encierra los z-index internos de Leaflet para que el mapa no tape menús de la página */
+    isolation: isolate;
+}
+
+.mapa.deshabilitado {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.ayuda,
+.error {
+    margin: 0.5rem 0 0;
+    font-size: 13px;
+    line-height: 18px;
+    color: #3f484c;
+}
+
+.error {
+    color: #ba1a1a;
+}

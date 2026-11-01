@@ -48,3 +48,12 @@
   border-radius: 8px;
   scroll-snap-align: center;
 }
+
+.location {
+  margin-bottom: 1rem;
+}
+
+.location app-location-map {
+  height: 16rem;
+  margin-top: 0.5rem;
+}
