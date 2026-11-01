@@ -33,6 +33,14 @@ describe('SpaceCreation', () => {
     expect(component).toBeTruthy();
   });
 
+  it('requires a location picked on the map', () => {
+    expect(component.formSpaceCreation.location().invalid()).toBe(true);
+
+    component.model.update((current) => ({ ...current, location: { latitude: -34, longitude: -58 } }));
+
+    expect(component.formSpaceCreation.location().invalid()).toBe(false);
+  });
+
   it('sends staged services as space service items', () => {
     component.model.update((current) => ({
       ...current,

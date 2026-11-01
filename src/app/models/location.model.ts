@@ -7,3 +7,5 @@ export interface Location{
 export function emptyLocation(){
      return {idLocation:-1, longitude:0, latitude:0}
 }
+
+export type Coordinates = Omit<Location, 'idLocation'>

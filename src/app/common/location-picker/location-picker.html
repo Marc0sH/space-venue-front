@@ -1,0 +1,23 @@
+@if (geolocalizacionDisponible) {
+    <button type="button" class="ubicacion-actual" (click)="usarUbicacionActual()"
+        [disabled]="disabled() || buscandoUbicacion()">
+        {{buscandoUbicacion() ? 'Buscando tu ubicación...' : 'Usar mi ubicación actual'}}
+    </button>
+}
+
+<div #mapa class="mapa" [class.deshabilitado]="disabled()"></div>
+
+@if (errorUbicacion() != "") {
+    <p class="error">{{errorUbicacion()}}</p>
+}
+
+@if (error() != "") {
+    <p class="error">{{error()}}</p>
+} @else if (value(); as ubicacion) {
+    <p class="ayuda">
+        Latitud {{ubicacion.latitude}}, longitud {{ubicacion.longitude}}.
+        Podés arrastrar el marcador para ajustarla.
+    </p>
+} @else {
+    <p class="ayuda">Hacé clic en el mapa para marcar la ubicación.</p>
+}
