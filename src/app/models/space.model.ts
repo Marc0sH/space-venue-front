@@ -1,5 +1,5 @@
 // import { Cancellationpolicies } from "./cancellationpolicies.model"
-import { Location } from "./location.model"
+import { Coordinates, Location } from "./location.model"
 import { ServiceReg, ServiceSpace } from "./service.model"
 import { consumerOwner } from "./user.model"
 
@@ -25,6 +25,6 @@ export type NewSpace = Omit<
     Space,
     'idSpace' | 'consumerOwner' | 'publicationDate' | 'isActive' | 'location' | 'services'
 > & {
-    location: Omit<Location, 'idLocation'>
+    location: Coordinates
     services: ServiceReg[]
 }

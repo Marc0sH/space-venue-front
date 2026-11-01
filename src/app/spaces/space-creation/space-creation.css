@@ -105,29 +105,12 @@
     box-shadow: 0 0 0 2px var(--sv-error);
 }
 
-/* ---------- Grupo "Ubicación" (el label que envuelve latitud y longitud) ---------- */
-.create-space-container label[for='location'] {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    margin: 0;
-    padding: 1rem 1.25rem 1.25rem;
-    border: 1px solid var(--sv-field-border);
-    border-radius: 0.75rem;
-    background-color: #f7f9ff;
+/* Título de un bloque que no es un input (ej. el mapa de ubicación) */
+.titulo-campo {
+    margin-bottom: 0.5rem;
     font-size: 14px;
-    font-weight: 600;
-}
-
-/* Labels de latitud / longitud dentro del grupo */
-.create-space-container label label {
+    line-height: 20px;
     font-weight: 500;
-    color: var(--sv-text-soft);
-}
-
-.create-space-container label[for='location'] > div {
-    display: flex;
-    flex-direction: column;
 }
 
 /* ---------- Imágenes ---------- */

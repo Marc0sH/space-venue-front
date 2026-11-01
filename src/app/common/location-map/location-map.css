@@ -1,0 +1,13 @@
+:host {
+    display: block;
+    height: 10rem;
+}
+
+.mapa {
+    height: 100%;
+    border-radius: 0.75rem;
+    background-color: #e4effd;
+    /* Encierra los z-index internos de Leaflet para que el mapa no tape menús de la página */
+    isolation: isolate;
+    cursor: inherit;
+}

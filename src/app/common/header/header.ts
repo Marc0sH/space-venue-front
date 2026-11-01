@@ -13,8 +13,9 @@ export class Header {
   protected notiService = inject(Notificationservice)
 
   readonly notificaciones = this.notiService.getUnseen();
+  // value() lanza si el pedido falló, y eso cortaría el change detection de toda la app
   readonly notificacionesCount = computed(
-    () => this.notificaciones.value()?.length ?? 0
+    () => this.notificaciones.hasValue() ? this.notificaciones.value().length : 0
   );
   readonly showScrollTop = signal(false);
    

@@ -23,10 +23,19 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "marker-*.png",
+                "input": "node_modules/leaflet/dist/images",
+                "output": "leaflet"
               }
             ],
             "styles": [
+              "node_modules/leaflet/dist/leaflet.css",
               "src/styles.css"
+            ],
+            "allowedCommonJsDependencies": [
+              "leaflet"
             ]
           },
           "configurations": {
