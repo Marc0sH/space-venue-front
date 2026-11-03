@@ -1,5 +1,7 @@
 import { Component, inject, input } from '@angular/core';
 import { Spaceservice } from '../spaceservice';
+import { Router } from '@angular/router';
+import { ReservationCreate } from '../../reservations/reservation-create/reservation-create';
 import { LocationMap } from '../../common/location-map/location-map';
 import { hasLocation } from '../../models/location.model';
 
@@ -10,6 +12,7 @@ import { hasLocation } from '../../models/location.model';
   templateUrl: './spacesdetail.html',
 })
 export class Spacesdetail {
+  private readonly router = inject(Router)
   readonly service = inject(Spaceservice)
   readonly id = input.required<string>();
   protected readonly space = this.service.getById(this.id);
@@ -34,6 +37,14 @@ export class Spacesdetail {
       return new TextDecoder('utf-8', { fatal: true }).decode(bytes);
     } catch {
       return name;
+    }
+  }
+
+  onReserve(){
+    // <app-reservation-create [idSpace]="space.value().idSpace.toString()" />
+    const idSpace = this.space.value()?.idSpace;
+    if (idSpace !== undefined) {
+      this.router.navigate(['/reserva', idSpace]);
     }
   }
 }

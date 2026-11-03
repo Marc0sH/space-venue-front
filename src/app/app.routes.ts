@@ -13,6 +13,7 @@ import { UserEdit } from './user/user-edit/user-edit';
 import { NotificationList } from './user/user-notifications/notification-list/notification-list';
 import { AdminSpaces } from './spaces/admin-spaces/admin-spaces';
 import { adminGuard } from './guard/admin-guard';
+import { ReservationCreate } from './reservations/reservation-create/reservation-create';
 
 export const routes: Routes = [
     {path: '', redirectTo: 'espacios', pathMatch: 'full'},
@@ -20,8 +21,9 @@ export const routes: Routes = [
     {path: 'registro', component: Register},
     {path: 'espacios', component: Spaceslist},
     {path: 'espacios/crear', component: SpaceCreation, canActivate: [logInGuard]},
-    {path: 'espacios/espaciospropios', component: ListMySpaces},
+    {path: 'espacios/espaciospropios', component: ListMySpaces, canActivate: [logInGuard]},
     {path: 'espacios/:id', component: Spacesdetail},
+    {path: 'reserva/:idSpace', component: ReservationCreate, canActivate: [logInGuard]},
     {path: 'perfil', component: UserProfile, canActivate: [logInGuard]},
     {path: 'perfil/editar', component: UserEdit, canActivate: [logInGuard]},
     {path: 'notificaciones', component: NotificationList, canActivate: [logInGuard]},

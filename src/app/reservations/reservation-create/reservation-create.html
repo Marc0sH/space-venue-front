@@ -1,0 +1,63 @@
+<div class="reservation-create-container">
+    <h2>Reserva de un espacio</h2>
+    <p class="form-intro">Completá los datos para solicitar tu reserva.</p>
+
+    <form (submit)="onSubmit($event)">
+        <div class="form-group">
+            <label for="title">Título del evento</label>
+            <input id="title" type="text" placeholder="¿De qué tratará tu evento?" [formField]="formReservation.title">
+            <app-form-error-message [campo]="formReservation.title()" />
+        </div>
+
+        <div class="form-group">
+            <label for="description">Descripción</label>
+            <textarea id="description" rows="3" placeholder="Contanos un poco más sobre tu evento" [formField]="formReservation.description"></textarea>
+            <app-form-error-message [campo]="formReservation.description()" />
+        </div> 
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="fromDate">Fecha de inicio</label>
+                <input id="fromDate" type="datetime-local" [formField]="formReservation.fromDate">
+                <app-form-error-message [campo]="formReservation.fromDate()" />
+            </div>
+
+            <div class="form-group">
+                <label for="untilDate">Fecha de finalización</label>
+                <input id="untilDate" type="datetime-local" [formField]="formReservation.untilDate">
+                <app-form-error-message [campo]="formReservation.untilDate()" />
+            </div>
+        </div>
+
+        <fieldset class="form-group">
+            <legend>Servicios adicionales</legend>
+
+            @for (service of spaceToReserve.value()?.services; track service.id) {
+                @if (service.isActive) {
+                <label class="service-option">
+                    <input
+                    type="checkbox"
+                    [checked]="model().idServicesSelect.includes(service.id)"
+                    (change)="onServiceToggle(service.id, $event)">
+                    <span>{{ service.description }}</span>
+                    <span>{{ service.price | currency:'ARS':'symbol':'1.2-2' }}</span>
+                </label>
+                }
+            }
+
+            <small class="field-help">Seleccioná todos los servicios que quieras agregar.</small>
+            <app-form-error-message [campo]="formReservation.idServicesSelect()" />
+        </fieldset>
+
+        <div class="reservation-total">
+            <span>Precio final</span>
+            <strong>{{finalPrice() | currency:'ARS':'symbol':'1.2-2' }}</strong>
+        </div>
+
+        <button type="submit" [disabled]="formReservation().invalid()">Reservar espacio</button>
+
+        @if (error()) {
+            <p class="error" role="alert">{{error()}}</p>
+        }
+    </form>
+</div>
