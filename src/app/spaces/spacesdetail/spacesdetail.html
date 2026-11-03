@@ -53,14 +53,14 @@
   <button
     class="reserve-button"
     [class.loading]="space.isLoading()"
-    [class.unavailable]="!space.isLoading() && (space.error() || !space.hasValue())"
+    [class.unavailable]="!space.isLoading() && (space.error() || !space.hasValue() || !space.value().isActive)"
     type="button"
-    [disabled]="space.isLoading() || !!space.error() || !space.hasValue()"
+    [disabled]="space.isLoading() || !!space.error() || !space.hasValue() || !space.value().isActive"
     (click)="onReserve()"
   >
     @if (space.isLoading()) {
       Cargando...
-    } @else if (space.error() || !space.hasValue()) {
+    } @else if (space.error() || !space.hasValue() || !space.value().isActive) {
       No disponible
     } @else {
       Reservar

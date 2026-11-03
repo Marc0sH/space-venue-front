@@ -2,7 +2,7 @@ import { Component, computed, effect, inject, input, signal } from '@angular/cor
 import { Reservation } from '../reservation';
 import { Session } from '../../auth/session/session';
 import { ReservationFormModel, VoidNewReservation } from '../../models/reservation.model';
-import { form, FormField } from '@angular/forms/signals';
+import { form, FormField, required, validate } from '@angular/forms/signals';
 import { Space } from '../../models/space.model';
 import { CurrencyPipe } from '@angular/common';
 import { Router } from '@angular/router';
@@ -42,7 +42,51 @@ export class ReservationCreate {
   } 
 
   formReservation = form(this.model, (path) => {
+    required(path.title, {message: 'El título es obligatorio'})
+    required(path.description, {message: 'La descripción es obligatoria'})
+    required(path.fromDate, {message: 'La fecha de inicio es obligatoria'})
+    required(path.untilDate, {message: 'La fecha de fin es obligatoria'})
+    
+    validate(path.title, (ctx) => 
+      ctx.value() && ctx.value().trim() !== '' 
+    ? null 
+    : {kind: 'campo vacio', message: 'El título no puede estar vacío'})
 
+    validate(path.description, (ctx) => 
+      ctx.value() && ctx.value().trim() !== '' 
+    ? null 
+    : {kind: 'campo vacio', message: 'La descripción no puede estar vacía'})
+
+    const paseHoras = 1000 * 60 * 60; // 1 hora en milisegundos
+    validate(path.fromDate, (ctx) => {
+      const fromDate = new Date(ctx.value());
+      const now = new Date();
+      const diffInHours = (fromDate.getTime() - now.getTime()) / paseHoras;
+      return ctx.value() && diffInHours >= (this.spaceToReserve.value()?.bufferTime ?? 60) / 60
+      ? null 
+      : {kind: 'fecha invalida', message: 'La fecha de inicio choca con el tiempo en que el dueño necesita preparar el espacio'}
+    })
+
+    validate(path.untilDate, (ctx) => {
+      const fromDate = new Date(this.model().fromDate);
+      const untilDate = new Date(ctx.value());
+      return ctx.value() && (untilDate.getTime() - fromDate.getTime()) <  paseHoras*24
+      ? null 
+      : {kind: 'fecha invalida', message: 'El evento no debe durar más de 24 horas'}
+    }) 
+
+    validate(path.fromDate, (ctx) => 
+      ctx.value() && new Date(ctx.value()) >= new Date() 
+    ? null 
+    : {kind: 'fecha invalida', message: 'La fecha de inicio debe ser igual o posterior a la fecha actual'})
+
+    validate(path.untilDate, (ctx) => {
+      const fromDate = new Date(this.model().fromDate);
+      const untilDate = new Date(ctx.value());
+      return ctx.value() && untilDate > fromDate 
+      ? null 
+      : {kind: 'fecha invalida', message: 'La fecha de fin debe ser posterior a la fecha de inicio'}
+    })
   })
 
   error = signal<string>("")
