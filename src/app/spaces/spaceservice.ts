@@ -4,6 +4,7 @@ import { switchMap } from 'rxjs';
 import { environment } from '../../environments/enviroment';
 import { NewSpace, Space } from '../models/space.model';
 import { ImageUploadUrl, SpaceImage } from '../models/space-image.model';
+import { NearbyFilter } from '../models/location.model';
 
 @Service()
 export class Spaceservice {
@@ -27,8 +28,17 @@ export class Spaceservice {
     }
 
     // Llamadas HTTP
-    getSpaces() {
-      return httpResource<Space[]>(() => `${environment.apiUrl}/spaces`);
+    //Sin filtro trae todos los espacios activos; con filtro, solo los que están dentro del radio
+    getSpaces(cercania: Signal<NearbyFilter | null> = signal(null)) {
+      return httpResource<Space[]>(() => {
+        const filtro = cercania();
+        if (!filtro) return { url: `${environment.apiUrl}/spaces` };
+        return {
+          url: `${environment.apiUrl}/spaces/byfields`,
+          method: 'POST',
+          body: { lat: filtro.latitude, lng: filtro.longitude, radious: filtro.radiusKm }
+        };
+      });
     }
 
     //Solo ADMIN: incluye los espacios inactivos

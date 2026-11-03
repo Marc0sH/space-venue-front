@@ -2,6 +2,7 @@ import { afterNextRender, Component, DestroyRef, effect, ElementRef, inject, inp
 import { FormValueControl } from '@angular/forms/signals';
 import type * as Leaflet from 'leaflet';
 import { Coordinates } from '../../models/location.model';
+import { geolocalizacionDisponible, obtenerUbicacionActual } from '../geolocation';
 import { cargarLeaflet, capaOpenStreetMap } from '../leaflet';
 
 // Vista inicial cuando todavía no hay ubicación: Ciudad de Buenos Aires
@@ -11,14 +12,6 @@ const ZOOM_UBICACION = 16
 
 // 6 decimales ≈ 10 cm, más que suficiente para ubicar un espacio
 const redondear = (n: number) => Math.round(n * 1e6) / 1e6
-
-// Indexado por GeolocationPositionError.code
-const PERMISO_DENEGADO = 1
-const ERRORES_GEOLOCALIZACION: Record<number, string> = {
-  1: 'No diste permiso para acceder a tu ubicación. Podés habilitarlo desde la configuración del navegador.',
-  2: 'No se pudo determinar tu ubicación.',
-  3: 'Se tardó demasiado en obtener tu ubicación. Probá de nuevo.',
-}
 
 // Control de formulario: se usa con [formField] y edita un campo de tipo Coordinates | null
 @Component({
@@ -32,7 +25,7 @@ export class LocationPicker implements FormValueControl<Coordinates | null> {
   touch = output<void>()
 
   error = signal('')
-  geolocalizacionDisponible = 'geolocation' in navigator
+  geolocalizacionDisponible = geolocalizacionDisponible()
   buscandoUbicacion = signal(false)
   errorUbicacion = signal('')
 
@@ -104,30 +97,17 @@ export class LocationPicker implements FormValueControl<Coordinates | null> {
   usarUbicacionActual() {
     this.errorUbicacion.set('')
     this.buscandoUbicacion.set(true)
-    this.pedirUbicacion(true)
-  }
-
-  private pedirUbicacion(altaPrecision: boolean) {
-    navigator.geolocation.getCurrentPosition(
-      ({ coords }) => {
+    obtenerUbicacionActual(
+      ({ latitude, longitude }) => {
         this.buscandoUbicacion.set(false)
         if (this.destruido) return
-        this.fijar(coords.latitude, coords.longitude)
-        this.mapa()?.setView([coords.latitude, coords.longitude], ZOOM_UBICACION)
+        this.fijar(latitude, longitude)
+        this.mapa()?.setView([latitude, longitude], ZOOM_UBICACION)
       },
-      (e) => {
-        // Sin GPS, la primera ubicación de alta precisión suele tardar más que el timeout:
-        // se reintenta con la de baja precisión (por red), que responde más rápido
-        if (altaPrecision && e.code !== PERMISO_DENEGADO) {
-          this.pedirUbicacion(false)
-          return
-        }
+      (mensaje: string) => {
         this.buscandoUbicacion.set(false)
-        this.errorUbicacion.set(ERRORES_GEOLOCALIZACION[e.code] ?? ERRORES_GEOLOCALIZACION[2])
-      },
-      altaPrecision
-        ? { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
-        : { enableHighAccuracy: false, timeout: 20000, maximumAge: 60000 }
+        this.errorUbicacion.set(mensaje)
+      }
     )
   }
 
