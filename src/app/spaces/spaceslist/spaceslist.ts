@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { Spaceservice } from '../spaceservice';
 import { Spacescard } from '../spacescard/spacescard';
 import { SpaceFilter } from '../space-filter/space-filter';
+import { NearbyFilter } from '../../models/location.model';
 
 @Component({
   imports: [Spacescard, SpaceFilter],
@@ -11,7 +12,8 @@ import { SpaceFilter } from '../space-filter/space-filter';
 })
 export class Spaceslist {
   private readonly spaceService = inject(Spaceservice)
-  private readonly spacesResource = this.spaceService.getSpaces();
+  readonly cercania = signal<NearbyFilter | null>(null);
+  private readonly spacesResource = this.spaceService.getSpaces(this.cercania);
 
   readonly spaces = computed(() => this.spacesResource.value() ?? []);
 
@@ -29,5 +31,9 @@ export class Spaceslist {
 
   cambiarOrden(orden: string) {
     this.orden.set(orden)
+  }
+
+  cambiarCercania(cercania: NearbyFilter | null) {
+    this.cercania.set(cercania)
   }
 }

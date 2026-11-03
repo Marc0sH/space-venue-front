@@ -14,3 +14,8 @@ export type Coordinates = Omit<Location, 'idLocation'>
 export function hasLocation(location: Coordinates | null | undefined): location is Coordinates {
      return !!location && (location.latitude !== 0 || location.longitude !== 0)
 }
+
+// Filtro "cerca mío" de la lista de espacios
+export interface NearbyFilter extends Coordinates {
+     radiusKm: number
+}
