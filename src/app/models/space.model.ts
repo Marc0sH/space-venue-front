@@ -18,12 +18,14 @@ export interface Space{
     publicationDate: Date,
     bufferTime: number,
     isActive: boolean,
+    //true si el dueño lo eliminó (soft delete); el admin lo sigue viendo pero no puede reactivarlo
+    deletedByOwner: boolean,
     services: ServiceSpace[]
 }
 
 export type NewSpace = Omit<
     Space,
-    'idSpace' | 'consumerOwner' | 'publicationDate' | 'isActive' | 'location' | 'services'
+    'idSpace' | 'consumerOwner' | 'publicationDate' | 'isActive' | 'deletedByOwner' | 'location' | 'services'
 > & {
     location: Coordinates
     services: ServiceReg[]

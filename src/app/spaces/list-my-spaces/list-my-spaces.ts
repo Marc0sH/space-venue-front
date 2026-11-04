@@ -55,8 +55,8 @@ export class ListMySpaces {
     this.errorBaja.set(null);
     this.spaceService.deleteOwnedSpace(id).subscribe({
       next: () => {
-        //Es soft delete: el espacio sigue existiendo, solo queda inactivo
-        this.lista.update(lista => lista.map(s => s.idSpace === id ? { ...s, isActive: false } : s));
+        //El back ya no devuelve los espacios eliminados por el dueño, así que lo sacamos de la lista
+        this.lista.update(lista => lista.filter(s => s.idSpace !== id));
         this.confirmando.set(null);
         this.eliminando.set(null);
       },
