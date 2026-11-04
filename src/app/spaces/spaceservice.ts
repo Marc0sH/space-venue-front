@@ -63,6 +63,11 @@ export class Spaceservice {
       return this.http.get<Space[]>(`${environment.apiUrl}/spaces/ownedspaces`);
     }
 
+    //Soft delete de un espacio propio
+    deleteOwnedSpace(id: number) {
+      return this.http.delete<{ mensaje: string }>(`${environment.apiUrl}/spaces/ownedspace/${id}`);
+    }
+
     getImagesBySpaceId(id: Signal<string>) {
       return httpResource<SpaceImage[]>(() => `${environment.apiUrl}/spaceimages/byspaceid/${id()}`);
     }
