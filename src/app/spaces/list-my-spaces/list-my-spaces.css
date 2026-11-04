@@ -22,8 +22,85 @@
     gap: 1.5rem;
 }
  
-.spaces-grid app-spacescard {
+.space-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.space-item app-spacescard {
     display: block;
+    flex: 1 1 auto;
+}
+
+/* Botones de baja (mismo estilo que la baja de cuenta en el perfil) */
+.redBtn,
+.secondaryBtn {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.redBtn {
+    width: 100%;
+    color: #dc2626;
+    background-color: transparent;
+    border: 1px solid #fca5a5;
+}
+
+.redBtn:hover:not(:disabled) {
+    background-color: #fef2f2;
+    border-color: #dc2626;
+}
+
+.redBtn.solid {
+    width: auto;
+    color: #ffffff;
+    background-color: #dc2626;
+    border-color: #dc2626;
+}
+
+.redBtn.solid:hover:not(:disabled) {
+    background-color: #b91c1c;
+}
+
+.secondaryBtn {
+    color: #334155;
+    background-color: transparent;
+    border: 1px solid #cbd5e1;
+}
+
+.secondaryBtn:hover:not(:disabled) {
+    background-color: #f1f5f9;
+    border-color: #94a3b8;
+}
+
+.redBtn:disabled,
+.secondaryBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.confirmacion-baja {
+    padding: 12px;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+}
+
+.confirmacion-baja p {
+    margin: 0 0 10px;
+    font-size: 0.9rem;
+    color: #7f1d1d;
+}
+
+.confirm-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
 }
  
 @media (min-width: 640px) {

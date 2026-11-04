@@ -1,0 +1,147 @@
+<div class="create-space-container">
+    <h2>Editar espacio</h2>
+
+    @if (space.isLoading()) {
+        <p>Cargando...</p>
+    } @else if (space.error()) {
+        <p class="error">No se pudo cargar el espacio</p>
+    } @else if (!esDuenio()) {
+        <p class="error">Solo el dueño del espacio puede editarlo.</p>
+        <a class="volver" [routerLink]="['/espacios', id()]">Volver al espacio</a>
+    } @else {
+        <form (submit)="onSubmit($event)">
+            <div>
+                <label for="nameSpace">Nombre del espacio: </label>
+                <input id="nameSpace" type="text" [formField]="formEdit.nameSpace">
+            </div>
+
+            <div>
+                <label for="description">Descripción: </label>
+                <input id="description" type="text" [formField]="formEdit.description">
+            </div>
+
+            <div>
+                <label for="basePrice">Precio base: </label>
+                <input id="basePrice" type="number" [formField]="formEdit.basePrice">
+            </div>
+
+            <div>
+                <label for="bufferTime">Tiempo de receso entre reservas (min): </label>
+                <input id="bufferTime" type="number" [formField]="formEdit.bufferTime">
+            </div>
+
+            <div>
+                <span class="titulo-campo">Ubicación</span>
+                <app-location-picker [formField]="formEdit.location"></app-location-picker>
+            </div>
+
+            <div class="imagenes">
+                <span class="titulo-campo">Imágenes</span>
+
+                @if (images.isLoading()) {
+                    <p>Cargando imágenes...</p>
+                } @else if (images.error()) {
+                    <p class="imagenes-error">No se pudieron cargar las imágenes guardadas</p>
+                } @else {
+                    @if (imagenesGuardadas().length > 0 || nuevas().length > 0) {
+                        <ul class="previews">
+                            @for (img of imagenesGuardadas(); track img.idSpaceImages) {
+                                <li>
+                                    <img [src]="imageUrl(img.urlImage)" [alt]="img.fileName">
+                                    <button type="button" (click)="marcarParaEliminar(img.idSpaceImages)" [disabled]="guardando()"
+                                        [attr.aria-label]="'Eliminar ' + img.fileName">✕</button>
+                                </li>
+                            }
+                            @for (imagen of nuevas(); track imagen.preview; let i = $index) {
+                                <li class="nueva">
+                                    <img [src]="imagen.preview" [alt]="imagen.file.name">
+                                    <button type="button" (click)="quitarNueva(i)" [disabled]="guardando()"
+                                        [attr.aria-label]="'Quitar ' + imagen.file.name">✕</button>
+                                </li>
+                            }
+                        </ul>
+                    } @else {
+                        <p>El espacio no tiene imágenes.</p>
+                    }
+
+                    @if (aEliminar().size > 0) {
+                        <p class="pendientes">
+                            {{ aEliminar().size }} {{ aEliminar().size === 1 ? 'imagen se eliminará' : 'imágenes se eliminarán' }} al guardar.
+                            <button type="button" class="restaurar" (click)="restaurarEliminadas()" [disabled]="guardando()">Restaurar</button>
+                        </p>
+                    }
+
+                    <label for="imagenes">Agregar imágenes (JPG, PNG o WEBP, hasta 5 MB cada una)</label>
+                    <input id="imagenes" type="file" accept="image/jpeg,image/png,image/webp" multiple
+                        (change)="onImagenesSeleccionadas($event)" [disabled]="guardando() || lugaresLibres() <= 0">
+
+                    @if (errorImagenes() != "") {
+                        <p class="imagenes-error">{{ errorImagenes() }}</p>
+                    }
+                }
+            </div>
+
+            <div class="servicios">
+                <span class="titulo-campo">Servicios</span>
+
+                @if (servicios.isLoading()) {
+                    <p>Cargando servicios...</p>
+                } @else if (servicios.error()) {
+                    <p class="imagenes-error">No se pudieron cargar los servicios guardados</p>
+                } @else {
+                    @if (serviciosGuardados().length > 0 || serviciosNuevos().length > 0) {
+                        <ul class="lista-servicios">
+                            @for (servicio of serviciosGuardados(); track servicio.id) {
+                                <li>
+                                    <span>{{ servicio.description }} — ${{ servicio.price }}</span>
+                                    <button type="button" class="quitar" (click)="marcarServicioParaEliminar(servicio.id)" [disabled]="guardando()"
+                                        [attr.aria-label]="'Eliminar ' + servicio.description">✕</button>
+                                </li>
+                            }
+                            @for (servicio of serviciosNuevos(); track $index; let i = $index) {
+                                <li class="nuevo">
+                                    <span>{{ servicio.description }} — ${{ servicio.price }} <em>(nuevo)</em></span>
+                                    <button type="button" class="quitar" (click)="quitarServicioNuevo(i)" [disabled]="guardando()"
+                                        [attr.aria-label]="'Quitar ' + servicio.description">✕</button>
+                                </li>
+                            }
+                        </ul>
+                    } @else {
+                        <p>El espacio no tiene servicios.</p>
+                    }
+
+                    @if (serviciosAEliminar().size > 0) {
+                        <p class="pendientes">
+                            {{ serviciosAEliminar().size }} {{ serviciosAEliminar().size === 1 ? 'servicio se eliminará' : 'servicios se eliminarán' }} al guardar.
+                            <button type="button" class="restaurar" (click)="restaurarServicios()" [disabled]="guardando()">Restaurar</button>
+                        </p>
+                    }
+
+                    <app-service-creation (dataEntry)="agregarServicio($event)"></app-service-creation>
+
+                    @if (errorServicios() != "") {
+                        <p class="imagenes-error">{{ errorServicios() }}</p>
+                    }
+                }
+            </div>
+
+            <p>Al guardar los cambios (datos, imágenes o servicios), el espacio queda inactivo hasta que un administrador lo vuelva a aprobar.</p>
+
+            <button type="submit" [disabled]="formEdit().invalid() || guardando()">
+                {{ guardando() ? 'Guardando...' : 'Guardar cambios' }}
+            </button>
+
+            @if (error() != "") {
+                <p class="error">{{ error() }}</p>
+            }
+
+            <a class="volver" [routerLink]="['/espacios', id()]">Cancelar</a>
+
+            <app-form-error-message [campo]="formEdit.nameSpace()"></app-form-error-message>
+            <app-form-error-message [campo]="formEdit.description()"></app-form-error-message>
+            <app-form-error-message [campo]="formEdit.basePrice()"></app-form-error-message>
+            <app-form-error-message [campo]="formEdit.bufferTime()"></app-form-error-message>
+            <app-form-error-message [campo]="formEdit.location()"></app-form-error-message>
+        </form>
+    }
+</div>

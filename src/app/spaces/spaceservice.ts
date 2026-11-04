@@ -2,7 +2,7 @@ import { HttpClient, httpResource } from '@angular/common/http';
 import { inject, Service, Signal, signal } from '@angular/core';
 import { switchMap } from 'rxjs';
 import { environment } from '../../environments/enviroment';
-import { NewSpace, Space } from '../models/space.model';
+import { NewSpace, Space, SpaceUpdate } from '../models/space.model';
 import { ImageUploadUrl, SpaceImage } from '../models/space-image.model';
 import { NearbyFilter } from '../models/location.model';
 
@@ -61,6 +61,21 @@ export class Spaceservice {
 
     getSpacesByOwnerLogged() {
       return this.http.get<Space[]>(`${environment.apiUrl}/spaces/ownedspaces`);
+    }
+
+    //Edita los datos de un espacio propio. El back lo deja inactivo hasta que un admin lo vuelva a aprobar
+    updateOwnedSpace(id: number, space: SpaceUpdate) {
+      return this.http.put<{ mensaje: string }>(`${environment.apiUrl}/spaces/ownedspace/${id}`, space);
+    }
+
+    //Soft delete de un espacio propio
+    deleteOwnedSpace(id: number) {
+      return this.http.delete<{ mensaje: string }>(`${environment.apiUrl}/spaces/ownedspace/${id}`);
+    }
+
+    //Borra la imagen de la base y de S3. Si la borra el dueño, el back deja el espacio inactivo
+    deleteImage(idImage: number) {
+      return this.http.delete<void>(`${environment.apiUrl}/spaceimages/${idImage}`);
     }
 
     getImagesBySpaceId(id: Signal<string>) {

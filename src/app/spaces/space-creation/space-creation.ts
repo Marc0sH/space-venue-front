@@ -10,19 +10,10 @@ import { ServiceCreation } from '../Servicios/service-creation/service-creation'
 import { catchError, concatMap, from, map, of, toArray } from 'rxjs';
 import { Coordinates } from '../../models/location.model';
 import { LocationPicker } from '../../common/location-picker/location-picker';
-
-// Mismos límites que valida el back en /spaceimages/upload-url
-const TIPOS_IMAGEN = ['image/jpeg', 'image/png', 'image/webp'];
-const TAMANIO_MAX_IMAGEN = 5 * 1024 * 1024;
-const CANTIDAD_MAX_IMAGENES = 10;
+import { CANTIDAD_MAX_IMAGENES, ImagenSeleccionada, seleccionarImagenes } from '../space-images';
 
 // La ubicación queda vacía hasta que se marca en el mapa
 type SpaceForm = Omit<NewSpace, 'location'> & { location: Coordinates | null }
-
-interface ImagenSeleccionada {
-  file: File,
-  preview: string
-}
 
 @Component({
   imports: [FormField, FormErrorMessage, RouterLink, ServiceCreation, LocationPicker],
@@ -83,19 +74,9 @@ export class SpaceCreation {
     const archivos = Array.from(input.files ?? [])
     input.value = "" // Permite volver a elegir el mismo archivo
 
-    const validos = archivos.filter(f => TIPOS_IMAGEN.includes(f.type) && f.size <= TAMANIO_MAX_IMAGEN)
-    const lugares = CANTIDAD_MAX_IMAGENES - this.imagenes().length
-    const agregados = validos.slice(0, lugares)
-
-    if (validos.length < archivos.length) {
-      this.errorImagenes.set("Algunas imágenes no se agregaron: solo se permiten JPG, PNG o WEBP de hasta 5 MB")
-    } else if (agregados.length < validos.length) {
-      this.errorImagenes.set(`Se pueden subir hasta ${CANTIDAD_MAX_IMAGENES} imágenes`)
-    } else {
-      this.errorImagenes.set("")
-    }
-
-    this.imagenes.update(lista => [...lista, ...agregados.map(file => ({ file, preview: URL.createObjectURL(file) }))])
+    const { agregadas, error } = seleccionarImagenes(archivos, CANTIDAD_MAX_IMAGENES - this.imagenes().length)
+    this.errorImagenes.set(error)
+    this.imagenes.update(lista => [...lista, ...agregadas])
   }
 
   quitarImagen(index: number) {

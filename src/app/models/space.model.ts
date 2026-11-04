@@ -1,4 +1,4 @@
-// import { Cancellationpolicies } from "./cancellationpolicies.model"
+import { Cancellationpolicies } from "./cancellationpolicies.model"
 import { Coordinates, Location } from "./location.model"
 import { ServiceReg, ServiceSpace } from "./service.model"
 import { consumerOwner } from "./user.model"
@@ -8,9 +8,8 @@ export interface Space{
     consumerOwner: consumerOwner,
     location: Location,
 
-    // En el back, el atributo cancellationPolicies es un string y se compara como enum. 
-    // Desde el front debemos asignar el valor enum y desde el back se compara la política entera (harcodeada desde la BD)
-    cancellationPolicies: string,
+    // El back devuelve la política completa; al crear o editar se manda solo el tipo (FLEXIBLE, MODERATED o STRICT)
+    cancellationPolicies: Cancellationpolicies | null,
 
     nameSpace: string,
     description: string,
@@ -18,13 +17,19 @@ export interface Space{
     publicationDate: Date,
     bufferTime: number,
     isActive: boolean,
+    //true si el dueño lo eliminó (soft delete); el admin lo sigue viendo pero no puede reactivarlo
+    deletedByOwner: boolean,
     services: ServiceSpace[]
 }
 
 export type NewSpace = Omit<
     Space,
-    'idSpace' | 'consumerOwner' | 'publicationDate' | 'isActive' | 'location' | 'services'
+    'idSpace' | 'consumerOwner' | 'publicationDate' | 'isActive' | 'deletedByOwner' | 'location' | 'services' | 'cancellationPolicies'
 > & {
+    cancellationPolicies: string
     location: Coordinates
     services: ServiceReg[]
 }
+
+// Al editar no se mandan los servicios: tienen sus propias rutas en el back
+export type SpaceUpdate = Omit<NewSpace, 'services'>

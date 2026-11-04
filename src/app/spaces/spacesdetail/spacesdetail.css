@@ -136,3 +136,25 @@
   height: 16rem;
   margin-top: 0.5rem;
 }
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.edit-button {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border: 1px solid #2563eb;
+  border-radius: 8px;
+  color: #2563eb;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.edit-button:hover {
+  background-color: #eff6ff;
+}
