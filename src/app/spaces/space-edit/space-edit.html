@@ -1,0 +1,57 @@
+<div class="create-space-container">
+    <h2>Editar espacio</h2>
+
+    @if (space.isLoading()) {
+        <p>Cargando...</p>
+    } @else if (space.error()) {
+        <p class="error">No se pudo cargar el espacio</p>
+    } @else if (!esDuenio()) {
+        <p class="error">Solo el dueño del espacio puede editarlo.</p>
+        <a class="volver" [routerLink]="['/espacios', id()]">Volver al espacio</a>
+    } @else {
+        <form (submit)="onSubmit($event)">
+            <div>
+                <label for="nameSpace">Nombre del espacio: </label>
+                <input id="nameSpace" type="text" [formField]="formEdit.nameSpace">
+            </div>
+
+            <div>
+                <label for="description">Descripción: </label>
+                <input id="description" type="text" [formField]="formEdit.description">
+            </div>
+
+            <div>
+                <label for="basePrice">Precio base: </label>
+                <input id="basePrice" type="number" [formField]="formEdit.basePrice">
+            </div>
+
+            <div>
+                <label for="bufferTime">Tiempo de receso entre reservas (min): </label>
+                <input id="bufferTime" type="number" [formField]="formEdit.bufferTime">
+            </div>
+
+            <div>
+                <span class="titulo-campo">Ubicación</span>
+                <app-location-picker [formField]="formEdit.location"></app-location-picker>
+            </div>
+
+            <p>Al guardar los cambios, el espacio queda inactivo hasta que un administrador lo vuelva a aprobar.</p>
+
+            <button type="submit" [disabled]="formEdit().invalid() || guardando()">
+                {{ guardando() ? 'Guardando...' : 'Guardar cambios' }}
+            </button>
+
+            @if (error() != "") {
+                <p class="error">{{ error() }}</p>
+            }
+
+            <a class="volver" [routerLink]="['/espacios', id()]">Cancelar</a>
+
+            <app-form-error-message [campo]="formEdit.nameSpace()"></app-form-error-message>
+            <app-form-error-message [campo]="formEdit.description()"></app-form-error-message>
+            <app-form-error-message [campo]="formEdit.basePrice()"></app-form-error-message>
+            <app-form-error-message [campo]="formEdit.bufferTime()"></app-form-error-message>
+            <app-form-error-message [campo]="formEdit.location()"></app-form-error-message>
+        </form>
+    }
+</div>

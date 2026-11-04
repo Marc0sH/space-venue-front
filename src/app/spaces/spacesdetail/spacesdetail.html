@@ -16,7 +16,12 @@
       </div>
     }
 
-    <h2>{{ formatName(s.nameSpace) }}</h2>
+    <div class="title-row">
+      <h2>{{ formatName(s.nameSpace) }}</h2>
+      @if (esDuenio()) {
+        <a class="edit-button" [routerLink]="['/espacios', s.idSpace, 'editar']">Editar datos</a>
+      }
+    </div>
     <p class="price">${{ s.basePrice }}</p>
     
     <div class="info-group">

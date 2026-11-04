@@ -1,12 +1,13 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { Spaceservice } from '../spaceservice';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { Session } from '../../auth/session/session';
 import { ReservationCreate } from '../../reservations/reservation-create/reservation-create';
 import { LocationMap } from '../../common/location-map/location-map';
 import { hasLocation } from '../../models/location.model';
 
 @Component({
-  imports: [LocationMap],
+  imports: [LocationMap, RouterLink],
   selector: 'app-spacesdetail',
   styleUrl: './spacesdetail.css',
   templateUrl: './spacesdetail.html',
@@ -18,6 +19,14 @@ export class Spacesdetail {
   protected readonly space = this.service.getById(this.id);
   protected readonly images = this.service.getImagesBySpaceId(this.id);
   protected readonly hasLocation = hasLocation;
+  private readonly session = inject(Session);
+
+  //Solo el dueño puede editar, y no si ya eliminó el espacio
+  protected readonly esDuenio = computed(() => {
+    const s = this.space.hasValue() ? this.space.value() : undefined;
+    const idLogueado = this.session.session()?.consumerId;
+    return !!s && idLogueado != null && s.consumerOwner?.idConsumer === idLogueado && !s.deletedByOwner;
+  });
 
   protected formatName(name: string): string {
     if (!/[ÃÂ][\u0080-\u00bf]/u.test(name)) {

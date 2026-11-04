@@ -6,6 +6,7 @@ import { Spaceslist } from './spaces/spaceslist/spaceslist';
 import { Spacescard } from './spaces/spacescard/spacescard';
 import { Spacesdetail } from './spaces/spacesdetail/spacesdetail';
 import { SpaceCreation } from './spaces/space-creation/space-creation';
+import { SpaceEdit } from './spaces/space-edit/space-edit';
 import { ListMySpaces } from './spaces/list-my-spaces/list-my-spaces';
 import { UserProfile } from './user/user-profile/user-profile';
 import { logInGuard } from './guard/log-in-guard';
@@ -22,6 +23,7 @@ export const routes: Routes = [
     {path: 'espacios', component: Spaceslist},
     {path: 'espacios/crear', component: SpaceCreation, canActivate: [logInGuard]},
     {path: 'espacios/espaciospropios', component: ListMySpaces, canActivate: [logInGuard]},
+    {path: 'espacios/:id/editar', component: SpaceEdit, canActivate: [logInGuard]},
     {path: 'espacios/:id', component: Spacesdetail},
     {path: 'reserva/:idSpace', component: ReservationCreate, canActivate: [logInGuard]},
     {path: 'perfil', component: UserProfile, canActivate: [logInGuard]},
