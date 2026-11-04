@@ -19,3 +19,35 @@
     margin-left: 0.5rem;
     padding: 0.25rem 0.75rem;
 }
+
+/* ---------- Servicios ---------- */
+.lista-servicios {
+    margin: 0 0 0.75rem;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.lista-servicios li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    background-color: #edf4ff;
+    font-size: 14px;
+}
+
+.lista-servicios li.nuevo {
+    outline: 2px dashed #00667f;
+    outline-offset: -2px;
+}
+
+.create-space-container .lista-servicios .quitar {
+    padding: 0.125rem 0.5rem;
+    background-color: rgb(0 0 0 / 60%);
+    color: #ffffff;
+}

@@ -81,7 +81,51 @@
                 }
             </div>
 
-            <p>Al guardar los cambios (datos o imágenes), el espacio queda inactivo hasta que un administrador lo vuelva a aprobar.</p>
+            <div class="servicios">
+                <span class="titulo-campo">Servicios</span>
+
+                @if (servicios.isLoading()) {
+                    <p>Cargando servicios...</p>
+                } @else if (servicios.error()) {
+                    <p class="imagenes-error">No se pudieron cargar los servicios guardados</p>
+                } @else {
+                    @if (serviciosGuardados().length > 0 || serviciosNuevos().length > 0) {
+                        <ul class="lista-servicios">
+                            @for (servicio of serviciosGuardados(); track servicio.id) {
+                                <li>
+                                    <span>{{ servicio.description }} — ${{ servicio.price }}</span>
+                                    <button type="button" class="quitar" (click)="marcarServicioParaEliminar(servicio.id)" [disabled]="guardando()"
+                                        [attr.aria-label]="'Eliminar ' + servicio.description">✕</button>
+                                </li>
+                            }
+                            @for (servicio of serviciosNuevos(); track $index; let i = $index) {
+                                <li class="nuevo">
+                                    <span>{{ servicio.description }} — ${{ servicio.price }} <em>(nuevo)</em></span>
+                                    <button type="button" class="quitar" (click)="quitarServicioNuevo(i)" [disabled]="guardando()"
+                                        [attr.aria-label]="'Quitar ' + servicio.description">✕</button>
+                                </li>
+                            }
+                        </ul>
+                    } @else {
+                        <p>El espacio no tiene servicios.</p>
+                    }
+
+                    @if (serviciosAEliminar().size > 0) {
+                        <p class="pendientes">
+                            {{ serviciosAEliminar().size }} {{ serviciosAEliminar().size === 1 ? 'servicio se eliminará' : 'servicios se eliminarán' }} al guardar.
+                            <button type="button" class="restaurar" (click)="restaurarServicios()" [disabled]="guardando()">Restaurar</button>
+                        </p>
+                    }
+
+                    <app-service-creation (dataEntry)="agregarServicio($event)"></app-service-creation>
+
+                    @if (errorServicios() != "") {
+                        <p class="imagenes-error">{{ errorServicios() }}</p>
+                    }
+                }
+            </div>
+
+            <p>Al guardar los cambios (datos, imágenes o servicios), el espacio queda inactivo hasta que un administrador lo vuelva a aprobar.</p>
 
             <button type="submit" [disabled]="formEdit().invalid() || guardando()">
                 {{ guardando() ? 'Guardando...' : 'Guardar cambios' }}

@@ -9,13 +9,16 @@ import { Coordinates, hasLocation } from '../../models/location.model';
 import { FormErrorMessage } from '../../common/form-error-message/form-error-message';
 import { LocationPicker } from '../../common/location-picker/location-picker';
 import { CANTIDAD_MAX_IMAGENES, ImagenSeleccionada, seleccionarImagenes } from '../space-images';
-import { catchError, concatMap, from, map, Observable, of, switchMap, toArray } from 'rxjs';
+import { ServiceServicios } from '../Servicios/service-servicios';
+import { ServiceCreation } from '../Servicios/service-creation/service-creation';
+import { ServiceReg } from '../../models/service.model';
+import { catchError, concat, concatMap, from, map, Observable, of, switchMap, toArray } from 'rxjs';
 
 // La ubicación puede quedar vacía si el espacio se creó antes del mapa
 type SpaceEditForm = Omit<SpaceUpdate, 'location'> & { location: Coordinates | null }
 
 @Component({
-  imports: [FormField, FormErrorMessage, RouterLink, LocationPicker],
+  imports: [FormField, FormErrorMessage, RouterLink, LocationPicker, ServiceCreation],
   selector: 'app-space-edit',
   // Mismo diseño que el formulario de creación
   styleUrls: ['../space-creation/space-creation.css', './space-edit.css'],
@@ -23,12 +26,14 @@ type SpaceEditForm = Omit<SpaceUpdate, 'location'> & { location: Coordinates | n
 })
 export class SpaceEdit {
   private readonly spaceService = inject(Spaceservice);
+  private readonly serviciosService = inject(ServiceServicios);
   private readonly session = inject(Session);
   private readonly router = inject(Router);
 
   readonly id = input.required<string>();
   protected readonly space = this.spaceService.getById(this.id);
   protected readonly images = this.spaceService.getImagesBySpaceId(this.id);
+  protected readonly servicios = this.serviciosService.getServicio(this.id);
 
   //Solo el dueño puede editar, y no si ya eliminó el espacio (el back también lo valida)
   protected readonly esDuenio = computed(() => {
@@ -76,6 +81,15 @@ export class SpaceEdit {
     CANTIDAD_MAX_IMAGENES - this.imagenesGuardadas().length - this.nuevas().length
   );
 
+  // Igual que las imágenes: los cambios de servicios se aplican recién al guardar
+  readonly serviciosAEliminar = signal<Set<number>>(new Set());
+  readonly serviciosNuevos = signal<ServiceReg[]>([]);
+  readonly errorServicios = signal('');
+
+  readonly serviciosGuardados = computed(() =>
+    (this.servicios.hasValue() ? this.servicios.value() : []).filter(s => !this.serviciosAEliminar().has(s.id))
+  );
+
   constructor() {
     inject(DestroyRef).onDestroy(() => this.nuevas().forEach(i => URL.revokeObjectURL(i.preview)));
   }
@@ -107,6 +121,28 @@ export class SpaceEdit {
     this.nuevas.update(lista => lista.filter((_, i) => i !== index));
   }
 
+  marcarServicioParaEliminar(idServicio: number) {
+    this.serviciosAEliminar.update(ids => new Set(ids).add(idServicio));
+  }
+
+  restaurarServicios() {
+    this.serviciosAEliminar.set(new Set());
+  }
+
+  agregarServicio(servicio: ServiceReg) {
+    const descripcion = servicio.description.trim();
+    if (!descripcion || !(servicio.price > 0)) {
+      this.errorServicios.set('El servicio necesita una descripción y un precio mayor a 0');
+      return;
+    }
+    this.errorServicios.set('');
+    this.serviciosNuevos.update(lista => [...lista, { description: descripcion, price: servicio.price }]);
+  }
+
+  quitarServicioNuevo(index: number) {
+    this.serviciosNuevos.update(lista => lista.filter((_, i) => i !== index));
+  }
+
   onSubmit(event: Event) {
     event.preventDefault();
     const { location, ...datos } = this.model();
@@ -116,25 +152,30 @@ export class SpaceEdit {
     this.error.set('');
 
     this.spaceService.updateOwnedSpace(idSpace, { ...datos, location }).pipe(
-      switchMap(() => this.aplicarCambiosImagenes(idSpace))
+      switchMap(() => this.aplicarCambiosPendientes(idSpace))
     ).subscribe({
-      next: ({ borradosFallidos, subidasFallidas }) => {
-        if (borradosFallidos.length === 0 && subidasFallidas.length === 0) {
+      next: (fallidos) => {
+        const { imagenesBorrado, imagenesSubida, serviciosBorrado, serviciosAlta } = fallidos;
+        if (Object.values(fallidos).every(lista => lista.length === 0)) {
           this.router.navigate(['/espacios', idSpace]);
           return;
         }
         // Se dejan pendientes solo los cambios que fallaron, para poder reintentar
-        const subidasOk = this.nuevas().filter(img => !subidasFallidas.includes(img));
-        subidasOk.forEach(img => URL.revokeObjectURL(img.preview));
-        this.nuevas.set(subidasFallidas);
-        this.aEliminar.set(new Set(borradosFallidos));
+        this.nuevas().filter(img => !imagenesSubida.includes(img)).forEach(img => URL.revokeObjectURL(img.preview));
+        this.nuevas.set(imagenesSubida);
+        this.aEliminar.set(new Set(imagenesBorrado));
+        this.serviciosNuevos.set(serviciosAlta);
+        this.serviciosAEliminar.set(new Set(serviciosBorrado));
         this.images.reload();
+        this.servicios.reload();
         this.guardando.set(false);
 
         const partes = [];
-        if (borradosFallidos.length) partes.push(`no se pudieron eliminar ${borradosFallidos.length} imágenes`);
-        if (subidasFallidas.length) partes.push(`no se pudieron subir ${subidasFallidas.length} imágenes`);
-        this.error.set(`Los datos se guardaron, pero ${partes.join(' y ')}. Podés volver a intentar.`);
+        if (imagenesBorrado.length) partes.push(`eliminar ${imagenesBorrado.length} imágenes`);
+        if (imagenesSubida.length) partes.push(`subir ${imagenesSubida.length} imágenes`);
+        if (serviciosBorrado.length) partes.push(`eliminar ${serviciosBorrado.length} servicios`);
+        if (serviciosAlta.length) partes.push(`agregar ${serviciosAlta.length} servicios`);
+        this.error.set(`Los datos se guardaron, pero no se pudo ${partes.join(', ')}. Podés volver a intentar.`);
       },
       error: (e: HttpErrorResponse) => {
         this.guardando.set(false);
@@ -147,35 +188,38 @@ export class SpaceEdit {
     });
   }
 
-  //Primero borra las imágenes marcadas y después sube las nuevas, de a una.
-  //Si alguna falla se siguen procesando las demás y se devuelven las que fallaron
-  private aplicarCambiosImagenes(idSpace: number): Observable<{ borradosFallidos: number[], subidasFallidas: ImagenSeleccionada[] }> {
-    const borrados = from([...this.aEliminar()]).pipe(
-      concatMap(idImagen => this.spaceService.deleteImage(idImagen).pipe(
-        map(() => null),
-        catchError(e => {
-          console.error('Error al eliminar la imagen ' + idImagen, e);
-          return of(idImagen);
-        })
-      )),
-      toArray()
-    );
-    const subidas = from(this.nuevas()).pipe(
-      concatMap(img => this.spaceService.uploadImage(idSpace, img.file).pipe(
-        map(() => null),
-        catchError(e => {
-          console.error('Error al subir la imagen ' + img.file.name, e);
-          return of(img);
-        })
-      )),
-      toArray()
-    );
+  //Aplica en orden: borrado de imágenes, subida de imágenes, borrado de servicios y alta de servicios.
+  //Si algo falla se siguen procesando los demás y se devuelve lo que falló en cada grupo
+  private aplicarCambiosPendientes(idSpace: number) {
+    const imagenesBorrado = this.procesar([...this.aEliminar()], id => this.spaceService.deleteImage(id), 'eliminar la imagen');
+    const imagenesSubida = this.procesar(this.nuevas(), img => this.spaceService.uploadImage(idSpace, img.file), 'subir la imagen');
+    const serviciosBorrado = this.procesar([...this.serviciosAEliminar()], id => this.serviciosService.deleteServicio(idSpace, id), 'eliminar el servicio');
+    const serviciosAlta = this.procesar(this.serviciosNuevos(),
+      s => this.serviciosService.postServicio({ description: s.description, price: s.price, isActive: true, idSpace }), 'agregar el servicio');
 
-    return borrados.pipe(
-      switchMap(fallidosBorrado => subidas.pipe(map(fallidasSubida => ({
-        borradosFallidos: fallidosBorrado.filter((id): id is number => id !== null),
-        subidasFallidas: fallidasSubida.filter((img): img is ImagenSeleccionada => img !== null),
-      }))))
+    return concat(imagenesBorrado, imagenesSubida, serviciosBorrado, serviciosAlta).pipe(
+      toArray(),
+      map(([imgBorrado, imgSubida, srvBorrado, srvAlta]) => ({
+        imagenesBorrado: imgBorrado as number[],
+        imagenesSubida: imgSubida as ImagenSeleccionada[],
+        serviciosBorrado: srvBorrado as number[],
+        serviciosAlta: srvAlta as ServiceReg[],
+      }))
+    );
+  }
+
+  //Ejecuta la acción para cada elemento, de a uno, y emite la lista de los que fallaron
+  private procesar<T>(items: T[], accion: (item: T) => Observable<unknown>, descripcion: string): Observable<T[]> {
+    return from(items).pipe(
+      concatMap(item => accion(item).pipe(
+        map(() => null),
+        catchError(e => {
+          console.error(`Error al ${descripcion}`, item, e);
+          return of(item);
+        })
+      )),
+      toArray(),
+      map(resultados => resultados.filter((item): item is T => item !== null))
     );
   }
 }
