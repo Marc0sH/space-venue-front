@@ -1,0 +1,21 @@
+/* Agregados sobre los estilos del formulario de creación */
+.imagenes .previews {
+    margin-bottom: 0.75rem;
+}
+
+/* Las imágenes nuevas (todavía sin subir) se marcan con un borde */
+.previews li.nueva img {
+    outline: 2px dashed #00667f;
+    outline-offset: -2px;
+}
+
+.pendientes {
+    margin: 0 0 0.75rem;
+    font-size: 13px;
+    color: #3f484c;
+}
+
+.create-space-container .pendientes .restaurar {
+    margin-left: 0.5rem;
+    padding: 0.25rem 0.75rem;
+}

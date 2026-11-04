@@ -73,6 +73,11 @@ export class Spaceservice {
       return this.http.delete<{ mensaje: string }>(`${environment.apiUrl}/spaces/ownedspace/${id}`);
     }
 
+    //Borra la imagen de la base y de S3. Si la borra el dueño, el back deja el espacio inactivo
+    deleteImage(idImage: number) {
+      return this.http.delete<void>(`${environment.apiUrl}/spaceimages/${idImage}`);
+    }
+
     getImagesBySpaceId(id: Signal<string>) {
       return httpResource<SpaceImage[]>(() => `${environment.apiUrl}/spaceimages/byspaceid/${id()}`);
     }

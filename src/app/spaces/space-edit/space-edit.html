@@ -35,7 +35,53 @@
                 <app-location-picker [formField]="formEdit.location"></app-location-picker>
             </div>
 
-            <p>Al guardar los cambios, el espacio queda inactivo hasta que un administrador lo vuelva a aprobar.</p>
+            <div class="imagenes">
+                <span class="titulo-campo">Imágenes</span>
+
+                @if (images.isLoading()) {
+                    <p>Cargando imágenes...</p>
+                } @else if (images.error()) {
+                    <p class="imagenes-error">No se pudieron cargar las imágenes guardadas</p>
+                } @else {
+                    @if (imagenesGuardadas().length > 0 || nuevas().length > 0) {
+                        <ul class="previews">
+                            @for (img of imagenesGuardadas(); track img.idSpaceImages) {
+                                <li>
+                                    <img [src]="imageUrl(img.urlImage)" [alt]="img.fileName">
+                                    <button type="button" (click)="marcarParaEliminar(img.idSpaceImages)" [disabled]="guardando()"
+                                        [attr.aria-label]="'Eliminar ' + img.fileName">✕</button>
+                                </li>
+                            }
+                            @for (imagen of nuevas(); track imagen.preview; let i = $index) {
+                                <li class="nueva">
+                                    <img [src]="imagen.preview" [alt]="imagen.file.name">
+                                    <button type="button" (click)="quitarNueva(i)" [disabled]="guardando()"
+                                        [attr.aria-label]="'Quitar ' + imagen.file.name">✕</button>
+                                </li>
+                            }
+                        </ul>
+                    } @else {
+                        <p>El espacio no tiene imágenes.</p>
+                    }
+
+                    @if (aEliminar().size > 0) {
+                        <p class="pendientes">
+                            {{ aEliminar().size }} {{ aEliminar().size === 1 ? 'imagen se eliminará' : 'imágenes se eliminarán' }} al guardar.
+                            <button type="button" class="restaurar" (click)="restaurarEliminadas()" [disabled]="guardando()">Restaurar</button>
+                        </p>
+                    }
+
+                    <label for="imagenes">Agregar imágenes (JPG, PNG o WEBP, hasta 5 MB cada una)</label>
+                    <input id="imagenes" type="file" accept="image/jpeg,image/png,image/webp" multiple
+                        (change)="onImagenesSeleccionadas($event)" [disabled]="guardando() || lugaresLibres() <= 0">
+
+                    @if (errorImagenes() != "") {
+                        <p class="imagenes-error">{{ errorImagenes() }}</p>
+                    }
+                }
+            </div>
+
+            <p>Al guardar los cambios (datos o imágenes), el espacio queda inactivo hasta que un administrador lo vuelva a aprobar.</p>
 
             <button type="submit" [disabled]="formEdit().invalid() || guardando()">
                 {{ guardando() ? 'Guardando...' : 'Guardar cambios' }}
