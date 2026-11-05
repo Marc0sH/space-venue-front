@@ -128,3 +128,42 @@ tr.inactivo td {
 .secondaryBtn:hover {
     background-color: #f1f5f9;
 }
+
+.acciones {
+    text-align: right;
+}
+
+.acciones button {
+    margin-left: 6px;
+    padding: 6px 14px;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.acciones button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.pregunta {
+    color: #991b1b;
+    font-weight: 600;
+}
+
+.redBtn {
+    color: #ffffff;
+    border: solid 1px rgb(73, 0, 0);
+    background-color: rgba(177, 0, 0, 0.836);
+}
+
+.greenBtn {
+    color: #ffffff;
+    border: solid 1px #14532d;
+    background-color: #15803d;
+}
+
+.status-badge.user-request {
+    background-color: #fee2e2;
+    color: #991b1b;
+}

@@ -34,6 +34,10 @@ export class User {
         }));
     }
 
+    setUserStatus(id: number, active: boolean) {
+        return this.http.put<{ message: string }>(`${this.baseUrl}/${id}/status`, null, { params: { active } });
+    }
+
     deleteLoggedUser() {
         return this.http.delete<{ message: string }>(`${this.baseUrlSingular}`);
     }

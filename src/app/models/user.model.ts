@@ -39,7 +39,20 @@ export interface UserProfileData {
     lastname: string;
     email: string;
     phone: string;
-    credentials: { username: string; isActive: boolean; rol: string };
+    credentials: { username: string; isActive: boolean; rol: string; deactivationReason: DeactivationReason | null };
+}
+
+//Motivo por el que una cuenta está inactiva (EDeactivationReason en el back). null si está activa
+export type DeactivationReason = 'USER_REQUEST' | 'ADMIN';
+
+//Texto del estado de una cuenta para mostrar en la lista y en la ficha
+export function etiquetaEstadoCuenta(c: UserProfileData['credentials'] | undefined): string {
+    if (c?.isActive) return 'Activa';
+    switch (c?.deactivationReason) {
+        case 'USER_REQUEST': return 'Baja del usuario';
+        case 'ADMIN': return 'Desactivada por el admin';
+        default: return 'Desactivada'; //Cuentas desactivadas antes de que existiera el motivo
+    }
 }
 
 export type UserUpdate = Omit<CredentialRegister, 'username' | 'password'>;

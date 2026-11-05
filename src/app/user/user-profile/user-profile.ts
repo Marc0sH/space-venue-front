@@ -2,6 +2,7 @@ import { Component, computed, inject, input, signal } from '@angular/core';
 import { User } from '../user';
 import { Session } from '../../auth/session/session';
 import { RouterLink } from '@angular/router';
+import { etiquetaEstadoCuenta } from '../../models/user.model';
 
 @Component({
   imports: [RouterLink],
@@ -22,6 +23,8 @@ export class UserProfile {
   protected readonly perfil = this.userService.getProfile(() =>
     this.vistaAdmin() ? Number(this.id()) : this.sessionService.session()?.consumerId
   );
+
+  protected readonly etiquetaEstado = etiquetaEstadoCuenta;
 
   protected confirmingDeletion = signal(false);
   protected deleting = signal(false);

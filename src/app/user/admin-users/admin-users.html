@@ -21,8 +21,10 @@
     <div class="filtros">
         <select [value]="estado()" (change)="estado.set($any($event.target).value)">
             <option value="Todos">Todos los estados</option>
-            <option value="Activos">Activos</option>
-            <option value="Inactivos">Desactivados</option>
+            <option value="Activos">Activas</option>
+            <option value="Inactivos">Inactivas (cualquier motivo)</option>
+            <option value="USER_REQUEST">Baja del usuario</option>
+            <option value="ADMIN">Desactivadas por el admin</option>
         </select>
     </div>
 
@@ -31,6 +33,10 @@
     } @else if (usuarios.error()) {
         <p class="error">No se pudieron cargar los usuarios</p>
     } @else {
+        @if (error()) {
+            <p class="error">{{ error() }}</p>
+        }
+
         <p class="resumen">
             {{ usuarios.value()?.length }} {{ hayFiltros() ? 'resultados' : 'usuarios en total' }}
             · {{ cantidadInactivos() }} desactivados
@@ -47,6 +53,7 @@
                         <th>Teléfono</th>
                         <th>Rol</th>
                         <th>Estado</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,13 +70,39 @@
                             <td>{{ u.phone }}</td>
                             <td>{{ u.credentials?.rol === 'ROLE_ADMIN' ? 'Admin' : 'Cliente' }}</td>
                             <td>
-                                <span class="status-badge" [class.active]="u.credentials?.isActive">
-                                    {{ u.credentials?.isActive ? 'Activa' : 'Desactivada' }}
+                                <span class="status-badge" [class.active]="u.credentials?.isActive"
+                                    [class.user-request]="!u.credentials?.isActive && u.credentials?.deactivationReason === 'USER_REQUEST'">
+                                    {{ etiquetaEstado(u.credentials) }}
                                 </span>
+                            </td>
+                            <td class="acciones">
+                                @if (!u.credentials?.isActive) {
+                                    <button type="button" class="greenBtn"
+                                        [disabled]="actualizando() === u.idConsumer"
+                                        (click)="cambiarEstado(u.idConsumer, true)">
+                                        {{ actualizando() === u.idConsumer ? 'Procesando...' : 'Activar' }}
+                                    </button>
+                                } @else if (u.idConsumer !== miId()) {
+                                    @if (confirmando() === u.idConsumer) {
+                                        <span class="pregunta">¿Desactivar?</span>
+                                        <button type="button" class="secondaryBtn"
+                                            [disabled]="actualizando() === u.idConsumer"
+                                            (click)="confirmando.set(null)">No</button>
+                                        <button type="button" class="redBtn"
+                                            [disabled]="actualizando() === u.idConsumer"
+                                            (click)="cambiarEstado(u.idConsumer, false)">
+                                            {{ actualizando() === u.idConsumer ? 'Procesando...' : 'Sí' }}
+                                        </button>
+                                    } @else {
+                                        <button type="button" class="redBtn" (click)="confirmando.set(u.idConsumer)">
+                                            Desactivar
+                                        </button>
+                                    }
+                                }
                             </td>
                         </tr>
                     } @empty {
-                        <tr><td colspan="7" class="vacio">No hay usuarios que coincidan</td></tr>
+                        <tr><td colspan="8" class="vacio">No hay usuarios que coincidan</td></tr>
                     }
                 </tbody>
             </table>
