@@ -14,6 +14,7 @@ import { UserEdit } from './user/user-edit/user-edit';
 import { NotificationList } from './user/user-notifications/notification-list/notification-list';
 import { AdminSpaces } from './spaces/admin-spaces/admin-spaces';
 import { adminGuard } from './guard/admin-guard';
+import { AdminUsers } from './user/admin-users/admin-users';
 import { ReservationCreate } from './reservations/reservation-create/reservation-create';
 import { ReservationList } from './reservations/reservation-list/reservation-list';
 import { ReservationDetails } from './reservations/reservation-details/reservation-details';
@@ -35,5 +36,7 @@ export const routes: Routes = [
     {path: 'perfil/editar', component: UserEdit, canActivate: [logInGuard]},
     {path: 'notificaciones', component: NotificationList, canActivate: [logInGuard]},
     {path: 'admin/espacios', component: AdminSpaces, canActivate: [adminGuard]},
+    {path: 'admin/usuarios', component: AdminUsers, canActivate: [adminGuard]},
+    {path: 'admin/usuarios/:id', component: UserProfile, canActivate: [adminGuard]},
     {path:'**', component: NotFound}
 ];
