@@ -1,7 +1,8 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { inject, Service } from '@angular/core';
+import { HttpClient, HttpErrorResponse, httpResource } from '@angular/common/http';
+import { inject, Service, Signal } from '@angular/core';
 import { NewReservation, ReservationComplete } from '../models/reservation.model';
 import { environment } from '../../environments/enviroment';
+import { ServiceSelected, ServiceSpace } from '../models/service.model';
 
 @Service()
 export class Reservation {
@@ -33,5 +34,24 @@ export class Reservation {
             `${environment.apiUrl}/reservations`,
             reservation
         );
+    }
+
+    insertServicesSelected(idReservation : number, idServices : number[]){
+        return this.http.post<ServiceSelected[]>(
+            `${environment.apiUrl}/servicesselected/insert/list/${idReservation}`,
+            idServices
+        );
+    }
+
+    getReservationsOfLoggedUser(){
+        return this.http.get<ReservationComplete[]>(`${environment.apiUrl}/reservations/me`)
+    }
+
+    getReservation(idReservation : Signal<string>){
+        return httpResource<ReservationComplete>(() => `${environment.apiUrl}/reservations/${idReservation()}`)
+    }
+    
+    getServicesSelected(idReservation : Signal<string>){
+        return httpResource<ServiceSelected[]>(() => `${environment.apiUrl}/servicesselected/reservation/${idReservation()}`)
     }
 }

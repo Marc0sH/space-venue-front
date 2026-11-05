@@ -1,3 +1,5 @@
+import { ReservationComplete, ReservationForServicesSelected } from "./reservation.model"
+
 export interface ServiceSpace{
     id: number,
     description: string,
@@ -17,4 +19,11 @@ export interface ServiceSpaceItemDTO{
 }
 export interface ServiceSpaceUpdateDTO extends ServiceSpaceItemDTO{
     id: number
+}
+
+export interface ServiceSelected {
+  id: number;
+  priceAtReservation: number;
+  descriptionFrozen: string;
+  idReservation: number;
 }

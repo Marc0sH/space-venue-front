@@ -50,7 +50,6 @@ export class Spacesdetail {
   }
 
   onReserve(){
-    // <app-reservation-create [idSpace]="space.value().idSpace.toString()" />
     const idSpace = this.space.value()?.idSpace;
     if (idSpace !== undefined) {
       this.router.navigate(['/reserva', idSpace]);

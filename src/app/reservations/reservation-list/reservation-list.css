@@ -1,0 +1,38 @@
+.reservations-list {
+  box-sizing: border-box;
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+  color: #121d26;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+.reservations-list app-reservation-card {
+  display: block;
+}
+
+.list-message {
+  margin: 0;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid #dce5eb;
+  border-radius: 0.75rem;
+  background-color: #ffffff;
+  color: #3f484c;
+  line-height: 1.5;
+}
+
+.list-message.fail {
+  border-color: #fecaca;
+  background-color: #fef2f2;
+  color: #b91c1c;
+}
+
+@media (min-width: 640px) {
+  .reservations-list {
+    gap: 1.25rem;
+    padding: 2.5rem 1.5rem 3.5rem;
+  }
+}
