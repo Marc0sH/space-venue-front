@@ -164,3 +164,31 @@
   margin-top: 12px;
   text-align: center;
 }
+
+/* Vista de solo lectura para el admin */
+.backBtn {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+}
+
+.status-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background-color: #f1f5f9;
+  color: #64748b;
+}
+
+.status-badge.active {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.status-badge.user-request {
+  background-color: #fee2e2;
+  color: #991b1b;
+}

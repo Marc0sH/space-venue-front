@@ -19,28 +19,47 @@
         <dt>Teléfono</dt>
         <dd>{{ u.phone }}</dd>
       </div>
-    </dl>
-
-    <a routerLink="/perfil/editar" class="primaryBtn">Editar perfil</a>
-
-    <div class="danger-zone">
-      @if (!confirmingDeletion()) {
-        <button class="redBtn" (click)="confirmingDeletion.set(true)">Dar de baja mi cuenta</button>
-      } @else {
-        <div class="confirmacion-baja">
-          <p><strong>¿Estás seguro?</strong> No vas a poder volver a iniciar sesión con esta cuenta.</p>
-          <div class="confirm-actions">
-            <button class="secondaryBtn" [disabled]="deleting()" (click)="confirmingDeletion.set(false)">Cancelar</button>
-            <button class="redBtn solid" [disabled]="deleting()" (click)="softDeleteUser()">
-              {{ deleting() ? 'Procesando...' : 'Sí, dar de baja' }}
-            </button>
-          </div>
+      @if (vistaAdmin()) {
+        <div class="data-row">
+          <dt>Rol</dt>
+          <dd>{{ u.credentials.rol === 'ROLE_ADMIN' ? 'Admin' : 'Cliente' }}</dd>
+        </div>
+        <div class="data-row">
+          <dt>Estado de la cuenta</dt>
+          <dd>
+            <span class="status-badge" [class.active]="u.credentials.isActive"
+              [class.user-request]="!u.credentials.isActive && u.credentials.deactivationReason === 'USER_REQUEST'">
+              {{ etiquetaEstado(u.credentials) }}
+            </span>
+          </dd>
         </div>
       }
+    </dl>
 
-      @if (deletionError()) {
-        <p class="error">{{ deletionError() }}</p>
-      }
-    </div>
+    @if (vistaAdmin()) {
+      <a routerLink="/admin/usuarios" class="secondaryBtn backBtn">Volver a la lista de usuarios</a>
+    } @else {
+      <a routerLink="/perfil/editar" class="primaryBtn">Editar perfil</a>
+
+      <div class="danger-zone">
+        @if (!confirmingDeletion()) {
+          <button class="redBtn" (click)="confirmingDeletion.set(true)">Dar de baja mi cuenta</button>
+        } @else {
+          <div class="confirmacion-baja">
+            <p><strong>¿Estás seguro?</strong> No vas a poder volver a iniciar sesión con esta cuenta.</p>
+            <div class="confirm-actions">
+              <button class="secondaryBtn" [disabled]="deleting()" (click)="confirmingDeletion.set(false)">Cancelar</button>
+              <button class="redBtn solid" [disabled]="deleting()" (click)="softDeleteUser()">
+                {{ deleting() ? 'Procesando...' : 'Sí, dar de baja' }}
+              </button>
+            </div>
+          </div>
+        }
+
+        @if (deletionError()) {
+          <p class="error">{{ deletionError() }}</p>
+        }
+      </div>
+    }
   }
 </div>
