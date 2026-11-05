@@ -43,3 +43,12 @@ export interface UserProfileData {
 }
 
 export type UserUpdate = Omit<CredentialRegister, 'username' | 'password'>;
+
+//Filtros de /usuarios/byfields (ConsumerFilterDTO). null = no filtrar por ese campo
+export interface ConsumerFilter {
+    firstname: string | null;
+    lastname: string | null;
+    email: string | null;
+    phone: string | null; //El back lo compara exacto, no parcial
+    username: string | null;
+}

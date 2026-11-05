@@ -1,0 +1,78 @@
+<section class="admin-section">
+    <h2>Administrar usuarios</h2>
+
+    <form class="filtros" (submit)="$event.preventDefault(); buscar()">
+        <input type="search" placeholder="Usuario" [value]="borrador().username ?? ''"
+            (input)="actualizarCampo('username', $any($event.target).value)">
+        <input type="search" placeholder="Nombre" [value]="borrador().firstname ?? ''"
+            (input)="actualizarCampo('firstname', $any($event.target).value)">
+        <input type="search" placeholder="Apellido" [value]="borrador().lastname ?? ''"
+            (input)="actualizarCampo('lastname', $any($event.target).value)">
+        <input type="search" placeholder="Email" [value]="borrador().email ?? ''"
+            (input)="actualizarCampo('email', $any($event.target).value)">
+        <input type="search" placeholder="Teléfono (exacto)" [value]="borrador().phone ?? ''"
+            (input)="actualizarCampo('phone', $any($event.target).value)">
+        <button type="submit" class="primaryBtn">Buscar</button>
+        @if (hayFiltros()) {
+            <button type="button" class="secondaryBtn" (click)="limpiar()">Limpiar</button>
+        }
+    </form>
+
+    <div class="filtros">
+        <select [value]="estado()" (change)="estado.set($any($event.target).value)">
+            <option value="Todos">Todos los estados</option>
+            <option value="Activos">Activos</option>
+            <option value="Inactivos">Desactivados</option>
+        </select>
+    </div>
+
+    @if (usuarios.isLoading()) {
+        <p class="resumen">Buscando usuarios...</p>
+    } @else if (usuarios.error()) {
+        <p class="error">No se pudieron cargar los usuarios</p>
+    } @else {
+        <p class="resumen">
+            {{ usuarios.value()?.length }} {{ hayFiltros() ? 'resultados' : 'usuarios en total' }}
+            · {{ cantidadInactivos() }} desactivados
+        </p>
+
+        <div class="tabla-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Usuario</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (u of usuariosFiltrados(); track u.idConsumer) {
+                        <tr [class.inactivo]="!u.credentials?.isActive">
+                            <td>{{ u.idConsumer }}</td>
+                            <td>
+                                <a [routerLink]="['/admin/usuarios', u.idConsumer]">
+                                    {{ u.firstname }} {{ u.lastname }}
+                                </a>
+                            </td>
+                            <td>{{ u.credentials?.username }}</td>
+                            <td>{{ u.email }}</td>
+                            <td>{{ u.phone }}</td>
+                            <td>{{ u.credentials?.rol === 'ROLE_ADMIN' ? 'Admin' : 'Cliente' }}</td>
+                            <td>
+                                <span class="status-badge" [class.active]="u.credentials?.isActive">
+                                    {{ u.credentials?.isActive ? 'Activa' : 'Desactivada' }}
+                                </span>
+                            </td>
+                        </tr>
+                    } @empty {
+                        <tr><td colspan="7" class="vacio">No hay usuarios que coincidan</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

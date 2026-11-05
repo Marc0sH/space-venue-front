@@ -12,7 +12,16 @@ import { RouterLink } from '@angular/router';
 export class UserProfile {
   private userService = inject(User);
   private sessionService = inject(Session);
-  protected readonly perfil = this.userService.getLoggedProfile();
+
+  //Viene de la ruta admin/usuarios/:id (withComponentInputBinding). En /perfil queda undefined
+  readonly id = input<string>();
+
+  //Si hay id, el admin está viendo la ficha de otro usuario: solo lectura, sin editar ni dar de baja
+  protected readonly vistaAdmin = computed(() => this.id() != null);
+
+  protected readonly perfil = this.userService.getProfile(() =>
+    this.vistaAdmin() ? Number(this.id()) : this.sessionService.session()?.consumerId
+  );
 
   protected confirmingDeletion = signal(false);
   protected deleting = signal(false);
