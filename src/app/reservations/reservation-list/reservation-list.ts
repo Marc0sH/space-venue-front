@@ -20,6 +20,14 @@ export class ReservationList {
   isLoading = signal(true)
   error = signal('')
 
+  protected onStatusChange(id: number, status: ReservationComplete['status']): void {
+    this.reservations.update(reservations =>
+      reservations.map(reservation =>
+        reservation.id === id ? { ...reservation, status } : reservation
+      )
+    )
+  }
+
   constructor() {
     effect(() => {
       if(this.idSpace() === undefined){

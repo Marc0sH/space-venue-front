@@ -58,4 +58,19 @@ export class Reservation {
     getServicesSelected(idReservation : Signal<string>){
         return httpResource<ServiceSelected[]>(() => `${environment.apiUrl}/servicesselected/reservation/${idReservation()}`)
     }
+
+    rejectReservation(id: string) {
+        return this.http.put<void>(
+            `${environment.apiUrl}/reservations/reject/${id}`,
+            id
+        );
+    }
+
+    confirmReservation(idReservation : string){
+        return this.http.put<void>(`${environment.apiUrl}/reservations/confirm/${idReservation}`, idReservation)
+    }
+    
+    cancelReservation(idReservation : string){
+        return this.http.put(`${environment.apiUrl}/reservations/cancel/${idReservation}`, idReservation)
+    }
 }
