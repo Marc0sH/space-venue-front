@@ -45,9 +45,9 @@
 
     @if (s.services?.length) {
       @for (s of s.services; track s.id) {
-        <div>
+        <div class="service-item">
           <p>Descripcion: {{s.description}}</p>
-          <p>Precio: {{s.price}}</p>
+          <p>Precio: ${{s.price}}</p>
         </div>
       }
     } @else {

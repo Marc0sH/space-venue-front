@@ -14,7 +14,9 @@
 
         <button type="button" (click)="addService()" [disabled]="serviceForm().invalid()">Agregar servicio</button>
 
-        <app-form-error-message [campo]="serviceForm.description()"></app-form-error-message>
-        <app-form-error-message [campo]="serviceForm.price()"></app-form-error-message>
+        @if (showErrors()) {
+            <app-form-error-message [campo]="serviceForm.description()"></app-form-error-message>
+            <app-form-error-message [campo]="serviceForm.price()"></app-form-error-message>
+        }
     </div>
 </section>
