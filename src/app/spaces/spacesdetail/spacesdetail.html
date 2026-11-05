@@ -55,20 +55,39 @@
     }
   }
 
-  <button
-    class="reserve-button"
-    [class.loading]="space.isLoading()"
-    [class.unavailable]="!space.isLoading() && (space.error() || !space.hasValue() || !space.value().isActive)"
-    type="button"
-    [disabled]="space.isLoading() || !!space.error() || !space.hasValue() || !space.value().isActive"
-    (click)="onReserve()"
-  >
-    @if (space.isLoading()) {
-      Cargando...
-    } @else if (space.error() || !space.hasValue() || !space.value().isActive) {
-      No disponible
-    } @else {
-      Reservar
-    }
-  </button>
+  @if (esDuenio()) {
+    <button
+      class="reserve-button"
+      [class.loading]="space.isLoading()"
+      [class.unavailable]="!space.isLoading() && (space.error() || !space.hasValue())"
+      type="button"
+      [disabled]="space.isLoading() || !!space.error() || !space.hasValue()"
+      (click)="navToReservations()"
+    >
+      @if (space.isLoading()) {
+        Cargando...
+      } @else if (space.error() || !space.hasValue()) {
+        No disponible
+      } @else {
+        Ver reservas
+      }
+    </button>
+  } @else{
+    <button
+      class="reserve-button"
+      [class.loading]="space.isLoading()"
+      [class.unavailable]="!space.isLoading() && (space.error() || !space.hasValue() || !space.value().isActive)"
+      type="button"
+      [disabled]="space.isLoading() || !!space.error() || !space.hasValue() || !space.value().isActive"
+      (click)="onReserve()"
+    >
+      @if (space.isLoading()) {
+        Cargando...
+      } @else if (space.error() || !space.hasValue() || !space.value().isActive) {
+        No disponible
+      } @else {
+        Reservar
+      }
+    </button>
+  }
 </div>

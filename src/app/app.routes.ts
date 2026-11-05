@@ -30,6 +30,7 @@ export const routes: Routes = [
     {path: 'reserva/:idSpace', component: ReservationCreate, canActivate: [logInGuard]},
     {path: 'reservas', component: ReservationList, canActivate: [logInGuard]},
     {path: 'reservas/:idReservation', component: ReservationDetails, canActivate: [logInGuard]},
+    {path: 'reservas/byspace/:idSpace', component: ReservationList, canActivate: [logInGuard]},
     {path: 'perfil', component: UserProfile, canActivate: [logInGuard]},
     {path: 'perfil/editar', component: UserEdit, canActivate: [logInGuard]},
     {path: 'notificaciones', component: NotificationList, canActivate: [logInGuard]},

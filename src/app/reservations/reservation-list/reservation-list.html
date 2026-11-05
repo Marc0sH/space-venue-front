@@ -3,8 +3,8 @@
         <p class="list-message">Cargando reservas...</p>
     } @else if (error()) {
         <p class="list-message fail">Hubo un error al cargar las reservas: {{error()}}</p>
-    } @else if (reservationsOfActualUser()) {
-        @for (r of reservationsOfActualUser(); track r.id) {
+    } @else if (reservations()) {
+        @for (r of reservations(); track r.id) {
             <app-reservation-card [reservation]="r"></app-reservation-card>
         }
     }

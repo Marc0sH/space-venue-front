@@ -55,4 +55,8 @@ export class Spacesdetail {
       this.router.navigate(['/reserva', idSpace]);
     }
   }
+
+  navToReservations(){
+    this.router.navigate(['/reservas/byspace', this.space.value()?.idSpace])
+  }
 }

@@ -47,6 +47,10 @@ export class Reservation {
         return this.http.get<ReservationComplete[]>(`${environment.apiUrl}/reservations/me`)
     }
 
+    getReservationsOfAnSpace(idSpace : string){
+        return this.http.get<ReservationComplete[]>(`${environment.apiUrl}/reservations/space/${idSpace}`)
+    }
+
     getReservation(idReservation : Signal<string>){
         return httpResource<ReservationComplete>(() => `${environment.apiUrl}/reservations/${idReservation()}`)
     }
