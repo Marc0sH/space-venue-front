@@ -92,13 +92,27 @@ export class ReservationCreate {
   error = signal<string>("")
   finalPrice = computed(() => {
     const space = this.spaceToReserve.value();
-    const selectedIds = new Set(this.model().idServicesSelect);
+    const { fromDate, untilDate, idServicesSelect } = this.model();
 
-    const servicesTotal = space?.services
+    if (!space || !fromDate || !untilDate) {
+      return 0;
+    }
+
+    const start = new Date(fromDate).getTime();
+    const end = new Date(untilDate).getTime();
+
+    if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) {
+      return 0;
+    }
+
+    const hours = (end - start) / (1000 * 60 * 60);
+    const selectedIds = new Set(idServicesSelect);
+
+    const servicesTotal = space.services
       .filter(service => service.isActive && selectedIds.has(service.id))
       .reduce((total, service) => total + service.price, 0);
 
-    return (space?.basePrice ?? 0) + (servicesTotal ?? 0);
+    return space.basePrice * hours + servicesTotal;
   });
 
   onServiceToggle(serviceId: number, event: Event): void {
@@ -139,6 +153,16 @@ export class ReservationCreate {
     }).subscribe({
       next: response => {
         console.log("La reserva fue creada con éxito: " + response);
+
+        this.reservationService.insertServicesSelected(response.id, this.model().idServicesSelect).subscribe({
+          next: (res) => {
+            console.log("Los servicios se ingresaron con éxito");
+          },
+          error: (e) => {
+            console.error("Hubo un error: " + e);
+          }
+        })
+
         this.router.navigate(['/espacios'])
       },
       error: (error) => {

@@ -30,7 +30,11 @@ export class ServiceCreation {
     }))
   }
 
+  showErrors = signal(false)
+
   addService(){
+    this.showErrors.set(true)
+
     if (this.serviceForm().invalid()) {
       return;
     }

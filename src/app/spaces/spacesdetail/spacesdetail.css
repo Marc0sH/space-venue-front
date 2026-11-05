@@ -158,3 +158,17 @@
 .edit-button:hover {
   background-color: #eff6ff;
 }
+
+.service-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-top: 1px solid #edf1f4;
+}
+
+.service-item p {
+    margin: 0;
+    color: #3f484c;
+    line-height: 1.5;
+}

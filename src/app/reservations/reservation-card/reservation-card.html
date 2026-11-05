@@ -1,0 +1,38 @@
+<div class="card">
+    <p class="card-title" (click)="onDetails()">{{reservation().title}}</p>
+
+    @if(esDuenio()){
+        @if (reservation().status === 'TENTATIVE') {
+            <div class="reservation-actions">
+                <button class="action-button reject-button" type="button" [disabled]="isUpdating()" (click)="onReject()">Rechazar</button>
+                <button class="action-button accept-button" type="button" [disabled]="isUpdating()" (click)="onAccept()">Aceptar</button>
+            </div>
+        }
+    }
+
+    @if (reservation().status === 'CONFIRMED') {
+        <button class="action-button cancel-button" type="button" [disabled]="isUpdating()" (click)="onCancel()">Cancelar</button>
+    }
+
+    @if (actionError()) {
+        <p class="fail" role="alert">{{actionError()}}</p>
+    }
+
+    <p class="status"
+        [class.tentative]="reservation().status === 'TENTATIVE'"
+        [class.accepted]="reservation().status === 'CONFIRMED' || reservation().status === 'COMPLETED'"
+        [class.negative]="reservation().status === 'REJECTED' || reservation().status === 'CANCELLED'">
+
+        @if (reservation().status === 'CONFIRMED') {
+            Confirmada
+        } @else if (reservation().status === 'REJECTED'){
+            Rechazada
+        } @else if (reservation().status === 'TENTATIVE') {
+            En espera de validación
+        } @else if (reservation().status === 'COMPLETED') {
+            Completada
+        } @else if (reservation().status === 'CANCELLED') {
+            Cancelada
+        }
+    </p>
+</div>

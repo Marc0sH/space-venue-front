@@ -44,3 +44,5 @@ export type ReservationFormModel = Omit<NewReservation, 'fromDate' | 'untilDate'
   fromDate: string;
   untilDate: string;
 };
+
+export type ReservationForServicesSelected = Omit<ReservationComplete, 'servicesSelected'>
