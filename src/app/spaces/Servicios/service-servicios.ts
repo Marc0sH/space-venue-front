@@ -8,19 +8,21 @@ export class ServiceServicios {
     private url = `${environment.apiUrl}/services`
     private http = inject(HttpClient)
 
-    getServicio(idSpace: string){
-        return httpResource<ServiceSpace[]>(() => `${this.url}/space/${idSpace}`)
+    //Servicios activos del espacio (los inactivos los filtra el back)
+    getServicio(idSpace: Signal<string>){
+        return httpResource<ServiceSpace[]>(() => `${this.url}/space/${idSpace()}`)
     }
 
+    //El back responde 201 sin cuerpo
     postServicio(newSer: ServiceSpaceItemDTO){
-        return this.http.post<ServiceSpace>(`${this.url}/insert`, newSer)
+        return this.http.post<void>(`${this.url}/insert`, newSer)
     }
 
     updateServicio(ser: ServiceSpaceUpdateDTO){
         return this.http.put<ServiceSpace>(`${this.url}/update/${ser.id}`, ser)
     }
 
-    deleteServicio(idSpace:string,idSer: string){
+    deleteServicio(idSpace: number | string, idSer: number | string){
         return this.http.delete(`${this.url}/space/${idSpace}/delete/${idSer}`)
     }
 

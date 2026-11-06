@@ -1,8 +1,35 @@
-<div class="sort-container">
-    <label for="orden">Ordenar: </label>
-    <select id="orden" (change)="seleccionarOrden($event)">
-        <option value="Sin ordenar">Sin ordenar</option>
-        <option value="Precio">Precio (Menor a Mayor)</option>
-        <option value="Nombre">Nombre (A-Z)</option>
-  </select> 
+<div class="filters">
+    @if (geolocalizacionDisponible) {
+        <div class="nearby-container">
+            <label for="radio">Distancia: </label>
+            <select id="radio" (change)="seleccionarRadio($event)">
+                @for (r of radios; track r) {
+                    <option [value]="r" [selected]="r === radioKm()">Hasta {{ r }} km</option>
+                }
+            </select>
+
+            @if (ubicacion()) {
+                <button type="button" class="nearby-button active" (click)="quitarCercania()">
+                    Quitar filtro de cercanía
+                </button>
+            } @else {
+                <button type="button" class="nearby-button" (click)="buscarCercanos()" [disabled]="buscandoUbicacion()">
+                    {{ buscandoUbicacion() ? 'Buscando tu ubicación...' : 'Espacios cerca mío' }}
+                </button>
+            }
+        </div>
+    }
+
+    <div class="sort-container">
+        <label for="orden">Ordenar: </label>
+        <select id="orden" (change)="seleccionarOrden($event)">
+            <option value="Sin ordenar">Sin ordenar</option>
+            <option value="Precio">Precio (Menor a Mayor)</option>
+            <option value="Nombre">Nombre (A-Z)</option>
+      </select>
+    </div>
 </div>
+
+@if (errorUbicacion() != "") {
+    <p class="error">{{ errorUbicacion() }}</p>
+}

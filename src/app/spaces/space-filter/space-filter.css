@@ -6,26 +6,37 @@
   max-width: 120px;
   margin: 0 auto;
 }
-/* Contenedor del filtro */
-.sort-container {
+/* Contenedor de los filtros */
+.filters {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end; /* Alineado a la derecha sobre las tarjetas */
-  gap: 10px;
+  gap: 10px 24px;
   max-width: 1200px;
   margin: 20px auto 10px auto;
   padding: 0 10px;
   font-family: system-ui, -apple-system, sans-serif;
 }
 
-.sort-container label {
+.sort-container,
+.nearby-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.sort-container label,
+.nearby-container label {
   font-size: 0.9rem;
   font-weight: 600;
   color: #475569;
 }
 
 /* Selector estilizado */
-.sort-container select {
+.sort-container select,
+.nearby-container select {
   padding: 8px 14px;
   font-size: 0.9rem;
   font-weight: 500;
@@ -40,7 +51,48 @@
 }
 
 .sort-container select:focus,
-.sort-container select:hover {
+.sort-container select:hover,
+.nearby-container select:focus,
+.nearby-container select:hover {
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+/* Botón de cercanía */
+.nearby-button {
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #00667f;
+  border: 1px solid #00667f;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.nearby-button:hover:not(:disabled) {
+  background-color: #004e62;
+}
+
+.nearby-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.nearby-button.active {
+  color: #00667f;
+  background-color: #ffffff;
+}
+
+.nearby-button.active:hover {
+  background-color: #edf4ff;
+}
+
+.error {
+  max-width: 1200px;
+  margin: 0 auto 10px auto;
+  padding: 0 10px;
+  text-align: right;
+  font-size: 0.9rem;
+  color: #b91c1c;
 }

@@ -1,0 +1,227 @@
+:host {
+  display: block;
+  padding: 2.5rem 1rem;
+  background-color: #f7f9ff;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+.reservation-create-container {
+  --primary: #00667f;
+  --primary-hover: #2f7f99;
+  --text: #121d26;
+  --text-soft: #3f484c;
+  --field: #edf4ff;
+  --field-border: #e4effd;
+  --disabled: #bfc8cd;
+  --error: #ba1a1a;
+
+  box-sizing: border-box;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  background-color: #ffffff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 5%), 0 4px 12px rgb(0 0 0 / 4%);
+  color: var(--text);
+}
+
+.reservation-create-container h2 {
+  margin: 0 0 0.5rem;
+  color: var(--text);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 2rem;
+  letter-spacing: -0.01em;
+}
+
+.form-intro {
+  margin: 0 0 1.5rem;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.reservation-create-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  color: var(--text);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 3rem;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.75rem;
+  outline: none;
+  background-color: var(--field);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  background-color: #ffffff;
+  box-shadow: 0 0 0 2px var(--primary);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #78868e;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.field-help {
+  color: var(--text-soft);
+  font-size: 0.8rem;
+  line-height: 1.25rem;
+}
+
+.reservation-create-container app-form-error-message {
+  display: block;
+  color: var(--error);
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+}
+
+.reservation-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--field-border);
+  border-radius: 0.75rem;
+  background-color: #f7f9ff;
+  font-size: 0.95rem;
+}
+
+.reservation-total strong {
+  color: var(--primary);
+  font-size: 1.125rem;
+}
+
+.reservation-create-container button[type='submit'] {
+  align-self: flex-end;
+  min-height: 3rem;
+  padding: 0.75rem 1.75rem;
+  border: 0;
+  border-radius: 9999px;
+  background-color: var(--primary);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -2px rgb(0 0 0 / 10%);
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.reservation-create-container button[type='submit']:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+  box-shadow: 0 8px 12px -4px rgb(0 0 0 / 15%);
+}
+
+.reservation-create-container button[type='submit']:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.reservation-create-container button[type='submit']:focus-visible {
+  outline: 3px solid #87d1ed;
+  outline-offset: 2px;
+}
+
+.reservation-create-container button[type='submit']:disabled {
+  background-color: var(--disabled);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.reservation-create-container .error {
+  margin: 0;
+  padding: 0.875rem 1rem;
+  border-radius: 0.75rem;
+  background-color: #ffdad6;
+  color: #93000a;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+fieldset.form-group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.service-option {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--field-border);
+  border-radius: 0.75rem;
+  cursor: pointer;
+}
+
+.service-option input[type='checkbox'] {
+  width: 1rem;
+  min-height: 1rem;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--primary);
+}
+
+.service-option:has(input:checked) {
+  border-color: var(--primary);
+  background-color: var(--field);
+}
+
+@media (max-width: 480px) {
+  :host {
+    padding: 1.5rem 0.75rem;
+  }
+
+  .reservation-create-container {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reservation-create-container button[type='submit'] {
+    align-self: stretch;
+  }
+}

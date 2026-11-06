@@ -1,21 +1,33 @@
-import { Component, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { Spaceservice } from '../spaceservice';
+import { Router, RouterLink } from '@angular/router';
+import { Session } from '../../auth/session/session';
+import { ReservationCreate } from '../../reservations/reservation-create/reservation-create';
 import { LocationMap } from '../../common/location-map/location-map';
 import { hasLocation } from '../../models/location.model';
 
 @Component({
-  imports: [LocationMap],
+  imports: [LocationMap, RouterLink],
   selector: 'app-spacesdetail',
   styleUrl: './spacesdetail.css',
   templateUrl: './spacesdetail.html',
 })
 export class Spacesdetail {
+  private readonly router = inject(Router)
   readonly service = inject(Spaceservice)
   readonly id = input.required<string>();
   protected readonly space = this.service.getById(this.id);
   protected readonly images = this.service.getImagesBySpaceId(this.id);
   protected readonly currentImageIndex = signal(0);
   protected readonly hasLocation = hasLocation;
+  private readonly session = inject(Session);
+
+  //Solo el dueño puede editar, y no si ya eliminó el espacio
+  protected readonly esDuenio = computed(() => {
+    const s = this.space.hasValue() ? this.space.value() : undefined;
+    const idLogueado = this.session.session()?.consumerId;
+    return !!s && idLogueado != null && s.consumerOwner?.idConsumer === idLogueado && !s.deletedByOwner;
+  });
 
   protected showPreviousImage(): void {
     this.moveImage(-1);
@@ -51,5 +63,16 @@ export class Spacesdetail {
     } catch {
       return name;
     }
+  }
+
+  onReserve(){
+    const idSpace = this.space.value()?.idSpace;
+    if (idSpace !== undefined) {
+      this.router.navigate(['/reserva', idSpace]);
+    }
+  }
+
+  navToReservations(){
+    this.router.navigate(['/reservas/byspace', this.space.value()?.idSpace])
   }
 }

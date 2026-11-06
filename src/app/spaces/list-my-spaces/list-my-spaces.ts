@@ -36,7 +36,34 @@ export class ListMySpaces {
     })
   }
 
+  //Id del espacio que espera confirmación de baja y del que se está dando de baja
+  readonly confirmando = signal<number | null>(null);
+  readonly eliminando = signal<number | null>(null);
+  readonly errorBaja = signal<string | null>(null);
+
   cambiarOrden(orden : string){
     this.orden.set(orden)
+  }
+
+  pedirConfirmacion(id: number) {
+    this.errorBaja.set(null);
+    this.confirmando.set(id);
+  }
+
+  darDeBaja(id: number) {
+    this.eliminando.set(id);
+    this.errorBaja.set(null);
+    this.spaceService.deleteOwnedSpace(id).subscribe({
+      next: () => {
+        //El back ya no devuelve los espacios eliminados por el dueño, así que lo sacamos de la lista
+        this.lista.update(lista => lista.filter(s => s.idSpace !== id));
+        this.confirmando.set(null);
+        this.eliminando.set(null);
+      },
+      error: () => {
+        this.errorBaja.set('No se pudo dar de baja el espacio');
+        this.eliminando.set(null);
+      },
+    });
   }
 }

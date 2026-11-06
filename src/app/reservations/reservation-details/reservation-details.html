@@ -1,0 +1,68 @@
+@if (reservation.isLoading()) {
+    <p class="detail-message">Cargando datos de reserva...</p>
+} @else if (reservation.error()) {
+    <p class="detail-message fail">Error al obtener los datos de la reserva: {{reservation.error()?.message}}</p>
+} @else {
+    <main class="reservation-details">
+        <header class="reservation-header">
+            <div>
+                <h2>{{reservation.value()?.title}}</h2>
+                <p class="reservation-description">{{reservation.value()?.description}}</p>
+            </div>
+
+            <p class="status"
+                [class.tentative]="reservation.value()?.status === 'TENTATIVE'"
+                [class.accepted]="reservation.value()?.status === 'CONFIRMED' || reservation.value()?.status === 'COMPLETED'"
+                [class.negative]="reservation.value()?.status === 'REJECTED' || reservation.value()?.status === 'CANCELLED'">
+
+                @if (reservation.value()?.status === 'CONFIRMED') {
+                    Confirmada
+                } @else if (reservation.value()?.status === 'REJECTED'){
+                    Rechazada
+                } @else if (reservation.value()?.status === 'TENTATIVE') {
+                    En espera de validación
+                } @else if (reservation.value()?.status === 'COMPLETED') {
+                    Completada
+                } @else if (reservation.value()?.status === 'CANCELLED') {
+                    Cancelada
+                }
+            </p>
+        </header>
+
+        <section class="reservation-summary" aria-label="Resumen de la reserva">
+            <div class="dates">
+                <p><span>Desde</span>{{reservation.value()?.fromDate | date:'dd/MM/yyyy HH:mm'}}</p>
+                <p><span>Hasta</span>{{reservation.value()?.untilDate | date:'dd/MM/yyyy HH:mm'}}</p>
+            </div>
+            <p class="payment"><span>Pago total</span><strong>${{reservation.value()?.finalPrice}}</strong></p>
+        </section>
+
+        <section class="space-details">
+            <h3>Detalles del espacio</h3>
+            <p><strong>Nombre:</strong> {{reservation.value()?.space?.nameSpace}}</p>
+            <p><strong>Descripción:</strong> {{reservation.value()?.space?.description}}</p>
+            <p><strong>Precio base:</strong> ${{reservation.value()?.space?.basePrice}}</p>
+            @if (hoursReservation() !== null) {
+                <p><strong>Cantidad de horas:</strong> {{ hoursReservation() }}</p>
+            }
+
+            <div class="services">
+                <h4>Servicios adicionales seleccionados</h4>
+                @if (serviceSelected.hasValue()) {
+                    @for (s of serviceSelected.value(); track s.id) {
+                        <div class="service-item">
+                            <p>{{ s.descriptionFrozen }}</p>
+                            <p>{{ s.priceAtReservation | currency:'ARS':'symbol':'1.2-2' }}</p>
+                        </div>
+                    } @empty {
+                        <p>No hay servicios seleccionados</p>
+                    }
+                } @else if (serviceSelected.isLoading()) {
+                    <p>Cargando servicios seleccionados...</p>
+                } @else {
+                    <p>Error al obtener servicios seleccionados</p>
+                }
+            </div>
+        </section>
+    </main>
+}

@@ -2,8 +2,9 @@ import { HttpClient, httpResource } from '@angular/common/http';
 import { inject, Service, Signal, signal } from '@angular/core';
 import { switchMap } from 'rxjs';
 import { environment } from '../../environments/enviroment';
-import { NewSpace, Space } from '../models/space.model';
+import { NewSpace, Space, SpaceUpdate } from '../models/space.model';
 import { ImageUploadUrl, SpaceImage } from '../models/space-image.model';
+import { NearbyFilter } from '../models/location.model';
 
 @Service()
 export class Spaceservice {
@@ -27,8 +28,17 @@ export class Spaceservice {
     }
 
     // Llamadas HTTP
-    getSpaces() {
-      return httpResource<Space[]>(() => `${environment.apiUrl}/spaces`);
+    //Sin filtro trae todos los espacios activos; con filtro, solo los que están dentro del radio
+    getSpaces(cercania: Signal<NearbyFilter | null> = signal(null)) {
+      return httpResource<Space[]>(() => {
+        const filtro = cercania();
+        if (!filtro) return { url: `${environment.apiUrl}/spaces` };
+        return {
+          url: `${environment.apiUrl}/spaces/byfields`,
+          method: 'POST',
+          body: { lat: filtro.latitude, lng: filtro.longitude, radious: filtro.radiusKm }
+        };
+      });
     }
 
     //Solo ADMIN: incluye los espacios inactivos
@@ -51,6 +61,21 @@ export class Spaceservice {
 
     getSpacesByOwnerLogged() {
       return this.http.get<Space[]>(`${environment.apiUrl}/spaces/ownedspaces`);
+    }
+
+    //Edita los datos de un espacio propio. El back lo deja inactivo hasta que un admin lo vuelva a aprobar
+    updateOwnedSpace(id: number, space: SpaceUpdate) {
+      return this.http.put<{ mensaje: string }>(`${environment.apiUrl}/spaces/ownedspace/${id}`, space);
+    }
+
+    //Soft delete de un espacio propio
+    deleteOwnedSpace(id: number) {
+      return this.http.delete<{ mensaje: string }>(`${environment.apiUrl}/spaces/ownedspace/${id}`);
+    }
+
+    //Borra la imagen de la base y de S3. Si la borra el dueño, el back deja el espacio inactivo
+    deleteImage(idImage: number) {
+      return this.http.delete<void>(`${environment.apiUrl}/spaceimages/${idImage}`);
     }
 
     getImagesBySpaceId(id: Signal<string>) {

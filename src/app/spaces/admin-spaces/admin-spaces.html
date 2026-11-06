@@ -46,16 +46,22 @@
                             <td>{{ s.basePrice | currency:'ARS':'symbol-narrow':'1.0-2' }}</td>
                             <td>{{ s.publicationDate | date:'dd/MM/yyyy' }}</td>
                             <td>
-                                <span class="status-badge" [class.active]="s.isActive">
-                                    {{ s.isActive ? 'Activo' : 'Inactivo' }}
-                                </span>
+                                @if (s.deletedByOwner) {
+                                    <span class="status-badge deleted">Eliminado por el dueño</span>
+                                } @else {
+                                    <span class="status-badge" [class.active]="s.isActive">
+                                        {{ s.isActive ? 'Activo' : 'Inactivo' }}
+                                    </span>
+                                }
                             </td>
                             <td>
-                                <button type="button" [class.redBtn]="s.isActive" [class.greenBtn]="!s.isActive"
-                                    [disabled]="actualizando() === s.idSpace"
-                                    (click)="cambiarEstado(s.idSpace, !s.isActive)">
-                                    {{ s.isActive ? 'Desactivar' : 'Activar' }}
-                                </button>
+                                @if (!s.deletedByOwner) {
+                                    <button type="button" [class.redBtn]="s.isActive" [class.greenBtn]="!s.isActive"
+                                        [disabled]="actualizando() === s.idSpace"
+                                        (click)="cambiarEstado(s.idSpace, !s.isActive)">
+                                        {{ s.isActive ? 'Desactivar' : 'Activar' }}
+                                    </button>
+                                }
                             </td>
                         </tr>
                     } @empty {

@@ -101,6 +101,11 @@ tr.inactivo td {
     color: #166534;
 }
 
+.status-badge.deleted {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
 button {
     padding: 6px 14px;
     border-radius: 0.5rem;

@@ -1,13 +1,13 @@
-@if (space.isLoading()) {
-  <div class="status-message">
-    <p>Cargando...</p>
-  </div>
-} @else if (space.error()) {
-  <div class="status-message error">
-    <p>No se pudo cargar el espacio</p>
-  </div>
-} @else if (space.value(); as s) {
-  <div class="spaceDetail">
+<div class="spaceDetail">
+  @if (space.isLoading()) {
+    <div class="status-message">
+      <p>Cargando...</p>
+    </div>
+  } @else if (space.error()) {
+    <div class="status-message error">
+      <p>No se pudo cargar el espacio</p>
+    </div>
+  } @else if (space.value(); as s) {
     @if (images.hasValue() && images.value().length > 0) {
       @let imageList = images.value();
       @let selectedIndex = currentImageIndex() % imageList.length;
@@ -39,7 +39,12 @@
       </div>
     }
 
-    <h2>{{ formatName(s.nameSpace) }}</h2>
+    <div class="title-row">
+      <h2>{{ formatName(s.nameSpace) }}</h2>
+      @if (esDuenio()) {
+        <a class="edit-button" [routerLink]="['/espacios', s.idSpace, 'editar']">Editar datos</a>
+      }
+    </div>
     <p class="price">${{ s.basePrice }}</p>
     
     <div class="info-group">
@@ -63,13 +68,49 @@
 
     @if (s.services?.length) {
       @for (s of s.services; track s.id) {
-        <div>
+        <div class="service-item">
           <p>Descripcion: {{s.description}}</p>
-          <p>Precio: {{s.price}}</p>
+          <p>Precio: ${{s.price}}</p>
         </div>
       }
     } @else {
       <p>No hay servicios</p>
     }
-  </div>
-}
+  }
+
+  @if (esDuenio()) {
+    <button
+      class="reserve-button"
+      [class.loading]="space.isLoading()"
+      [class.unavailable]="!space.isLoading() && (space.error() || !space.hasValue())"
+      type="button"
+      [disabled]="space.isLoading() || !!space.error() || !space.hasValue()"
+      (click)="navToReservations()"
+    >
+      @if (space.isLoading()) {
+        Cargando...
+      } @else if (space.error() || !space.hasValue()) {
+        No disponible
+      } @else {
+        Ver reservas
+      }
+    </button>
+  } @else{
+    <button
+      class="reserve-button"
+      [class.loading]="space.isLoading()"
+      [class.unavailable]="!space.isLoading() && (space.error() || !space.hasValue() || !space.value().isActive)"
+      type="button"
+      [disabled]="space.isLoading() || !!space.error() || !space.hasValue() || !space.value().isActive"
+      (click)="onReserve()"
+    >
+      @if (space.isLoading()) {
+        Cargando...
+      } @else if (space.error() || !space.hasValue() || !space.value().isActive) {
+        No disponible
+      } @else {
+        Reservar
+      }
+    </button>
+  }
+</div>

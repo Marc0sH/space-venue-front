@@ -1,0 +1,21 @@
+@if (idSpace()) {
+    <h2 class="title">Reservas de espacio</h2>
+}@else {
+    <h2 class="title">Reservas hechas</h2>
+}
+<section class="reservations-list">
+    @if (isLoading()) {
+        <p class="list-message">Cargando reservas...</p>
+    } @else if (error()) {
+        <p class="list-message fail">Hubo un error al cargar las reservas: {{error()}}</p>
+    } @else if (reservations()) {
+        @for (r of reservations(); track r.id) {
+            <app-reservation-card
+                [reservation]="r"
+                (statusChange)="onStatusChange(r.id, $event)"
+            ></app-reservation-card>
+        }@empty { 
+            <p>No hay reservas a mostrar</p>
+        }
+    }
+</section>

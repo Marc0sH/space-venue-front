@@ -1,24 +1,16 @@
 .spaceDetail {
-  /* Tamaño y centrado */
   max-width: 500px;
   margin: 40px auto;
-  
-  /* Relleno interno (clave para que el texto no toque los bordes) */
   padding: 24px;
-  
-  /* Estilo visual y tarjetas */
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  
-  /* Tipografía */
   font-family: system-ui, -apple-system, sans-serif;
   color: #1e293b;
   line-height: 1.6;
 }
 
-/* Opcional: si querés darle más estilo a las etiquetas y al precio dentro del HTML */
 .spaceDetail strong {
   color: #0f172a;
 }
@@ -106,6 +98,46 @@
   }
 }
 
+.reserve-button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 8px;
+  background-color: #2563eb;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.reserve-button:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+
+.reserve-button.loading {
+  background-color: #94a3b8;
+}
+
+.reserve-button.unavailable {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.reserve-button:disabled {
+  cursor: not-allowed;
+}
+
+.status-message {
+  text-align: center;
+  color: #64748b;
+}
+
+.status-message.error {
+  color: #dc2626;
+}
+
 .location {
   margin-bottom: 1rem;
 }
@@ -113,4 +145,89 @@
 .location app-location-map {
   height: 16rem;
   margin-top: 0.5rem;
+}
+
+.reserve-button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 8px;
+  background-color: #2563eb;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.reserve-button:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+
+.reserve-button.loading {
+  background-color: #94a3b8;
+}
+
+.reserve-button.unavailable {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.reserve-button:disabled {
+  cursor: not-allowed;
+}
+
+.status-message {
+  text-align: center;
+  color: #64748b;
+}
+
+.status-message.error {
+  color: #dc2626;
+}
+
+.location {
+  margin-bottom: 1rem;
+}
+
+.location app-location-map {
+  height: 16rem;
+  margin-top: 0.5rem;
+}
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.edit-button {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border: 1px solid #2563eb;
+  border-radius: 8px;
+  color: #2563eb;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.edit-button:hover {
+  background-color: #eff6ff;
+}
+
+.service-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-top: 1px solid #edf1f4;
+}
+
+.service-item p {
+    margin: 0;
+    color: #3f484c;
+    line-height: 1.5;
 }

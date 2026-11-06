@@ -10,9 +10,33 @@
     <section class="spaces-section">
         <app-space-filter (ordenSalida)="cambiarOrden($event)"></app-space-filter>
  
+        @if (errorBaja()) {
+            <p class="error">{{ errorBaja() }}</p>
+        }
+
         <div class="spaces-grid">
             @for (s of spacesOrdenados(); track s.idSpace) {
-                <app-spacescard [space]="s"></app-spacescard>
+                <div class="space-item">
+                    <app-spacescard [space]="s"></app-spacescard>
+
+                    @if (confirmando() !== s.idSpace) {
+                        <button type="button" class="redBtn" (click)="pedirConfirmacion(s.idSpace)">
+                            Dar de baja
+                        </button>
+                    } @else {
+                        <div class="confirmacion-baja">
+                            <p>¿Dar de baja este espacio? Dejará de estar visible para otros usuarios.</p>
+                            <div class="confirm-actions">
+                                <button type="button" class="secondaryBtn" [disabled]="eliminando() === s.idSpace"
+                                    (click)="confirmando.set(null)">Cancelar</button>
+                                <button type="button" class="redBtn solid" [disabled]="eliminando() === s.idSpace"
+                                    (click)="darDeBaja(s.idSpace)">
+                                    {{ eliminando() === s.idSpace ? 'Dando de baja...' : 'Confirmar' }}
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
             } @empty {
                 <p>No tenés espacios publicados</p>
             }
