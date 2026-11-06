@@ -1,11 +1,22 @@
+
 <div class="SpaceCard" (click)="navigate()" [class.inactivo]="!space().isActive">
-  <div class="card-header">
-    <h3>{{ formatName(space().nameSpace) }}</h3>
-    <span class="status-badge" [class.active]="space().isActive">
+        @if(firstImage(); as image){
+          <div class="gallery">
+         <img [src]="service.imageUrl(image.urlImage)" [alt]="image.fileName" loading="lazy">  
+          </div>
+        }
+        @else {
+          <p>No hay imagenes cargadas</p>
+        }
+        <div>
+    <div class="card-header">
+          <h3>{{ formatName(space().nameSpace) }}</h3>
+      <span class="status-badge" [class.active]="space().isActive">
       {{ space().isActive ? 'Aprobado' : 'Inactivo' }}
     </span>
+        </div>
+    
   </div>
 
   <p class="price">${{ space().basePrice }}</p>
-  <p class="description">{{ formatName(space().description) }}</p>
 </div>

@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { Spaceservice } from '../spaceservice';
 import { Router, RouterLink } from '@angular/router';
 import { Session } from '../../auth/session/session';
@@ -18,6 +18,7 @@ export class Spacesdetail {
   readonly id = input.required<string>();
   protected readonly space = this.service.getById(this.id);
   protected readonly images = this.service.getImagesBySpaceId(this.id);
+  protected readonly currentImageIndex = signal(0);
   protected readonly hasLocation = hasLocation;
   private readonly session = inject(Session);
 
@@ -27,6 +28,21 @@ export class Spacesdetail {
     const idLogueado = this.session.session()?.consumerId;
     return !!s && idLogueado != null && s.consumerOwner?.idConsumer === idLogueado && !s.deletedByOwner;
   });
+
+  protected showPreviousImage(): void {
+    this.moveImage(-1);
+  }
+
+  protected showNextImage(): void {
+    this.moveImage(1);
+  }
+
+  private moveImage(direction: number): void {
+    const imageCount = this.images.value()?.length ?? 0;
+    if (imageCount > 1) {
+      this.currentImageIndex.update(index => Math.max(0, Math.min(index + direction, imageCount - 1)));
+    }
+  }
 
   protected formatName(name: string): string {
     if (!/[ÃÂ][\u0080-\u00bf]/u.test(name)) {

@@ -32,6 +32,21 @@
   align-items: flex-start;
   gap: 12px;
 }
+.gallery {
+  position: relative;
+  margin: -8px -8px 16px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.gallery img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  background-color: #f1f5f9;
+}
 
 .card-header h3 {
   margin: 0;

@@ -9,9 +9,32 @@
     </div>
   } @else if (space.value(); as s) {
     @if (images.hasValue() && images.value().length > 0) {
+      @let imageList = images.value();
+      @let selectedIndex = currentImageIndex() % imageList.length;
       <div class="gallery">
-        @for (img of images.value(); track img.idSpaceImages) {
-          <img [src]="service.imageUrl(img.urlImage)" [alt]="img.fileName" loading="lazy">
+        <div class="gallery-track" [style.transform]="'translateX(-' + selectedIndex * 100 + '%)'">
+          @for (img of imageList; track img.idSpaceImages) {
+            <img [src]="service.imageUrl(img.urlImage)" [alt]="img.fileName" loading="lazy">
+          }
+        </div>
+        @if (imageList.length > 1) {
+          <button
+            class="gallery-button previous"
+            type="button"
+            aria-label="Mostrar imagen anterior"
+            [disabled]="selectedIndex === 0"
+            (click)="showPreviousImage()">
+            &#10094;
+          </button>
+          <button
+            class="gallery-button next"
+            type="button"
+            aria-label="Mostrar imagen siguiente"
+            [disabled]="selectedIndex === imageList.length - 1"
+            (click)="showNextImage()">
+            &#10095;
+          </button>
+          <span class="gallery-position" aria-live="polite">{{ selectedIndex + 1 }} / {{ imageList.length }}</span>
         }
       </div>
     }

@@ -1,4 +1,3 @@
- 
 :host {
     display: block;
     background-color: #f7f9ff;
@@ -31,23 +30,110 @@
     margin-bottom: 1.5rem;
 }
  
-.spaces-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+/* ---------- Carrusel ---------- */
+.carousel-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2rem;
 }
- 
-.spaces-grid app-spacescard {
+
+.carousel-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #00667f;
+}
+
+.carousel-eyebrow .material-symbols-outlined {
+    font-size: 20px;
+}
+
+.carousel-head h2 {
+    margin: 0;
+    font-size: 32px;
+    line-height: 40px;
+    letter-spacing: -0.01em;
+    font-weight: 700;
+    color: #121d26;
+}
+
+.carousel-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.carousel-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: none;
+    border-radius: 9999px;
+    background-color: #ffffff;
+    color: #121d26;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 5%);
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.carousel-btn:hover {
+    background-color: #edf4ff;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -2px rgb(0 0 0 / 10%);
+}
+
+.carousel-btn:focus-visible {
+    outline: 3px solid #87d1ed;
+    outline-offset: 2px;
+}
+
+.carousel-btn .material-symbols-outlined {
+    font-size: 20px;
+}
+
+/* Pista deslizable: scroll horizontal con "snap" por card.
+   El padding/margen negativo evita que se recorte la sombra de las cards. */
+.carousel-track {
+    display: flex;
+    gap: 1.5rem;
+    margin: -0.5rem -0.5rem -2rem;
+    padding: 0.5rem 0.5rem 2rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 0.5rem;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+}
+
+.carousel-track::-webkit-scrollbar {
+    display: none;
+}
+
+.carousel-track app-spacescard {
     display: block;
+    flex: 0 0 100%;
+    min-width: 0;
+    scroll-snap-align: start;
 }
  
 @media (min-width: 640px) {
-    .spaces-grid { grid-template-columns: repeat(2, 1fr); }
+    .carousel-track app-spacescard { flex-basis: calc((100% - 1.5rem) / 2); }
 }
  
 @media (min-width: 1024px) {
     .spaces-section { padding-left: 3rem; padding-right: 3rem; }
-    .spaces-grid { grid-template-columns: repeat(4, 1fr); }
+    .carousel-track app-spacescard { flex-basis: calc((100% - 4.5rem) / 4); }
 }
  
 /* ---------- Cómo funciona ---------- */
@@ -175,4 +261,11 @@
     direction: ltr;
     font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
+}
+
+@media (max-width: 639px) {
+    .carousel-head h2 {
+        font-size: 24px;
+        line-height: 32px;
+    }
 }
