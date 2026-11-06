@@ -3,6 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { environment } from '../../../environments/enviroment';
 import { Space } from '../../models/space.model';
+import { SpaceImage } from '../../models/space-image.model';
 import { Spacesdetail } from './spacesdetail';
 
 describe('Spacesdetail', () => {
@@ -37,9 +38,9 @@ describe('Spacesdetail', () => {
     TestBed.tick(); // Dispara los pedidos de los httpResource sin esperar la respuesta
   });
 
-  async function responder(respuesta: Space) {
+  async function responder(respuesta: Space, images: SpaceImage[] = []) {
     http.expectOne(`${environment.apiUrl}/spaces/1`).flush(respuesta);
-    http.expectOne(`${environment.apiUrl}/spaceimages/byspaceid/1`).flush([]);
+    http.expectOne(`${environment.apiUrl}/spaceimages/byspaceid/1`).flush(images);
     await fixture.whenStable();
   }
 
@@ -57,5 +58,26 @@ describe('Spacesdetail', () => {
     await responder({ ...space, location: { idLocation: 1, latitude: 0, longitude: 0 } });
 
     expect(fixture.nativeElement.querySelector('app-location-map')).toBeNull();
+  });
+
+  it('changes the displayed image with the gallery buttons', async () => {
+    await responder(space, [
+      { idSpaceImages: 1, fileName: 'primera.jpg', urlImage: 'media/primera.jpg', dateSend: new Date() },
+      { idSpaceImages: 2, fileName: 'segunda.jpg', urlImage: 'media/segunda.jpg', dateSend: new Date() },
+    ]);
+
+    const track: HTMLDivElement = fixture.nativeElement.querySelector('.gallery-track');
+    expect(track.style.transform).toBe('translateX(-0%)');
+    expect(fixture.nativeElement.querySelector('.gallery-button.previous').disabled).toBe(true);
+
+    fixture.nativeElement.querySelector('.gallery-button.next').click();
+    fixture.detectChanges();
+    expect(track.style.transform).toBe('translateX(-100%)');
+    expect(fixture.nativeElement.querySelector('.gallery-button.next').disabled).toBe(true);
+
+    fixture.nativeElement.querySelector('.gallery-button.previous').click();
+    fixture.detectChanges();
+    expect(track.style.transform).toBe('translateX(-0%)');
+    expect(fixture.nativeElement.querySelector('.gallery-position').textContent.trim()).toBe('1 / 2');
   });
 });

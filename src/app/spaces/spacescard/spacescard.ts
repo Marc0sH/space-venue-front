@@ -1,6 +1,8 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { Space } from '../../models/space.model';
 import { Router } from '@angular/router';
+import { Spaceservice } from '../spaceservice';
+import { SpaceImage } from '../../models/space-image.model';
 
 @Component({
   imports: [],
@@ -12,6 +14,14 @@ export class Spacescard {
   space = input.required<Space>()
   private router = inject(Router)
   salida = output<Space>()
+  id = computed(()=> this.space().idSpace.toString())
+  readonly service = inject(Spaceservice)
+  protected readonly images = this.service.getImagesBySpaceId(this.id);
+  firstImage = computed(()=> {
+    const lista = this.images.value()
+    return (lista && lista.length > 0)? lista[0] : null     
+  })
+
 
   protected formatName(name: string): string {
     if (!/[ÃÂ][\u0080-\u00bf]/u.test(name)) {
