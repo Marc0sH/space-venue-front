@@ -9,10 +9,11 @@
     color: red;
     font-weight: bold;
     margin-top: 10px;
+    padding: 0 3rem;
 }
  
 .state {
-    padding: 2rem 0;
+    padding: 2rem 3rem;
     color: #3f484c;
 }
  

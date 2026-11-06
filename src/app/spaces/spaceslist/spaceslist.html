@@ -5,8 +5,31 @@
 } @else {
     <section class="spaces-section">
         <app-space-filter (ordenSalida)="cambiarOrden($event)"></app-space-filter>
- 
-        <div class="spaces-grid">
+
+        <!-- Encabezado del carrusel con controles -->
+        <div class="carousel-head">
+            <div>
+                <div class="carousel-eyebrow">
+                    <span class="material-symbols-outlined">star</span>
+                    <span>Explorá</span>
+                </div>
+                <h2>Espacios disponibles</h2>
+            </div>
+
+            <div class="carousel-controls">
+                <button type="button" class="carousel-btn" aria-label="Anterior"
+                    (click)="carrusel.scrollBy({ left: -carrusel.clientWidth, behavior: 'smooth' })">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </button>
+                <button type="button" class="carousel-btn" aria-label="Siguiente"
+                    (click)="carrusel.scrollBy({ left: carrusel.clientWidth, behavior: 'smooth' })">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Carrusel -->
+        <div class="carousel-track" #carrusel>
             @for (s of spacesOrdenados(); track s.idSpace) {
                 <app-spacescard [space]="s"></app-spacescard>
             } @empty {
@@ -18,7 +41,7 @@
             }
         </div>
     </section>
-    }
+}
  
 <!-- CÓMO FUNCIONA -->
 <section class="how-it-works">
