@@ -8,6 +8,7 @@ import { Spacesdetail } from './spaces/spacesdetail/spacesdetail';
 import { SpaceCreation } from './spaces/space-creation/space-creation';
 import { SpaceEdit } from './spaces/space-edit/space-edit';
 import { ListMySpaces } from './spaces/list-my-spaces/list-my-spaces';
+import { AllSpaces } from './spaces/all-spaces/all-spaces';
 import { UserProfile } from './user/user-profile/user-profile';
 import { logInGuard } from './guard/log-in-guard';
 import { UserEdit } from './user/user-edit/user-edit';
@@ -24,6 +25,7 @@ export const routes: Routes = [
     {path: 'login', component: Login},
     {path: 'registro', component: Register},
     {path: 'espacios', component: Spaceslist},
+    {path: 'espacios/todos', component: AllSpaces},
     {path: 'espacios/crear', component: SpaceCreation, canActivate: [logInGuard]},
     {path: 'espacios/espaciospropios', component: ListMySpaces, canActivate: [logInGuard]},
     {path: 'espacios/:id/editar', component: SpaceEdit, canActivate: [logInGuard]},

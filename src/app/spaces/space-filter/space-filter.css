@@ -96,3 +96,21 @@
   font-size: 0.9rem;
   color: #b91c1c;
 }
+
+/* Panel con buscador y mapa para elegir la ubicación de referencia */
+.nearby-picker {
+  max-width: 1200px;
+  margin: 0 auto 10px auto;
+  padding: 16px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.nearby-picker-title {
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #475569;
+}

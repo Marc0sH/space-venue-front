@@ -25,11 +25,6 @@
     box-sizing: border-box;
 }
  
-.spaces-section app-space-filter {
-    display: block;
-    margin-bottom: 1.5rem;
-}
- 
 /* ---------- Carrusel ---------- */
 .carousel-head {
     display: flex;
@@ -64,6 +59,9 @@
     font-weight: 700;
     color: #121d26;
 }
+
+.carousel-title-link { display: inline-flex; align-items: center; gap: 0.5rem; color: inherit; text-decoration: none; }
+.carousel-title-link:hover { color: #00667f; }
 
 .carousel-controls {
     display: flex;

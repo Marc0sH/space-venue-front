@@ -4,8 +4,6 @@
     <p class="error">{{ error() }}</p>
 } @else {
     <section class="spaces-section">
-        <app-space-filter (ordenSalida)="cambiarOrden($event)"></app-space-filter>
-
         <!-- Encabezado del carrusel con controles -->
         <div class="carousel-head">
             <div>
@@ -13,7 +11,12 @@
                     <span class="material-symbols-outlined">star</span>
                     <span>Explorá</span>
                 </div>
-                <h2>Espacios disponibles</h2>
+                <h2>
+                    <a routerLink="/espacios/todos" class="carousel-title-link" title="Ver todos los espacios">
+                        Espacios disponibles
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </a>
+                </h2>
             </div>
 
             <div class="carousel-controls">
@@ -30,14 +33,10 @@
 
         <!-- Carrusel -->
         <div class="carousel-track" #carrusel>
-            @for (s of spacesOrdenados(); track s.idSpace) {
+            @for (s of spaces(); track s.idSpace) {
                 <app-spacescard [space]="s"></app-spacescard>
             } @empty {
-                @if (cercania(); as c) {
-                    <p>No hay espacios a menos de {{ c.radiusKm }} km de tu ubicación</p>
-                } @else {
-                    <p>No hay espacios publicados</p>
-                }
+                <p>No hay espacios publicados</p>
             }
         </div>
     </section>
