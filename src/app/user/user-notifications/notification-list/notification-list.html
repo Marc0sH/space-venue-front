@@ -1,18 +1,36 @@
-<div class="notificacionContainer">
-    @if (notificaciones.hasValue()){
-        @for (noti of notificacionesOrdenadas(); track noti.idNotification) {
-            <div>
-                <app-notification-card [notification]="noti" (markedAsSeen)="recargarNotificaciones()"></app-notification-card>
-            </div>
-            
-        }@empty {
-            <p class="fail">No se encontraron nuevas notificaciones</p>
-        }
-    }
-    @else if (notificaciones.error()){
-        <p class="fail">Error al cargar las notificaciones</p>
-    }
-    @else if(notificaciones.isLoading()) {
-        <p>Cargando notificaciones...</p>
-    }
-</div>
+<section class="notificaciones-page">
+    <h2>Notificaciones</h2>
+    <a class="click" (click)="markAllAsSeen()">Marcar todas como leidas</a>
+
+    <div class="notification-area" [class.show-content-area]="seleccionada()">
+
+        <!-- Izquierda: lista -->
+        <div class="control-area">
+            @if (notificaciones.hasValue()){
+                @for (noti of notificacionesOrdenadas(); track noti.idNotification) {
+                    <app-notification-card
+                        [notification]="noti"
+                        [selected]="noti.idNotification === seleccionadaId()"
+                        (abrir)="seleccionar($event)"
+                        (markedAsSeen)="recargarNotificaciones()">
+                    </app-notification-card>
+                }@empty {
+                    <p class="fail">No se encontraron nuevas notificaciones</p>
+                }
+            }
+            @else if (notificaciones.error()){
+                <p class="fail">Error al cargar las notificaciones</p>
+            }
+            @else if(notificaciones.isLoading()) {
+                <p>Cargando notificaciones...</p>
+            }
+        </div>
+
+        <!-- Derecha: detalle -->
+        <app-notification-details
+            [notification]="seleccionada()"
+            (volver)="seleccionadaId.set(null)">
+        </app-notification-details>
+
+    </div>
+</section>

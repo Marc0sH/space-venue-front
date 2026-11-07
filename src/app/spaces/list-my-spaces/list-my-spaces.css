@@ -18,7 +18,8 @@
  
 .spaces-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);   /* minmax(0, ...) evita que el contenido ensanche una columna */
+    grid-auto-rows: 1fr;                      /* todas las filas miden lo mismo que la más alta */
     gap: 1.5rem;
 }
  
@@ -26,11 +27,14 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    min-width: 0;
 }
 
 .space-item app-spacescard {
     display: block;
-    flex: 1 1 auto;
+    flex: 1 1 auto;     /* la card ocupa el espacio que deja el botón */
+    height: auto;       /* pisa el height:100% propio de la card, que choca con el botón de abajo */
+    min-height: 0;
 }
 
 /* Botones de baja (mismo estilo que la baja de cuenta en el perfil) */
@@ -104,10 +108,10 @@
 }
  
 @media (min-width: 640px) {
-    .spaces-grid { grid-template-columns: repeat(2, 1fr); }
+    .spaces-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
  
 @media (min-width: 1024px) {
     .spaces-section { padding-left: 3rem; padding-right: 3rem; }
-    .spaces-grid { grid-template-columns: repeat(4, 1fr); }
+    .spaces-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
