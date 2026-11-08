@@ -21,7 +21,7 @@ describe('LocationPicker', () => {
   });
 
   it('asks to pick a location while there is none', () => {
-    expect(fixture.nativeElement.textContent).toContain('Hacé clic en el mapa');
+    expect(fixture.nativeElement.textContent).toContain('hacé clic en el mapa');
   });
 
   it('shows the selected coordinates', async () => {
@@ -29,6 +29,69 @@ describe('LocationPicker', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.textContent).toContain('Latitud -34.6037, longitud -58.3816');
+  });
+
+  describe('buscador de lugares', () => {
+    const respuestaPhoton = (features: unknown[]) =>
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify({ features })));
+
+    afterEach(() => vi.restoreAllMocks());
+
+    it('lists the places found', async () => {
+      const fetch = respuestaPhoton([
+        { geometry: { coordinates: [-60.64, -32.95] }, properties: { type: 'city', name: 'Rosario', state: 'Santa Fe', country: 'Argentina' } },
+      ]);
+
+      await component.buscar('Rosario');
+      fixture.detectChanges();
+
+      expect(String(fetch.mock.calls[0][0])).toContain('q=Rosario');
+      const opciones = fixture.nativeElement.querySelectorAll('[role="option"]');
+      expect(opciones.length).toBe(1);
+      expect(opciones[0].textContent).toContain('Rosario');
+      expect(opciones[0].textContent).toContain('Santa Fe, Argentina');
+    });
+
+    it('does not set the marker when a city is chosen', async () => {
+      respuestaPhoton([{ geometry: { coordinates: [-60.64, -32.95] }, properties: { type: 'city', name: 'Rosario' } }]);
+      await component.buscar('Rosario');
+
+      component.elegirLugar(component.sugerencias()[0]);
+
+      expect(component.value()).toBeNull();
+      expect(component.listaAbierta()).toBe(false);
+    });
+
+    it('sets the marker when an exact address is chosen', async () => {
+      respuestaPhoton([{ geometry: { coordinates: [-58.3816123, -34.6037456] }, properties: { type: 'house', street: 'Av. Corrientes', housenumber: '1234' } }]);
+      await component.buscar('Corrientes 1234');
+
+      component.elegirLugar(component.sugerencias()[0]);
+
+      expect(component.value()).toEqual({ latitude: -34.603746, longitude: -58.381612 });
+      expect(component.textoBusqueda()).toBe('Av. Corrientes 1234');
+    });
+
+    it('picks the first suggestion with Enter without submitting the form', async () => {
+      respuestaPhoton([{ geometry: { coordinates: [-58.38, -34.6] }, properties: { type: 'other', name: 'Teatro Colón' } }]);
+      await component.buscar('Teatro Colón');
+
+      const evento = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true });
+      component.alPresionarTecla(evento);
+
+      expect(evento.defaultPrevented).toBe(true);
+      expect(component.value()).toEqual({ latitude: -34.6, longitude: -58.38 });
+    });
+
+    it('shows an error when the search fails', async () => {
+      vi.spyOn(globalThis, 'fetch').mockRejectedValue(new TypeError('offline'));
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      await component.buscar('Rosario');
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.textContent).toContain('No se pudo buscar el lugar');
+    });
   });
 
   describe('con geolocalización', () => {

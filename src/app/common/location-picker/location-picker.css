@@ -29,6 +29,89 @@
     cursor: wait;
 }
 
+.buscador {
+    position: relative;
+    margin-bottom: 0.5rem;
+}
+
+.buscador-etiqueta {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 13px;
+    color: #3f484c;
+}
+
+.buscador-input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #c0c8cc;
+    border-radius: 0.5rem;
+    font: inherit;
+}
+
+.buscador-input:focus-visible {
+    outline: 3px solid #87d1ed;
+    outline-offset: 1px;
+}
+
+.buscador-estado {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.6rem;
+    font-size: 12px;
+    color: #3f484c;
+}
+
+.sugerencias {
+    position: absolute;
+    z-index: 10;
+    left: 0;
+    right: 0;
+    margin: 0.25rem 0 0;
+    padding: 0.25rem 0;
+    list-style: none;
+    background: #fff;
+    border: 1px solid #c0c8cc;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
+    max-height: 18rem;
+    overflow-y: auto;
+}
+
+.sugerencias li {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0 0.5rem;
+    padding: 0.4rem 0.75rem;
+    cursor: pointer;
+}
+
+.sugerencias li.activa {
+    background-color: #edf4ff;
+}
+
+.sugerencias li.sin-resultados {
+    display: block;
+    color: #3f484c;
+    cursor: default;
+}
+
+.sugerencia-nombre {
+    font-weight: 600;
+}
+
+.sugerencia-tipo {
+    font-size: 12px;
+    color: #00667f;
+}
+
+.sugerencia-detalle {
+    grid-column: 1 / -1;
+    font-size: 13px;
+    color: #3f484c;
+}
+
 .mapa {
     height: 20rem;
     border-radius: 0.75rem;

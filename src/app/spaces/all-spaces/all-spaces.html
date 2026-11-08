@@ -1,0 +1,27 @@
+<section class="spaces-section">
+    <h2>Espacios disponibles</h2>
+
+    <app-space-filter
+        [conCercania]="true"
+        (ordenSalida)="cambiarOrden($event)"
+        (cercaniaSalida)="cambiarCercania($event)">
+    </app-space-filter>
+
+    @if (loading()) {
+        <p class="state">Cargando espacios...</p>
+    } @else if (error()) {
+        <p class="error">{{ error() }}</p>
+    } @else {
+        <div class="spaces-grid">
+            @for (s of spacesOrdenados(); track s.idSpace) {
+                <app-spacescard [space]="s"></app-spacescard>
+            } @empty {
+                @if (cercania(); as c) {
+                    <p>No hay espacios a menos de {{ c.radiusKm }} km de tu ubicación</p>
+                } @else {
+                    <p>No hay espacios publicados</p>
+                }
+            }
+        </div>
+    }
+</section>
