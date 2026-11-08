@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
-import { form, FormField, required } from '@angular/forms/signals';
+import { form, FormField, maxLength, min, minLength, required } from '@angular/forms/signals';
 import { NewSpace } from '../../models/space.model';
 import { ServiceReg } from '../../models/service.model';
 import { FormErrorMessage } from '../../common/form-error-message/form-error-message';
@@ -22,22 +22,29 @@ type SpaceForm = Omit<NewSpace, 'location'> & { location: Coordinates | null }
   templateUrl: './space-creation.html',
 })
 export class SpaceCreation {
+mostrarFormServicio = signal(false)
+
   model = signal<SpaceForm>({
     location: null,
     cancellationPolicies: 'FLEXIBLE',
     nameSpace: '',
-    description: '',
+    description: ' ',
     basePrice: 0,
     bufferTime: 0,
     services: [],
   });
 
   formSpaceCreation = form(this.model, (path) => {
-    required(path.nameSpace, { message: 'El nombre del espacio es obligatorio' });
-    required(path.description, { message: 'La descripción del espacio es obligatoria' });
-    required(path.basePrice, { message: 'El precio base es obligatorio' });
-    required(path.bufferTime, { message: 'El tiempo de espera entre reservas es obligatorio' });
-    required(path.location, { message: 'Marcá la ubicación del espacio en el mapa' });
+    required(path.nameSpace, { message: 'El nombre del espacio es obligatorio' }),
+    minLength(path.nameSpace, 3, {message: 'El nombre del espacio no puede tener menos de 3 caracteres'}),
+    required(path.description, {message: 'La descripcion es obligatoria'})
+    maxLength(path.nameSpace, 100, {message: 'El nombre del espacio no puede exceder los 100 caracteres'}),
+    maxLength(path.description, 250, {message: 'La descripcion excede el maximo de caracteres'}),
+    required(path.basePrice, { message: 'El precio base es obligatorio' }),
+    min(path.basePrice, 0, {message: 'El precio no puede ser menor a 0'}),
+    required(path.bufferTime, { message: 'El tiempo de espera entre reservas es obligatorio' }),
+    min(path.bufferTime, 30, {message: 'El buffertime minimo es 30 minutos'} )
+    required(path.location, { message: 'Marcá la ubicación del espacio en el mapa' })
   });
 
   private spaceService = inject(Spaceservice)
@@ -67,6 +74,8 @@ export class SpaceCreation {
       ...current,
       services: current.services.filter((_, serviceIndex) => serviceIndex !== index),
     }));
+    this.error.set('');
+    this.mostrarFormServicio.set(false)
   }
 
   onImagenesSeleccionadas(event: Event) {
