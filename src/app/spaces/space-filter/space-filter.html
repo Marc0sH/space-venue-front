@@ -1,5 +1,5 @@
 <div class="filters">
-    @if (geolocalizacionDisponible) {
+    @if (conCercania()) {
         <div class="nearby-container">
             <label for="radio">Distancia: </label>
             <select id="radio" (change)="seleccionarRadio($event)">
@@ -8,13 +8,14 @@
                 }
             </select>
 
+            <button type="button" class="nearby-button" [attr.aria-expanded]="mostrarMapa()"
+                aria-controls="ubicacion-referencia" (click)="alternarMapa()">
+                {{ mostrarMapa() ? 'Ocultar mapa' : (ubicacion() ? 'Cambiar ubicación' : 'Buscar cerca de una ubicación') }}
+            </button>
+
             @if (ubicacion()) {
                 <button type="button" class="nearby-button active" (click)="quitarCercania()">
                     Quitar filtro de cercanía
-                </button>
-            } @else {
-                <button type="button" class="nearby-button" (click)="buscarCercanos()" [disabled]="buscandoUbicacion()">
-                    {{ buscandoUbicacion() ? 'Buscando tu ubicación...' : 'Espacios cerca mío' }}
                 </button>
             }
         </div>
@@ -30,6 +31,9 @@
     </div>
 </div>
 
-@if (errorUbicacion() != "") {
-    <p class="error">{{ errorUbicacion() }}</p>
+@if (conCercania() && mostrarMapa()) {
+    <div id="ubicacion-referencia" class="nearby-picker">
+        <p class="nearby-picker-title">Ubicación de referencia</p>
+        <app-location-picker [value]="ubicacion()" (valueChange)="elegirUbicacion($event)"></app-location-picker>
+    </div>
 }

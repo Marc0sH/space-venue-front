@@ -1,3 +1,41 @@
+<div class="buscador" (focusout)="cerrarLista()">
+    <label class="buscador-etiqueta" [for]="idLista + '-input'">Buscar país, provincia, ciudad o dirección</label>
+    <input [id]="idLista + '-input'" type="search" class="buscador-input" autocomplete="off"
+        placeholder="Ej.: Rosario, Santa Fe o Av. Corrientes 1234"
+        role="combobox" aria-autocomplete="list" [attr.aria-expanded]="listaAbierta()" [attr.aria-controls]="idLista"
+        [attr.aria-activedescendant]="sugerenciaActiva() >= 0 ? idLista + '-' + sugerenciaActiva() : null"
+        [value]="textoBusqueda()" [disabled]="disabled()"
+        (input)="alEscribir($any($event.target).value)" (keydown)="alPresionarTecla($event)"
+        (focus)="sugerencias().length && listaAbierta.set(true)">
+
+    @if (buscandoLugares()) {
+        <span class="buscador-estado" aria-live="polite">Buscando...</span>
+    }
+
+    @if (listaAbierta()) {
+        <ul [id]="idLista" class="sugerencias" role="listbox" aria-label="Lugares encontrados">
+            @for (lugar of sugerencias(); track $index; let i = $index) {
+                <!-- mousedown con preventDefault: elige antes de que el input pierda el foco y cierre la lista -->
+                <li [id]="idLista + '-' + i" role="option" [attr.aria-selected]="i === sugerenciaActiva()"
+                    [class.activa]="i === sugerenciaActiva()"
+                    (mousedown)="$event.preventDefault(); elegirLugar(lugar)" (mouseenter)="sugerenciaActiva.set(i)">
+                    <span class="sugerencia-nombre">{{lugar.nombre}}</span>
+                    <span class="sugerencia-tipo">{{lugar.tipo}}</span>
+                    @if (lugar.detalle) {
+                        <span class="sugerencia-detalle">{{lugar.detalle}}</span>
+                    }
+                </li>
+            } @empty {
+                <li class="sin-resultados">No se encontraron lugares con ese nombre.</li>
+            }
+        </ul>
+    }
+</div>
+
+@if (errorBusqueda() != "") {
+    <p class="error">{{errorBusqueda()}}</p>
+}
+
 @if (geolocalizacionDisponible) {
     <button type="button" class="ubicacion-actual" (click)="usarUbicacionActual()"
         [disabled]="disabled() || buscandoUbicacion()">
@@ -19,5 +57,5 @@
         Podés arrastrar el marcador para ajustarla.
     </p>
 } @else {
-    <p class="ayuda">Hacé clic en el mapa para marcar la ubicación.</p>
+    <p class="ayuda">Buscá el lugar o hacé clic en el mapa para marcar la ubicación.</p>
 }
