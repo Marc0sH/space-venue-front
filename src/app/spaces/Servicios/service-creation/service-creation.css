@@ -1,0 +1,16 @@
+button {
+    align-self: flex-start;
+    padding: 0.625rem 1.25rem;
+    border: none;
+    border-radius: 9999px;
+    background-color: #00667f;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #2f7f99;
+}

@@ -9,7 +9,7 @@
         <p class="error">Solo el dueño del espacio puede editarlo.</p>
         <a class="volver" [routerLink]="['/espacios', id()]">Volver al espacio</a>
     } @else {
-        <form (submit)="onSubmit($event)">
+        <form novalidate (submit)="onSubmit($event)">
             <div>
                 <label for="nameSpace">Nombre del espacio: </label>
                 <input id="nameSpace" type="text" [formField]="formEdit.nameSpace">

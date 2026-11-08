@@ -2,15 +2,18 @@
 
     <h2>Creación de un espacio</h2>
     
-    <form (submit)="onSubmit($event)">
+    <form novalidate (submit)="onSubmit($event)">
         <div>
             <label for="nameSpace">Nombre del espacio: </label>
             <input type="text" [formField]="formSpaceCreation.nameSpace">
         </div>
         
         <div>
-            <label for="description">Descripción: </label>
-            <input type="text" [formField]="formSpaceCreation.description">
+    <label for="description">Descripción (opcional): </label>
+    <textarea id="description" rows="3" [formField]="formSpaceCreation.description"></textarea>
+    <span class="contador" [class.limite]="model().description.length >= 250">
+        {{ model().description.length }} / 250
+    </span>
         </div>
         
         <div>
@@ -23,9 +26,18 @@
             <input type="number" [formField]="formSpaceCreation.bufferTime">
         </div>
 
-        <div>
-            <app-service-creation (dataEntry)="addServices($event)"></app-service-creation>
-        </div>
+        <div class="servicios">
+        @if (mostrarFormServicio()) {
+        <app-service-creation (dataEntry)="addServices($event)"></app-service-creation>
+        <button type="button" class="cancelar-servicio" (click)="mostrarFormServicio.set(false)">
+            Cancelar
+        </button>
+        }   @else {
+        <button type="button" class="agregar-servicio" (click)="mostrarFormServicio.set(true)">
+            {{ model().services.length > 0 ? '+ Agregar otro servicio' : '+ Agregar un servicio (opcional)' }}
+        </button>
+    }
+</div>
 
         @if (model().services.length > 0) {
             <section aria-label="Servicios agregados al espacio">
