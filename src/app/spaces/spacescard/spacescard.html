@@ -12,7 +12,7 @@
     <div class="card-header">
           <h3>{{ formatName(space().nameSpace) }}</h3>
       <span class="status-badge" [class.active]="space().isActive">
-      {{ space().isActive ? 'Aprobado' : 'Inactivo' }}
+      {{ space().isActive ? 'Aprobado' : etiquetaEstado(space()) }}
     </span>
         </div>
     

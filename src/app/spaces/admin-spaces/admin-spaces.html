@@ -16,7 +16,10 @@
             <select [value]="estado()" (change)="estado.set($any($event.target).value)">
                 <option value="Todos">Todos</option>
                 <option value="Activos">Activos</option>
-                <option value="Inactivos">Inactivos</option>
+                <option value="Inactivos">Inactivos (cualquier motivo)</option>
+                <option value="PENDING_APPROVAL">Pendientes de aprobación</option>
+                <option value="ADMIN">Desactivados por el admin</option>
+                <option value="OWNER_DELETED">Eliminados por el dueño</option>
             </select>
         </div>
 
@@ -46,20 +49,18 @@
                             <td>{{ s.basePrice | currency:'ARS':'symbol-narrow':'1.0-2' }}</td>
                             <td>{{ s.publicationDate | date:'dd/MM/yyyy' }}</td>
                             <td>
-                                @if (s.deletedByOwner) {
-                                    <span class="status-badge deleted">Eliminado por el dueño</span>
-                                } @else {
-                                    <span class="status-badge" [class.active]="s.isActive">
-                                        {{ s.isActive ? 'Activo' : 'Inactivo' }}
-                                    </span>
-                                }
+                                <span class="status-badge" [class.active]="s.isActive"
+                                    [class.deleted]="!s.isActive && s.deactivationReason === 'OWNER_DELETED'"
+                                    [class.pending]="!s.isActive && s.deactivationReason === 'PENDING_APPROVAL'">
+                                    {{ etiquetaEstado(s) }}
+                                </span>
                             </td>
                             <td>
                                 @if (!s.deletedByOwner) {
                                     <button type="button" [class.redBtn]="s.isActive" [class.greenBtn]="!s.isActive"
                                         [disabled]="actualizando() === s.idSpace"
                                         (click)="cambiarEstado(s.idSpace, !s.isActive)">
-                                        {{ s.isActive ? 'Desactivar' : 'Activar' }}
+                                        {{ s.isActive ? 'Desactivar' : (s.deactivationReason === 'PENDING_APPROVAL' ? 'Aprobar' : 'Activar') }}
                                     </button>
                                 }
                             </td>

@@ -26,6 +26,11 @@
                     } @else {
                         <div class="confirmacion-baja">
                             <p>¿Dar de baja este espacio? Dejará de estar visible para otros usuarios.</p>
+                            <!-- El back no permite reactivar un espacio eliminado por el dueño (ni el admin puede) -->
+                            <p class="advertencia">
+                                ⚠️ La eliminación es permanente y no se puede deshacer: no vas a poder reactivarlo
+                                ni editarlo. Para volver a publicarlo tendrás que crear un espacio nuevo.
+                            </p>
                             <div class="confirm-actions">
                                 <button type="button" class="secondaryBtn" [disabled]="eliminando() === s.idSpace"
                                     (click)="confirmando.set(null)">Cancelar</button>
