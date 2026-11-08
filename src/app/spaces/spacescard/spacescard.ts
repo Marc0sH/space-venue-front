@@ -1,5 +1,5 @@
 import { Component, computed, inject, input, output } from '@angular/core';
-import { Space } from '../../models/space.model';
+import { Space, etiquetaEstadoEspacio } from '../../models/space.model';
 import { Router } from '@angular/router';
 import { Spaceservice } from '../spaceservice';
 import { SpaceImage } from '../../models/space-image.model';
@@ -12,6 +12,7 @@ import { SpaceImage } from '../../models/space-image.model';
 })
 export class Spacescard {
   space = input.required<Space>()
+  protected readonly etiquetaEstado = etiquetaEstadoEspacio
   private router = inject(Router)
   salida = output<Space>()
   id = computed(()=> this.space().idSpace.toString())

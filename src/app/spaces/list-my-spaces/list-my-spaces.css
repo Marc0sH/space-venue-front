@@ -101,6 +101,11 @@
     color: #7f1d1d;
 }
 
+.confirmacion-baja .advertencia {
+    font-weight: 700;
+    color: #991b1b;
+}
+
 .confirm-actions {
     display: flex;
     justify-content: flex-end;

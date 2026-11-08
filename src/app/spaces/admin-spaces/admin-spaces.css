@@ -101,6 +101,11 @@ tr.inactivo td {
     color: #166534;
 }
 
+.status-badge.pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
 .status-badge.deleted {
     background-color: #fee2e2;
     color: #991b1b;

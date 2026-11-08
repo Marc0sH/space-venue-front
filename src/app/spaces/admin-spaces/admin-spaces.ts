@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Spaceservice } from '../spaceservice';
+import { etiquetaEstadoEspacio } from '../../models/space.model';
 
 @Component({
   imports: [RouterLink, CurrencyPipe, DatePipe],
@@ -14,7 +15,10 @@ export class AdminSpaces {
   readonly espacios = this.spaceService.getAllSpaces();
 
   readonly busqueda = signal('');
-  readonly estado = signal<'Todos' | 'Activos' | 'Inactivos'>('Todos');
+  readonly etiquetaEstado = etiquetaEstadoEspacio;
+
+  //Además de Todos/Activos/Inactivos se puede filtrar por motivo de baja (OWNER_DELETED, ADMIN, PENDING_APPROVAL)
+  readonly estado = signal<string>('Todos');
   //Id del espacio que se está actualizando, para deshabilitar su botón
   readonly actualizando = signal<number | null>(null);
   readonly error = signal<string | null>(null);
@@ -22,11 +26,20 @@ export class AdminSpaces {
   readonly espaciosFiltrados = computed(() => {
     const texto = this.busqueda().trim().toLowerCase();
     return (this.espacios.value() ?? []).filter(s =>
-      (this.estado() === 'Todos' || s.isActive === (this.estado() === 'Activos')) &&
+      this.coincideEstado(s.isActive, s.deactivationReason) &&
       (!texto || s.nameSpace.toLowerCase().includes(texto)
         || `${s.consumerOwner?.firstname} ${s.consumerOwner?.lastname}`.toLowerCase().includes(texto))
     );
   });
+
+  private coincideEstado(isActive: boolean, motivo: string | null): boolean {
+    switch (this.estado()) {
+      case 'Todos': return true;
+      case 'Activos': return isActive;
+      case 'Inactivos': return !isActive;
+      default: return !isActive && motivo === this.estado();
+    }
+  }
 
   readonly cantidadInactivos = computed(() =>
     (this.espacios.value() ?? []).filter(s => !s.isActive).length
@@ -37,14 +50,17 @@ export class AdminSpaces {
     this.error.set(null);
     this.spaceService.setActive(id, active).subscribe({
       next: () => {
-        //Actualizamos la lista local en vez de volver a pedir todo
+        //Actualizamos la lista local en vez de volver a pedir todo (mismo criterio que el back para el motivo)
         this.espacios.value.update(lista =>
-          lista?.map(s => s.idSpace === id ? { ...s, isActive: active } : s)
+          lista?.map(s => s.idSpace === id
+            ? { ...s, isActive: active, deactivationReason: active ? null : 'ADMIN' as const }
+            : s)
         );
         this.actualizando.set(null);
       },
-      error: () => {
-        this.error.set('No se pudo cambiar el estado del espacio');
+      error: (err) => {
+        //Si el back explica el motivo (ErrorResponseDTO.mensaje) lo mostramos
+        this.error.set(err?.error?.mensaje ?? 'No se pudo cambiar el estado del espacio');
         this.actualizando.set(null);
       },
     });
