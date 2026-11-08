@@ -1,21 +1,73 @@
-.notificacionContainer {
-  max-width: 420px;
-  margin: 40px auto;
-  padding: 32px;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  font-family: system-ui, -apple-system, sans-serif;
-  color: #1e293b;
-  text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap');
 
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  gap: 10px;
+:host {
+  display: block;
+  background-color: #f7f9ff;
+  color: #121d26;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
 
-.fail{
-    color: rgba(253, 67, 67, 0.712);
+.notificaciones-page {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  box-sizing: border-box;
+}
+
+.notificaciones-page h2 {
+  margin: 0 0 1.5rem;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+}
+
+/* Lista a la izquierda, detalle a la derecha */
+.notification-area {
+  display: grid;
+  grid-template-columns: 20rem 1fr;
+  height: 34rem;
+  overflow: hidden;
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 5%), 0 4px 12px rgb(0 0 0 / 4%);
+}
+
+.control-area {
+  overflow-y: auto;
+  border-right: 1px solid #e2e8f0;
+}
+
+.control-area p {
+  margin: 0;
+  padding: 2rem 1rem;
+  text-align: center;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.control-area .fail {
+  color: rgba(253, 67, 67, 0.712);
+}
+
+/* Celular: se ve una sola columna a la vez */
+@media (max-width: 767px) {
+  .notification-area {
+    grid-template-columns: 1fr;
+  }
+
+  .notification-area.show-content-area .control-area {
+    display: none;
+  }
+
+  .notification-area:not(.show-content-area) app-notification-details {
+    display: none;
+  }
+}
+.click{
+color: #678fe6;
+}
+
+.click:hover{
+  cursor: pointer;
+  color: #1458ec;
 }
