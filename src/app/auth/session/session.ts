@@ -2,7 +2,7 @@ import { computed, inject, Service, signal } from '@angular/core';
 import { environment } from '../../../environments/enviroment';
 import { CredentialRegister, LoginRequest, LoginResponse } from '../../models/user.model';
 import { HttpClient } from '@angular/common/http';
-import { tap } from 'rxjs';
+import { finalize, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { Notificationservice } from '../../user/user-notifications/notificationservice';
 
@@ -34,8 +34,22 @@ export class Session {
         );
     }
 
-    //Sacamos del localStorage la sesion y ponemos la signal en null
+    //Avisa al backend para que invalide el token (blacklist) y despues limpia la sesion local.
+    //La sesion local se limpia siempre, aunque el request falle (sin red, token ya vencido, etc.)
     logoutUser(){
+        if (!this._session()) {
+            this.clearSession();
+            return;
+        }
+        this.http.post(`${this.baseUrl}/logout`, {}).pipe(
+            finalize(() => this.clearSession())
+        ).subscribe({ error: () => {} });
+    }
+
+    //Solo limpia la sesion local, sin llamar al backend.
+    //Se usa cuando el token ya no es valido (401) o ya fue invalidado por el backend (baja de cuenta),
+    //para no entrar en un loop de 401 -> logout -> 401
+    clearSession(){
         localStorage.removeItem('session');
         this._session.set(null);
         this.router.navigateByUrl('login');

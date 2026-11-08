@@ -10,8 +10,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const session = sessionService.session();
   
 
-  //No mando headers en las request que no lo precisan
-  if (!session || !req.url.startsWith(environment.apiUrl) || req.url.startsWith(`${environment.apiUrl}/auth`)) {
+  //No mando headers en las request que no lo precisan (login/register), salvo logout que necesita el token para invalidarlo
+  const isAuthUrl = req.url.startsWith(`${environment.apiUrl}/auth`) && !req.url.startsWith(`${environment.apiUrl}/auth/logout`);
+  if (!session || !req.url.startsWith(environment.apiUrl) || isAuthUrl) {
     return next(req);
   }
 
@@ -23,7 +24,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   return next(authReq).pipe(
     catchError((err: HttpErrorResponse) => {
       if (err.status === 401) { //Si vencio el token o no esta deslogea al ususario y lo manda a login
-        sessionService.logoutUser();
+        sessionService.clearSession();
       }
       return throwError(() => err);
     })
