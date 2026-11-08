@@ -9,7 +9,7 @@
         </div>
         
         <div>
-    <label for="description">Descripción (opcional): </label>
+    <label for="description">Descripción: </label>
     <textarea id="description" rows="3" [formField]="formSpaceCreation.description"></textarea>
     <span class="contador" [class.limite]="model().description.length >= 250">
         {{ model().description.length }} / 250
