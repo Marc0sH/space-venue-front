@@ -114,3 +114,15 @@
     </button>
   }
 </div>
+
+<div class="comments">
+  <h2>Reseñas</h2>
+  
+  @if (haveToComment()) {
+    <app-comment-creation [idSpace]="id()"></app-comment-creation>
+  } @else {
+    <p class="unavailable">Usted no puede comentar en este espacio</p>
+  }
+
+  
+</div>
