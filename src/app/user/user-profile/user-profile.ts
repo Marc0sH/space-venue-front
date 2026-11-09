@@ -34,7 +34,7 @@ export class UserProfile {
     this.deleting.set(true);
     this.deletionError.set(null);
     this.userService.deleteLoggedUser().subscribe({
-      next: () => this.sessionService.logoutUser(), //Deslogeamos al usuario luego de eliminarlo
+      next: () => this.sessionService.clearSession(), //El backend ya invalidó el token en la baja, solo limpiamos la sesion local
       error: () => {
         this.deletionError.set('No se pudo dar de baja la cuenta. Intentá de nuevo.');
         this.deleting.set(false);
