@@ -1,10 +1,10 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ReservationComplete } from '../../models/reservation.model';
 import { Router } from '@angular/router';
 import { Session } from '../../auth/session/session';
 import { Reservation } from '../reservation';
+import { mensajeDeError } from '../../common/http-error';
 
 @Component({
   imports: [],
@@ -55,28 +55,10 @@ export class ReservationCard {
       },
       error: (error: unknown) => {
         console.error('No se pudo actualizar la reserva:', error)
-        this.actionError.set(
-          error instanceof HttpErrorResponse
-            ? this.getActionErrorMessage(error)
-            : 'No se pudo actualizar la reserva.'
-        )
+        this.actionError.set(mensajeDeError(error, 'No se pudo actualizar la reserva'))
         this.isUpdating.set(false)
       }
     })
-  }
-
-  private getActionErrorMessage(error: HttpErrorResponse): string {
-    const body: unknown = error.error
-    if (
-      typeof body === 'object' &&
-      body !== null &&
-      'mensaje' in body &&
-      typeof body.mensaje === 'string'
-    ) {
-      return body.mensaje
-    }
-
-    return error.message || 'No se pudo actualizar la reserva.'
   }
 
   onDetails(){

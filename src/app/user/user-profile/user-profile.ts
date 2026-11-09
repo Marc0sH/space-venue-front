@@ -3,6 +3,7 @@ import { User } from '../user';
 import { Session } from '../../auth/session/session';
 import { RouterLink } from '@angular/router';
 import { etiquetaEstadoCuenta } from '../../models/user.model';
+import { mensajeDeError } from '../../common/http-error';
 
 @Component({
   imports: [RouterLink],
@@ -35,8 +36,8 @@ export class UserProfile {
     this.deletionError.set(null);
     this.userService.deleteLoggedUser().subscribe({
       next: () => this.sessionService.clearSession(), //El backend ya invalidó el token en la baja, solo limpiamos la sesion local
-      error: () => {
-        this.deletionError.set('No se pudo dar de baja la cuenta. Intentá de nuevo.');
+      error: (err) => {
+        this.deletionError.set(mensajeDeError(err, 'No se pudo dar de baja la cuenta'));
         this.deleting.set(false);
       }
     })

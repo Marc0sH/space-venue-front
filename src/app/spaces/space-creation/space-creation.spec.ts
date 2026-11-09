@@ -69,7 +69,7 @@ describe('SpaceCreation', () => {
     createSpace.mockReturnValue(
       throwError(() => new HttpErrorResponse({
         status: 400,
-        error: { mensaje: 'Los datos enviados no son válidos.', errores: { nameSpace: 'es obligatorio' } },
+        error: { mensaje: 'Los datos enviados no son válidos.', errores: { nameSpace: 'El nombre es obligatorio' } },
       })),
     );
     component.model.update((current) => ({
@@ -82,6 +82,6 @@ describe('SpaceCreation', () => {
 
     component.onSubmit(new Event('submit'));
 
-    expect(component.error()).toContain('"nameSpace":"es obligatorio"');
+    expect(component.error()).toBe('No se pudo crear el espacio: El nombre es obligatorio');
   });
 });

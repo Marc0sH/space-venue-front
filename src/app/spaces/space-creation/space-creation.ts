@@ -11,6 +11,7 @@ import { catchError, concatMap, from, map, of, toArray } from 'rxjs';
 import { Coordinates } from '../../models/location.model';
 import { LocationPicker } from '../../common/location-picker/location-picker';
 import { CANTIDAD_MAX_IMAGENES, ImagenSeleccionada, seleccionarImagenes } from '../space-images';
+import { mensajeDeError } from '../../common/http-error';
 
 // La ubicación queda vacía hasta que se marca en el mapa
 type SpaceForm = Omit<NewSpace, 'location'> & { location: Coordinates | null }
@@ -106,13 +107,7 @@ mostrarFormServicio = signal(false)
       },
       error: (e: HttpErrorResponse) => {
         this.saving.set(false);
-        const validationDetail = e.error?.errores
-          ? JSON.stringify(e.error.errores)
-          : undefined;
-        const detail = typeof e.error === 'string'
-          ? e.error
-          : validationDetail ?? e.error?.mensaje ?? e.error?.message ?? e.message;
-        this.error.set('Error al crear un espacio: ' + detail);
+        this.error.set(mensajeDeError(e, 'No se pudo crear el espacio'));
         console.error('Error ' + e.status + ' al crear espacio:', e);
       },
     });

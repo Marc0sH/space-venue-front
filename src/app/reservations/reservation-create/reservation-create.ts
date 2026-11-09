@@ -8,7 +8,7 @@ import { CurrencyPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormErrorMessage } from '../../common/form-error-message/form-error-message';
 import { Spaceservice } from '../../spaces/spaceservice';
-import { HttpErrorResponse } from '@angular/common/http';
+import { mensajeDeError } from '../../common/http-error';
 
 @Component({
   imports: [FormField, CurrencyPipe, FormErrorMessage],
@@ -166,7 +166,7 @@ export class ReservationCreate {
         this.router.navigate(['/espacios'])
       },
       error: (error) => {
-        const e = this.reservationService.getBackendErrorMessage(error)
+        const e = mensajeDeError(error, 'No se pudo crear la reserva')
         this.error.set(e)
         console.error(e);
       }
