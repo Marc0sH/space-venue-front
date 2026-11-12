@@ -3,6 +3,7 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Spaceservice } from '../spaceservice';
 import { etiquetaEstadoEspacio } from '../../models/space.model';
+import { mensajeDeError } from '../../common/http-error';
 
 @Component({
   imports: [RouterLink, CurrencyPipe, DatePipe],
@@ -59,8 +60,7 @@ export class AdminSpaces {
         this.actualizando.set(null);
       },
       error: (err) => {
-        //Si el back explica el motivo (ErrorResponseDTO.mensaje) lo mostramos
-        this.error.set(err?.error?.mensaje ?? 'No se pudo cambiar el estado del espacio');
+        this.error.set(mensajeDeError(err, 'No se pudo cambiar el estado del espacio'));
         this.actualizando.set(null);
       },
     });

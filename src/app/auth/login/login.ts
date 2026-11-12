@@ -4,6 +4,7 @@ import { form, required, FormField, minLength } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 import { FormErrorMessage } from '../../common/form-error-message/form-error-message';
 import { Session } from '../session/session';
+import { mensajeDeError } from '../../common/http-error';
 
 @Component({
   imports: [FormField, FormErrorMessage, RouterLink],
@@ -36,7 +37,7 @@ export class Login {
         this.loading.set(false);
       },
       error: (error) => {
-        this.error.set("Error al iniciar sesion usuario: " + error.message);
+        this.error.set(mensajeDeError(error, "No se pudo iniciar sesión"));
         console.error('Error ' + error.status + ' al iniciar sesion:', error);
         this.loading.set(false);
       }

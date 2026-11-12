@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { User } from '../user';
 import { Session } from '../../auth/session/session';
 import { ConsumerFilter, etiquetaEstadoCuenta } from '../../models/user.model';
+import { mensajeDeError } from '../../common/http-error';
 
 const FILTRO_VACIO: ConsumerFilter = { firstname: null, lastname: null, email: null, phone: null, username: null };
 
@@ -85,8 +86,7 @@ export class AdminUsers {
         this.actualizando.set(null);
       },
       error: (err) => {
-        //Si el back explica el motivo (ErrorResponseDTO.mensaje) lo mostramos
-        this.error.set(err?.error?.mensaje ?? `No se pudo ${active ? 'activar' : 'desactivar'} el usuario`);
+        this.error.set(mensajeDeError(err, `No se pudo ${active ? 'activar' : 'desactivar'} el usuario`));
         this.actualizando.set(null);
       },
     });

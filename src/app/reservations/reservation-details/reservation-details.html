@@ -1,7 +1,7 @@
 @if (reservation.isLoading()) {
     <p class="detail-message">Cargando datos de reserva...</p>
 } @else if (reservation.error()) {
-    <p class="detail-message fail">Error al obtener los datos de la reserva: {{reservation.error()?.message}}</p>
+    <p class="detail-message fail">{{ errorReserva() }}</p>
 } @else {
     <main class="reservation-details">
         <header class="reservation-header">

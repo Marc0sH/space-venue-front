@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { UserUpdate } from '../../models/user.model';
 import { email, form, FormField, required } from '@angular/forms/signals';
 import { FormErrorMessage } from '../../common/form-error-message/form-error-message';
+import { mensajeDeError } from '../../common/http-error';
 
 
 @Component({
@@ -45,7 +46,7 @@ export class UserEdit {
     this.servicioUsuario.updateLoggedUser(this.model()).subscribe({
       next: () => this.router.navigate(['/perfil']),
       error: (err) => {
-        this.error.set(err.error?.message ?? 'No se pudo actualizar el perfil');
+        this.error.set(mensajeDeError(err, 'No se pudo actualizar el perfil'));
         this.guardando.set(false);
       },
     });

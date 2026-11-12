@@ -3,6 +3,7 @@ import { Spacescard } from '../spacescard/spacescard';
 import { Spaceservice } from '../spaceservice';
 import { Space } from '../../models/space.model';
 import { SpaceFilter } from '../space-filter/space-filter';
+import { mensajeDeError } from '../../common/http-error';
 
 @Component({
   imports: [Spacescard, SpaceFilter],
@@ -28,9 +29,9 @@ export class ListMySpaces {
           this.cargando.set(false);
           this.lista.set(data);
         },
-        error: () => {
+        error: (err) => {
           this.cargando.set(false);
-          this.error.set('No se pudieron cargar los espacios');
+          this.error.set(mensajeDeError(err, 'No se pudieron cargar los espacios'));
         },
       });
     })
@@ -60,8 +61,8 @@ export class ListMySpaces {
         this.confirmando.set(null);
         this.eliminando.set(null);
       },
-      error: () => {
-        this.errorBaja.set('No se pudo dar de baja el espacio');
+      error: (err) => {
+        this.errorBaja.set(mensajeDeError(err, 'No se pudo dar de baja el espacio'));
         this.eliminando.set(null);
       },
     });
