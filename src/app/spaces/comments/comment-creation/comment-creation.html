@@ -1,0 +1,23 @@
+<form (submit)="onSubmit($event)" [attr.aria-busy]="enviando()">
+    <div>
+        <label for="description">¿Cuál es su reseña? </label>
+        <input id="description" type="text" [formField]="formComment.description">
+    </div>
+
+    <div>
+        <label for="score">Calificación (0 al 5): </label>
+        <input id="score" type="number" step="1" [formField]="formComment.score">
+    </div>
+
+    <button type="submit" [disabled]="formComment().invalid() || enviando()">
+        {{ enviando() ? 'Publicando...' : 'Comentar' }}
+    </button>
+
+    @if (mensajeExito()) {
+        <p class="mensaje-exito" role="status">{{ mensajeExito() }}</p>
+    }
+
+    @if (error()) {
+        <p class="mensaje-error" role="alert">{{ error() }}</p>
+    }
+</form>

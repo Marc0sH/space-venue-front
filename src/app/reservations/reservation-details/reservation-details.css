@@ -129,6 +129,13 @@
     color: #b91c1c;
 }
 
+.progress {
+    border-color: #6ba9f0;
+    background-color: #d1e3f8;
+    color: #3b94fa;
+}
+
+
 .space-details {
     margin-top: 1.25rem;
 }

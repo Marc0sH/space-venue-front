@@ -5,9 +5,12 @@ import { Session } from '../../auth/session/session';
 import { ReservationCreate } from '../../reservations/reservation-create/reservation-create';
 import { LocationMap } from '../../common/location-map/location-map';
 import { hasLocation } from '../../models/location.model';
+import { Comment } from '../comments/comment';
+import { CommentCreation } from '../comments/comment-creation/comment-creation';
+import { CommentsList } from '../comments/comments-list/comments-list';
 
 @Component({
-  imports: [LocationMap, RouterLink],
+  imports: [LocationMap, RouterLink, CommentCreation, CommentsList],
   selector: 'app-spacesdetail',
   styleUrl: './spacesdetail.css',
   templateUrl: './spacesdetail.html',
@@ -21,6 +24,18 @@ export class Spacesdetail {
   protected readonly currentImageIndex = signal(0);
   protected readonly hasLocation = hasLocation;
   private readonly session = inject(Session);
+  private readonly commentService = inject(Comment)
+
+  readonly hasComment = this.commentService.hasCommentOnSpace(this.id);
+  readonly canComment = this.commentService.canCommentOnSpace(this.id);
+
+  readonly haveToComment = computed(() => {
+    if (!this.hasComment.hasValue() || !this.canComment.hasValue()) {
+      return false;
+    }
+
+    return !this.hasComment.value() && this.canComment.value();
+  });
 
   //Solo el dueño puede editar, y no si ya eliminó el espacio
   protected readonly esDuenio = computed(() => {
