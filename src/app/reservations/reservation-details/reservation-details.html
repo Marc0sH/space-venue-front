@@ -1,7 +1,7 @@
 @if (reservation.isLoading()) {
     <p class="detail-message">Cargando datos de reserva...</p>
 } @else if (reservation.error()) {
-    <p class="detail-message fail">Error al obtener los datos de la reserva: {{reservation.error()?.message}}</p>
+    <p class="detail-message fail">{{ errorReserva() }}</p>
 } @else {
     <main class="reservation-details">
         <header class="reservation-header">
@@ -13,7 +13,8 @@
             <p class="status"
                 [class.tentative]="reservation.value()?.status === 'TENTATIVE'"
                 [class.accepted]="reservation.value()?.status === 'CONFIRMED' || reservation.value()?.status === 'COMPLETED'"
-                [class.negative]="reservation.value()?.status === 'REJECTED' || reservation.value()?.status === 'CANCELLED'">
+                [class.negative]="reservation.value()?.status === 'REJECTED' || reservation.value()?.status === 'CANCELLED'"
+                 [class.progress]="reservation.value()?.status === 'IN_PROGRESS'">
 
                 @if (reservation.value()?.status === 'CONFIRMED') {
                     Confirmada
@@ -25,6 +26,8 @@
                     Completada
                 } @else if (reservation.value()?.status === 'CANCELLED') {
                     Cancelada
+                } @else if (reservation.value()?.status === 'IN_PROGRESS') {
+                    En curso
                 }
             </p>
         </header>

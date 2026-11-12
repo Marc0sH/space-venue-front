@@ -21,7 +21,8 @@
     <p class="status"
         [class.tentative]="reservation().status === 'TENTATIVE'"
         [class.accepted]="reservation().status === 'CONFIRMED' || reservation().status === 'COMPLETED'"
-        [class.negative]="reservation().status === 'REJECTED' || reservation().status === 'CANCELLED'">
+        [class.negative]="reservation().status === 'REJECTED' || reservation().status === 'CANCELLED'"
+        [class.progress]="reservation().status === 'IN_PROGRESS'">
 
         @if (reservation().status === 'CONFIRMED') {
             Confirmada
@@ -33,6 +34,8 @@
             Completada
         } @else if (reservation().status === 'CANCELLED') {
             Cancelada
+        } @else if (reservation().status === 'IN_PROGRESS') {
+            En curso
         }
     </p>
 </div>

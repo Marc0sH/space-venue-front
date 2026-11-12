@@ -124,6 +124,12 @@
     color: #b91c1c;
 }
 
+.progress {
+    border-color: #6ba9f0;
+    background-color: #d1e3f8;
+    color: #3b94fa;
+}
+
 @media (max-width: 480px) {
     .card {
         align-items: flex-start;

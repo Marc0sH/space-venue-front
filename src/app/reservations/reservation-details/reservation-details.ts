@@ -2,6 +2,7 @@ import { Component, computed, inject, input, signal } from '@angular/core';
 import { Reservation } from '../reservation';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Session } from '../../auth/session/session';
+import { mensajeDeError } from '../../common/http-error';
 
 @Component({
   imports: [DatePipe, CurrencyPipe],
@@ -17,6 +18,10 @@ export class ReservationDetails {
   
   readonly reservation = this.reservationService.getReservation(this.idReservation)
   readonly serviceSelected = this.reservationService.getServicesSelected(this.idReservation)
+
+  readonly errorReserva = computed(() =>
+    mensajeDeError(this.reservation.error(), 'No se pudieron obtener los datos de la reserva')
+  )
   
   readonly hoursReservation = computed(() => {
     const reservation = this.reservation.value();

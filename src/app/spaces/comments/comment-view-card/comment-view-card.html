@@ -1,0 +1,21 @@
+<div class="comment-item">
+    <header class="comment-header">
+        <div>
+            @if (comment().username) {
+                <h3 class="comment-username">{{ comment().username }}</h3>
+            } @else {
+                <p class="comment-author-unavailable">Usuario no disponible</p>
+            }
+        </div>
+        <span class="comment-score" aria-label="Calificación">
+            {{ comment().score }}
+        </span>
+    </header>
+
+    <p class="comment-description">{{ comment().description }}</p>
+
+    <footer class="comment-meta">
+        <span>Publicado: {{ comment().created_at | date:'medium' }}</span>
+    </footer>
+</div>
+ 

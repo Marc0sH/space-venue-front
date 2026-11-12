@@ -4,6 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ReservationComplete } from '../../models/reservation.model';
 import { ReservationCard } from '../reservation-card/reservation-card';
 import { Observable } from 'rxjs';
+import { mensajeDeError } from '../../common/http-error';
 
 @Component({
   imports: [ReservationCard],
@@ -42,7 +43,7 @@ export class ReservationList {
           },
           error: (e : HttpErrorResponse) => {
             this.isLoading.set(false)
-            this.error.set(e.message)
+            this.error.set(mensajeDeError(e, 'No se pudieron cargar las reservas'))
             console.error("Hubo un error al cargar las reservas: " + e.error)
           }
         })
@@ -59,7 +60,7 @@ export class ReservationList {
           },
           error: (e : HttpErrorResponse) => {
             this.isLoading.set(false)
-            this.error.set(e.message)
+            this.error.set(mensajeDeError(e, 'No se pudieron cargar las reservas'))
             console.error("Hubo un error al cargar las reservas: " + e.error)
           }
         })
