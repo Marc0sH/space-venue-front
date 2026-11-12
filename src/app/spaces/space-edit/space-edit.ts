@@ -13,6 +13,7 @@ import { ServiceServicios } from '../Servicios/service-servicios';
 import { ServiceCreation } from '../Servicios/service-creation/service-creation';
 import { ServiceReg } from '../../models/service.model';
 import { catchError, concat, concatMap, from, map, Observable, of, switchMap, toArray } from 'rxjs';
+import { mensajeDeError } from '../../common/http-error';
 
 // La ubicación puede quedar vacía si el espacio se creó antes del mapa
 type SpaceEditForm = Omit<SpaceUpdate, 'location'> & { location: Coordinates | null }
@@ -179,10 +180,7 @@ export class SpaceEdit {
       },
       error: (e: HttpErrorResponse) => {
         this.guardando.set(false);
-        const detalle = e.error?.errores
-          ? JSON.stringify(e.error.errores)
-          : e.error?.mensaje ?? e.error?.message;
-        this.error.set('No se pudo guardar el espacio' + (detalle ? ': ' + detalle : ''));
+        this.error.set(mensajeDeError(e, 'No se pudo guardar el espacio'));
         console.error('Error ' + e.status + ' al editar espacio:', e);
       },
     });

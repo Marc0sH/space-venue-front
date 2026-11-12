@@ -4,6 +4,7 @@ import { email, form, FormField, minLength, required } from '@angular/forms/sign
 import { FormErrorMessage } from '../../common/form-error-message/form-error-message';
 import { Router, RouterLink } from '@angular/router';
 import { Session } from '../session/session';
+import { mensajeDeError } from '../../common/http-error';
 
 @Component({
   imports: [FormField, FormErrorMessage, RouterLink],
@@ -41,7 +42,7 @@ export class Register {
 
       },
       error: (error) => {
-        this.error.set("Error al registrar usuario: " + error.message);
+        this.error.set(mensajeDeError(error, "No se pudo completar el registro"));
         console.error('Error ' + error.status + ' al registrar usuario:', error);
       }
     });
