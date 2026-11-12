@@ -37,11 +37,11 @@ export class Spacesdetail {
     return !this.hasComment.value() && this.canComment.value();
   });
 
-  //Solo el dueño puede editar, y no si ya eliminó el espacio
+  //Solo el dueño puede editar, y no si ya eliminó el espacio. Además tiene que poder gestionar espacios (ADMIN u OFFERER)
   protected readonly esDuenio = computed(() => {
     const s = this.space.hasValue() ? this.space.value() : undefined;
     const idLogueado = this.session.session()?.consumerId;
-    return !!s && idLogueado != null && s.consumerOwner?.idConsumer === idLogueado && !s.deletedByOwner;
+    return !!s && idLogueado != null && s.consumerOwner?.idConsumer === idLogueado && !s.deletedByOwner && this.session.puedePublicar();
   });
 
   protected showPreviousImage(): void {

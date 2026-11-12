@@ -26,10 +26,22 @@ export interface LoginRequest{ //Representa los datos que se mandan del front pa
     password: string;
 }
 
+//Roles del back (ERoles). Solo ADMIN y OFFERER pueden publicar y gestionar espacios
+export type Rol = 'ROLE_ADMIN' | 'ROLE_CLIENT' | 'ROLE_OFFERER';
+
+//Texto del rol para mostrar en la lista de usuarios y en la ficha
+export function etiquetaRol(rol: string | undefined): string {
+    switch (rol) {
+        case 'ROLE_ADMIN': return 'Admin';
+        case 'ROLE_OFFERER': return 'Oferente';
+        default: return 'Cliente';
+    }
+}
+
 export interface LoginResponse{ //Formato del DTO de respuesta que manda el backend
     token: string;
     tipo: string;
-    rol: string;
+    rol: Rol;
     consumerId: number;
 }
 
@@ -39,7 +51,7 @@ export interface UserProfileData {
     lastname: string;
     email: string;
     phone: string;
-    credentials: { username: string; isActive: boolean; rol: string; deactivationReason: DeactivationReason | null };
+    credentials: { username: string; isActive: boolean; rol: Rol; deactivationReason: DeactivationReason | null };
 }
 
 //Motivo por el que una cuenta está inactiva (EDeactivationReason en el back). null si está activa
