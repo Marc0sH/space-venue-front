@@ -7,9 +7,10 @@ import { LocationMap } from '../../common/location-map/location-map';
 import { hasLocation } from '../../models/location.model';
 import { Comment } from '../comments/comment';
 import { CommentCreation } from '../comments/comment-creation/comment-creation';
+import { CommentsList } from '../comments/comments-list/comments-list';
 
 @Component({
-  imports: [LocationMap, RouterLink, CommentCreation],
+  imports: [LocationMap, RouterLink, CommentCreation, CommentsList],
   selector: 'app-spacesdetail',
   styleUrl: './spacesdetail.css',
   templateUrl: './spacesdetail.html',

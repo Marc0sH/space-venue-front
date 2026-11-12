@@ -1,0 +1,63 @@
+.comment-item {
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background-color: #fff;
+  color: #1e293b;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.comment-header h3,
+.comment-username,
+.comment-description {
+  margin: 0;
+}
+
+.comment-header h3 {
+  color: #0f172a;
+  font-size: 1rem;
+}
+
+.comment-username,
+.comment-author-unavailable,
+.comment-meta {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.comment-author-unavailable {
+  margin: 0;
+}
+
+.comment-score {
+  flex-shrink: 0;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.comment-description {
+  margin-top: 0.9rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.comment-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #edf1f4;
+}

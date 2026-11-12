@@ -1,0 +1,21 @@
+.comments-list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.list-message {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  color: #64748b;
+  background-color: #fff;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.list-message.error {
+  border-color: #fecaca;
+  color: #b91c1c;
+  background-color: #fef2f2;
+}
