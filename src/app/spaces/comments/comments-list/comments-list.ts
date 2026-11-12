@@ -1,7 +1,7 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { Comment } from '../comment';
 import { CommentViewCard } from '../comment-view-card/comment-view-card';
-import { CommentFilter } from '../comment-filter/comment-filter';
+import { CommentFilter, type CommentFilterOptions } from '../comment-filter/comment-filter';
 
 @Component({
   imports: [CommentViewCard, CommentFilter],
@@ -12,14 +12,31 @@ import { CommentFilter } from '../comment-filter/comment-filter';
 export class CommentsList {
   private commentService = inject(Comment)
   readonly idSpace = input.required<string>()
-  scoreFilterSelected = signal<number | null>(null)
+  filterOptions = signal<CommentFilterOptions>({
+    score: null,
+    username: '',
+    scoreOrder: 'none',
+  })
   comments = this.commentService.getCommentsOfSpace(this.idSpace)
-  commentsListFiltered = computed(() => this.comments.value()?.filter((c) => 
-    this.scoreFilterSelected() === null ? 
-    this.comments.value() : 
-    c.score === this.scoreFilterSelected()))
+  commentsListFiltered = computed(() => {
+    const comments = this.comments.value() ?? [];
+    const { score, username, scoreOrder } = this.filterOptions();
+    const usernameQuery = username.trim().toLocaleLowerCase();
+    const filtered = comments.filter((comment) =>
+      (score === null || comment.score === score) &&
+      (!usernameQuery || (comment.username ?? '').toLocaleLowerCase().includes(usernameQuery))
+    );
 
-  changeFilter(value: number | null){
-    this.scoreFilterSelected.set(value)
+    if (scoreOrder === 'none') {
+      return filtered;
+    }
+
+    return [...filtered].sort((a, b) =>
+      scoreOrder === 'asc' ? a.score - b.score : b.score - a.score
+    );
+  })
+
+  changeFilters(value: CommentFilterOptions) {
+    this.filterOptions.set(value);
   }
 }
