@@ -40,21 +40,29 @@
 
 .spaces-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);   /* minmax(0, ...) evita que el contenido ensanche una columna */
+    grid-auto-rows: 1fr;                      /* todas las filas miden lo mismo que la más alta */
     gap: 1.5rem;
 }
 
 .spaces-grid app-spacescard {
     display: block;
+    min-width: 0;
+}
+
+/* Mensajes ("No hay espacios...") ocupan todo el ancho en vez de una sola columna */
+.spaces-grid > p {
+    grid-column: 1 / -1;
+    margin: 0;
 }
 
 @media (min-width: 640px) {
-    .spaces-grid { grid-template-columns: repeat(2, 1fr); }
+    .spaces-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (min-width: 1024px) {
     .spaces-section { padding-left: 3rem; padding-right: 3rem; }
-    .spaces-grid { grid-template-columns: repeat(4, 1fr); }
+    .spaces-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
 @media (max-width: 639px) {

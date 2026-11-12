@@ -10,8 +10,7 @@ import { CommentCreation } from '../comments/comment-creation/comment-creation';
 import { CommentsList } from '../comments/comments-list/comments-list';
 
 @Component({
-  imports: [LocationMap, RouterLink, CommentCreation, CommentsList],
-  selector: 'app-spacesdetail',
+   imports: [LocationMap, RouterLink, CommentCreation, CommentsList, ReservationCreate],  selector: 'app-spacesdetail',
   styleUrl: './spacesdetail.css',
   templateUrl: './spacesdetail.html',
 })

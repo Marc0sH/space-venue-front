@@ -1,7 +1,9 @@
+import { inject } from "@angular/core"
 import { Cancellationpolicies } from "./cancellationpolicies.model"
 import { Coordinates, Location } from "./location.model"
 import { ServiceReg, ServiceSpace } from "./service.model"
 import { consumerOwner } from "./user.model"
+import { Comment } from "../spaces/comments/comment"
 
 export interface Space{
     idSpace: number,
