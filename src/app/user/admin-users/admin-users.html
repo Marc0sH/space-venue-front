@@ -36,6 +36,9 @@
         @if (error()) {
             <p class="error">{{ error() }}</p>
         }
+        @if (aviso()) {
+            <p class="aviso">{{ aviso() }}</p>
+        }
 
         <p class="resumen">
             {{ usuarios.value()?.length }} {{ hayFiltros() ? 'resultados' : 'usuarios en total' }}
@@ -68,7 +71,19 @@
                             <td>{{ u.credentials?.username }}</td>
                             <td>{{ u.email }}</td>
                             <td>{{ u.phone }}</td>
-                            <td>{{ u.credentials?.rol === 'ROLE_ADMIN' ? 'Admin' : 'Cliente' }}</td>
+                            <td>
+                                <!-- El rol de un admin no se cambia desde acá. Cliente u oferente (puede publicar espacios) sí -->
+                                @if (u.credentials?.rol === 'ROLE_ADMIN') {
+                                    {{ etiquetaRol(u.credentials.rol) }}
+                                } @else {
+                                    <select class="rol-select" [value]="u.credentials?.rol"
+                                        [disabled]="cambiandoRol() === u.idConsumer"
+                                        (change)="cambiarRol(u.idConsumer, $any($event.target))">
+                                        <option value="ROLE_CLIENT">{{ etiquetaRol('ROLE_CLIENT') }}</option>
+                                        <option value="ROLE_OFFERER">{{ etiquetaRol('ROLE_OFFERER') }}</option>
+                                    </select>
+                                }
+                            </td>
                             <td>
                                 <span class="status-badge" [class.active]="u.credentials?.isActive"
                                     [class.user-request]="!u.credentials?.isActive && u.credentials?.deactivationReason === 'USER_REQUEST'">

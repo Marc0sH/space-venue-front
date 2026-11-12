@@ -2,7 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { User } from '../user';
 import { Session } from '../../auth/session/session';
-import { ConsumerFilter, etiquetaEstadoCuenta } from '../../models/user.model';
+import { ConsumerFilter, Rol, etiquetaEstadoCuenta, etiquetaRol } from '../../models/user.model';
 
 const FILTRO_VACIO: ConsumerFilter = { firstname: null, lastname: null, email: null, phone: null, username: null };
 
@@ -22,6 +22,9 @@ export class AdminUsers {
   readonly confirmando = signal<number | null>(null);
   readonly actualizando = signal<number | null>(null);
   readonly error = signal<string | null>(null);
+  //Fila a la que se le está cambiando el rol y mensaje de confirmación del back
+  readonly cambiandoRol = signal<number | null>(null);
+  readonly aviso = signal<string | null>(null);
 
   //Lo que se está escribiendo en los inputs (no dispara requests)
   readonly borrador = signal<ConsumerFilter>(FILTRO_VACIO);
@@ -30,6 +33,7 @@ export class AdminUsers {
   readonly usuarios = this.userService.searchUsers(this.filtro);
 
   readonly etiquetaEstado = etiquetaEstadoCuenta;
+  readonly etiquetaRol = etiquetaRol;
 
   //El back no filtra por estado, así que este filtro se aplica sobre los resultados.
   //Los motivos de baja (USER_REQUEST, ADMIN) también se pueden elegir como filtro
@@ -88,6 +92,30 @@ export class AdminUsers {
         //Si el back explica el motivo (ErrorResponseDTO.mensaje) lo mostramos
         this.error.set(err?.error?.mensaje ?? `No se pudo ${active ? 'activar' : 'desactivar'} el usuario`);
         this.actualizando.set(null);
+      },
+    });
+  }
+
+  //Pasa un usuario de cliente a oferente (puede publicar espacios) o al revés.
+  //Si el back lo rechaza (por ej. el oferente todavía tiene espacios) el select vuelve al rol anterior
+  cambiarRol(id: number, select: HTMLSelectElement) {
+    const rol = select.value as Rol;
+    const anterior = this.usuarios.value()?.find(u => u.idConsumer === id)?.credentials?.rol;
+    this.cambiandoRol.set(id);
+    this.error.set(null);
+    this.aviso.set(null);
+    this.userService.setUserRol(id, rol).subscribe({
+      next: (res) => {
+        this.usuarios.value.update(lista =>
+          lista?.map(u => u.idConsumer === id ? { ...u, credentials: { ...u.credentials, rol } } : u)
+        );
+        this.aviso.set(res?.mensaje ?? 'Rol actualizado');
+        this.cambiandoRol.set(null);
+      },
+      error: (err) => {
+        if (anterior) select.value = anterior;
+        this.error.set(err?.error?.mensaje ?? 'No se pudo cambiar el rol del usuario');
+        this.cambiandoRol.set(null);
       },
     });
   }

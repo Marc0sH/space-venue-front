@@ -1,7 +1,7 @@
 import { inject, Service } from '@angular/core';
 import { environment } from '../../environments/enviroment';
 import { HttpClient, httpResource } from '@angular/common/http';
-import { ConsumerFilter, UserProfileData, UserUpdate } from '../models/user.model';
+import { ConsumerFilter, Rol, UserProfileData, UserUpdate } from '../models/user.model';
 import { Session } from '../auth/session/session';
 
 @Service()
@@ -36,6 +36,11 @@ export class User {
 
     setUserStatus(id: number, active: boolean) {
         return this.http.put<{ message: string }>(`${this.baseUrl}/${id}/status`, null, { params: { active } });
+    }
+
+    //Solo ADMIN: pasa a un usuario de cliente a oferente (puede publicar espacios) o al revés
+    setUserRol(id: number, rol: Rol) {
+        return this.http.put<{ mensaje: string }>(`${this.baseUrl}/${id}/rol`, null, { params: { rol } });
     }
 
     deleteLoggedUser() {
