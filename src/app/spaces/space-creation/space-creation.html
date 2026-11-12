@@ -6,6 +6,7 @@
         <div>
             <label for="nameSpace">Nombre del espacio: </label>
             <input type="text" [formField]="formSpaceCreation.nameSpace">
+            <app-form-error-message [campo]="formSpaceCreation.nameSpace()"></app-form-error-message>
         </div>
         
         <div>
@@ -14,16 +15,19 @@
     <span class="contador" [class.limite]="model().description.length >= 250">
         {{ model().description.length }} / 250
     </span>
+    <app-form-error-message [campo]="formSpaceCreation.description()"></app-form-error-message>
         </div>
         
         <div>
             <label for="basePrice">Precio base: </label>
             <input type="number" [formField]="formSpaceCreation.basePrice">
+            <app-form-error-message [campo]="formSpaceCreation.basePrice()"></app-form-error-message>
         </div>
         
         <div>
             <label for="bufferTime">Tiempo de receso entre reservas (min): </label>
             <input type="number" [formField]="formSpaceCreation.bufferTime">
+            <app-form-error-message [campo]="formSpaceCreation.bufferTime()"></app-form-error-message>
         </div>
 
         <div class="servicios">
@@ -57,6 +61,7 @@
         <div>
             <span class="titulo-campo">Ubicación</span>
             <app-location-picker [formField]="formSpaceCreation.location"></app-location-picker>
+            <app-form-error-message [campo]="formSpaceCreation.location()"></app-form-error-message>
         </div>
     
         <div class="imagenes">

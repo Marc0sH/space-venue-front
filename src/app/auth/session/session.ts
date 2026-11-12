@@ -1,6 +1,6 @@
 import { computed, inject, Service, signal } from '@angular/core';
 import { environment } from '../../../environments/enviroment';
-import { CredentialRegister, LoginRequest, LoginResponse } from '../../models/user.model';
+import { CredentialRegister, LoginRequest, LoginResponse, Rol, UserProfileData } from '../../models/user.model';
 import { HttpClient } from '@angular/common/http';
 import { finalize, tap } from 'rxjs';
 import { Router } from '@angular/router';
@@ -16,6 +16,8 @@ export class Session {
     session = this._session.asReadonly();
     isLoggedIn = computed(() => this._session() != null);
     isAdmin = computed(() => this._session()?.rol === 'ROLE_ADMIN');
+    //Solo ADMIN y OFFERER pueden crear, publicar y gestionar espacios (el back también lo exige)
+    puedePublicar = computed(() => this.isAdmin() || this._session()?.rol === 'ROLE_OFFERER');
 
     registerUser(user: CredentialRegister) {
         return this.http.post(`${this.baseUrl}/register`, user);
@@ -32,6 +34,26 @@ export class Session {
                 this._session.set(res);
             })
         );
+    }
+
+    //El rol guardado en la sesion es el que se tenia al loguearse. Si un admin lo cambia despues
+    //(por ej. de cliente a oferente), el back aplica el cambio enseguida, pero el front no se entera.
+    //Esto vuelve a pedir el usuario y actualiza el rol guardado. Se llama al iniciar la app.
+    refrescarRol(){
+        const id = this._session()?.consumerId;
+        if (id == null) return;
+        this.http.get<UserProfileData>(`${environment.apiUrl}/usuarios/${id}`).subscribe({
+            next: u => this.actualizarRol(u.credentials?.rol),
+            error: () => {} //Si falla (sin red, token vencido) se queda con el rol que tenia; el 401 lo maneja el interceptor
+        });
+    }
+
+    private actualizarRol(rol: Rol | undefined){
+        const actual = this._session();
+        if (!actual || !rol || actual.rol === rol) return;
+        const nueva = { ...actual, rol };
+        localStorage.setItem('session', JSON.stringify(nueva));
+        this._session.set(nueva);
     }
 
     //Avisa al backend para que invalide el token (blacklist) y despues limpia la sesion local.

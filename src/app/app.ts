@@ -12,4 +12,9 @@ import { Session } from './auth/session/session';
 })
 export class App {
   protected sessionService = inject(Session);
+
+  constructor() {
+    //Por si un admin le cambió el rol desde la ultima vez que inició sesión
+    this.sessionService.refrescarRol();
+  }
 }
