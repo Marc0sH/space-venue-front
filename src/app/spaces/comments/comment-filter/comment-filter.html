@@ -1,0 +1,31 @@
+<section class="comment-filter" aria-label="Filtros de comentarios">
+    <div class="filter-field">
+        <label class="filter-label" for="comment-score-filter">Puntuación</label>
+        <div class="select-control">
+            <select #scoreSelect id="comment-score-filter" class="filter-control filter-select" (change)="onScoreChange(scoreSelect.value)">
+                <option value="" selected>Todas las puntuaciones</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="filter-field">
+        <label class="filter-label" for="comment-score-order">Orden por puntuación</label>
+        <div class="select-control">
+            <select #scoreOrderSelect id="comment-score-order" class="filter-control filter-select" (change)="onScoreOrderChange(scoreOrderSelect.value)">
+                <option value="none" selected>Sin ordenar</option>
+                <option value="asc">Ascendente</option>
+                <option value="desc">Descendente</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="filter-field">
+        <label class="filter-label" for="comment-username">Nombre de usuario</label>
+        <input #usernameInput id="comment-username" class="filter-control filter-input" type="search" placeholder="Buscar usuario" (input)="onUsernameChange(usernameInput.value)">
+    </div>
+</section>
