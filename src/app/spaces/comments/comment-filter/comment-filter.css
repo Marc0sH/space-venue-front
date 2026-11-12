@@ -1,0 +1,58 @@
+.comment-filter {
+  display: grid;
+  gap: 0.5rem;
+  width: min(100%, 22rem);
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background-color: #fff;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.filter-label {
+  color: #334155;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.select-control {
+  position: relative;
+}
+
+.select-control::after {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid #64748b;
+  border-bottom: 2px solid #64748b;
+  content: "";
+  pointer-events: none;
+  transform: translateY(-70%) rotate(45deg);
+}
+
+.filter-select {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.65rem 2.75rem 0.65rem 0.85rem;
+  appearance: none;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.625rem;
+  background-color: #f8fafc;
+  color: #1e293b;
+  cursor: pointer;
+  font: inherit;
+  transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+}
+
+.filter-select:hover {
+  border-color: #94a3b8;
+  background-color: #fff;
+}
+
+.filter-select:focus-visible {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 18%);
+}

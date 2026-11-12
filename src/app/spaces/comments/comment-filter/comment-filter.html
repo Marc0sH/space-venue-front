@@ -1,0 +1,14 @@
+<section class="comment-filter">
+    <label class="filter-label" for="comment-score-filter">Filtrar por puntuación</label>
+    <div class="select-control">
+        <select id="comment-score-filter" class="filter-select" (change)="onChangeSelected($event)">
+            <option value="" disabled selected>Elige una opción</option>
+            <option value="">Sin filtros</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+    </div>
+</section>
