@@ -132,8 +132,8 @@ export class SpaceEdit {
 
   agregarServicio(servicio: ServiceReg) {
     const descripcion = servicio.description.trim();
-    if (!descripcion || !(servicio.price > 0)) {
-      this.errorServicios.set('El servicio necesita una descripción y un precio mayor a 0');
+    if (!descripcion || !(servicio.price >= 0)) {
+      this.errorServicios.set('El servicio necesita una descripción y un precio mayor o igual a 0');
       return;
     }
     this.errorServicios.set('');
