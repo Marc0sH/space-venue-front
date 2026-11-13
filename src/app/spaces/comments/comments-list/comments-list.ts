@@ -16,14 +16,16 @@ export class CommentsList {
     score: null,
     username: '',
     scoreOrder: 'none',
+    status: 'all',
   })
   comments = this.commentService.getCommentsOfSpace(this.idSpace)
   commentsListFiltered = computed(() => {
     const comments = this.comments.value() ?? [];
-    const { score, username, scoreOrder } = this.filterOptions();
+    const { score, username, scoreOrder, status } = this.filterOptions();
     const usernameQuery = username.trim().toLocaleLowerCase();
     const filtered = comments.filter((comment) =>
       (score === null || comment.score === score) &&
+      (status === 'all' || comment.isActive === (status === 'active')) &&
       (!usernameQuery || (comment.username ?? '').toLocaleLowerCase().includes(usernameQuery))
     );
 

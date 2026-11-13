@@ -32,6 +32,10 @@ export class Comment {
         return this.http.delete(`${this.baseUrl}/deactivate/${idComment}`)
     }
 
+    activateComment(idComment: string){
+        return this.http.delete(`${this.baseUrl}/activate/${idComment}`)
+    }
+
     modifyComment(idComment: number, comment: CommentForm){
         return this.http.put(`${this.baseUrl}/${idComment}`, comment)
     }

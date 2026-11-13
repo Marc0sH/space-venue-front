@@ -1,5 +1,5 @@
 <section class="comments-list" aria-label="Reseñas del espacio">
-    <app-comment-filter (filtersChanged)="changeFilters($event)"></app-comment-filter>
+    <app-comment-filter [isAdminFilter]="true" (filtersChanged)="changeFilters($event)"></app-comment-filter>
     @if (comments.isLoading()) {
         <p class="list-message" role="status">Cargando comentarios...</p>
     } @else if (comments.error()) {

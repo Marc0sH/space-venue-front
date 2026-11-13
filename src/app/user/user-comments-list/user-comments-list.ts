@@ -17,16 +17,18 @@ export class UserCommentsList {
     score: null,
     username: '',
     scoreOrder: 'none',
+    status: 'all',
   })
 
   readonly comments = this.commentService.getCommentsOfUser(this.idUser)
 
   commentsListFiltered = computed(() => {
     const comments = this.comments.value() ?? [];
-    const { score, username, scoreOrder } = this.filterOptions();
+    const { score, username, scoreOrder, status } = this.filterOptions();
     const usernameQuery = username.trim().toLocaleLowerCase();
     const filtered = comments.filter((comment) =>
       (score === null || comment.score === score) &&
+      (status === 'all' || comment.isActive === (status === 'active')) &&
       (!usernameQuery || (comment.username ?? '').toLocaleLowerCase().includes(usernameQuery))
     );
 
