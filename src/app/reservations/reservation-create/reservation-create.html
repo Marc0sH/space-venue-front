@@ -1,5 +1,5 @@
 <div class="reservation-create-container">
-    <h2>Reserva de un espacio</h2>
+    <h2>Reserva el espacio</h2>
     <p class="form-intro">Completá los datos para solicitar tu reserva.</p>
 
     <form (submit)="onSubmit($event)">
@@ -15,25 +15,37 @@
             <app-form-error-message [campo]="formReservation.description()" />
         </div> 
 
+        <div class="form-group">
+            <label for="fromDate">Fecha y hora de inicio</label>
+            <input id="fromDate" type="datetime-local" [formField]="formReservation.fromDate">
+            <app-form-error-message [campo]="formReservation.fromDate()" />
+        </div>
+
         <div class="form-grid">
             <div class="form-group">
-                <label for="fromDate">Fecha de inicio</label>
-                <input id="fromDate" type="datetime-local" [formField]="formReservation.fromDate">
-                <app-form-error-message [campo]="formReservation.fromDate()" />
+                <label for="durationHours">Duración (horas)</label>
+                <input id="durationHours" type="number" step="1" [formField]="formReservation.durationHours">
+                <app-form-error-message [campo]="formReservation.durationHours()" />
             </div>
 
             <div class="form-group">
-                <label for="untilDate">Fecha de finalización</label>
-                <input id="untilDate" type="datetime-local" [formField]="formReservation.untilDate">
-                <app-form-error-message [campo]="formReservation.untilDate()" />
+                <label for="durationMinutes">Duración (minutos)</label>
+                <input id="durationMinutes" type="number" step="5" [formField]="formReservation.durationMinutes">
+                <app-form-error-message [campo]="formReservation.durationMinutes()" />
             </div>
         </div>
 
+        <small class="field-help">La duración mínima es de 10 minutos y la máxima de 23 h 59 min.</small>
+
+        @if (untilDate(); as end) {
+            <small class="field-help">El evento finaliza el {{ end | date:'dd/MM/yyyy' }} a las {{ end | date:'HH:mm' }}.</small>
+        }
+
+        @if (activeServices().length > 0) {
         <fieldset class="form-group">
             <legend>Servicios adicionales</legend>
 
-            @for (service of spaceToReserve.value()?.services; track service.id) {
-                @if (service.isActive) {
+            @for (service of activeServices(); track service.id) {
                 <label class="service-option">
                     <input
                     type="checkbox"
@@ -42,12 +54,12 @@
                     <span>{{ service.description }}</span>
                     <span>{{ service.price | currency:'ARS':'symbol':'1.2-2' }}</span>
                 </label>
-                }
             }
 
             <small class="field-help">Seleccioná todos los servicios que quieras agregar.</small>
             <app-form-error-message [campo]="formReservation.idServicesSelect()" />
         </fieldset>
+        }
 
         <div class="reservation-total">
             <span>Precio final</span>

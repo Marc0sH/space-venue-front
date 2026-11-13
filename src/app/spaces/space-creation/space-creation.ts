@@ -29,7 +29,7 @@ mostrarFormServicio = signal(false)
     location: null,
     cancellationPolicies: 'FLEXIBLE',
     nameSpace: '',
-    description: ' ',
+    description: '',
     basePrice: 0,
     bufferTime: 0,
     services: [],

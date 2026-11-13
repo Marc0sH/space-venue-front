@@ -42,7 +42,8 @@ export function VoidNewReservation(idSpace : number, idConsumer: number) {
 
 export type ReservationFormModel = Omit<NewReservation, 'fromDate' | 'untilDate'> & {
   fromDate: string;
-  untilDate: string;
+  durationHours: number;
+  durationMinutes: number;
 };
 
 export type ReservationForServicesSelected = Omit<ReservationComplete, 'servicesSelected'>
