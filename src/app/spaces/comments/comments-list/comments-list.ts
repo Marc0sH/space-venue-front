@@ -12,4 +12,8 @@ export class CommentsList {
   private commentService = inject(Comment)
   readonly idSpace = input.required<string>()
   comments = this.commentService.getCommentsOfSpace(this.idSpace)
+
+  onDeleted(event: any){
+    this.comments.reload()
+  }
 }

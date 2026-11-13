@@ -5,7 +5,7 @@
         <p class="list-message" role="status">Cargando reseñas...</p>
     } @else if (comments.hasValue()) {
         @for (c of comments.value(); track c.idComment) {
-            <app-comment-view-card [comment]="c"></app-comment-view-card>
+            <app-comment-view-card [comment]="c" (deleted)="onDeleted($event)"></app-comment-view-card>
         } @empty {
             <p class="list-message">Todavía no hay reseñas para este espacio.</p>
         }

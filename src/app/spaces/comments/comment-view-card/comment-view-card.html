@@ -16,6 +16,9 @@
 
     <footer class="comment-meta">
         <span>Publicado: {{ comment().created_at | date:'medium' }}</span>
+        @if (session.isAdmin() || session.session()?.consumerId === comment().idConsumer) {
+            <button class="delete-button" type="button" (click)="onDelete()">Eliminar</button>
+        }
     </footer>
 </div>
  

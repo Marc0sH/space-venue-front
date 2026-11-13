@@ -57,7 +57,36 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem 1rem;
+  justify-content: space-between;
   margin-top: 1rem;
   padding-top: 0.75rem;
   border-top: 1px solid #edf1f4;
+
+}
+
+.delete-button {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid #fecaca;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  color: #b91c1c;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.delete-button:hover {
+  border-color: #b91c1c;
+  background-color: #fef2f2;
+}
+
+.delete-button:active {
+  background-color: #fee2e2;
+}
+
+.delete-button:focus-visible {
+  outline: 2px solid #b91c1c;
+  outline-offset: 2px;
 }
