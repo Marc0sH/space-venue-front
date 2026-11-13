@@ -8,20 +8,21 @@
   box-sizing: border-box;
   height: 100%;
   min-height: 15rem;
-  background-color: #ffffff;
+  background-color: var(--theme-surface);
   border-radius: 0.75rem;
   padding: 20px;
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 5%);
   cursor: pointer;
-  transition: box-shadow 0.3s ease;
+  transition: box-shadow 0.3s ease, background-color 0.2s ease, border-color 0.2s ease;
   display: flex;
   flex-direction: column;
   gap: 12px;
   text-align: left;
+  border: 1px solid var(--theme-border);
 }
 
 .SpaceCard:hover {
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 10%), 0 8px 10px -6px rgb(0 0 0 / 10%);
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 15%), 0 8px 10px -6px rgb(0 0 0 / 10%);
 }
 
 /* Encabezado y Título */
@@ -32,6 +33,7 @@
   align-items: flex-start;
   gap: 12px;
 }
+
 .gallery {
   position: relative;
   margin: -8px -8px 16px;
@@ -45,7 +47,7 @@
   height: auto;
   aspect-ratio: 4 / 3;
   object-fit: contain;
-  background-color: #f1f5f9;
+  background-color: var(--theme-surface-raised);
 }
 
 .card-header h3 {
@@ -53,19 +55,19 @@
   font-size: 18px;
   line-height: 26px;
   font-weight: 600;
-  color: #121d26;
+  color: var(--theme-text);
   transition: color 0.2s ease;
 }
 
 .SpaceCard:hover .card-header h3 {
-  color: #00667f;
+  color: var(--theme-accent);
 }
 
 /* Descripción: ocupa el espacio libre */
 .description {
   order: 2;
   flex: 1 1 auto;
-  color: #3f484c;
+  color: var(--theme-muted);
   font-size: 14px;
   line-height: 20px;
   margin: 0;
@@ -79,7 +81,7 @@
   font-size: 18px;
   line-height: 26px;
   font-weight: 700;
-  color: #121d26;
+  color: var(--theme-text);
 }
 
 /* Badge de Estado */
@@ -90,8 +92,8 @@
   font-weight: 600;
   padding: 4px 10px;
   border-radius: 9999px;
-  background-color: #f1f5f9;
-  color: #64748b;
+  background-color: var(--theme-surface-raised);
+  color: var(--theme-muted);
 }
 
 .status-badge.active {
@@ -102,9 +104,9 @@
 /* Estado Inactivo */
 .SpaceCard.inactivo {
   opacity: 0.7;
-  background-color: #f8fafc;
+  background-color: var(--theme-surface-raised);
 }
 
 .SpaceCard.inactivo:hover .card-header h3 {
-  color: #121d26;
+  color: var(--theme-text);
 }

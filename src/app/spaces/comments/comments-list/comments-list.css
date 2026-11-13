@@ -7,10 +7,10 @@
 .list-message {
   margin: 0;
   padding: 0.9rem 1rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--theme-border);
   border-radius: 0.75rem;
-  color: #64748b;
-  background-color: #fff;
+  color: var(--theme-muted);
+  background-color: var(--theme-surface);
   font-family: system-ui, -apple-system, sans-serif;
 }
 

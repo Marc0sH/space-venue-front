@@ -3,11 +3,13 @@ header {
     flex-direction: column;
     align-items: flex-start; 
 }
+
 .site-footer {
     width: 100%;
     margin-top: 2.5rem;
-    background-color: #ffffff;
-    border-top: 1px solid rgb(191 200 205 / 30%);
+    background-color: var(--theme-surface);
+    border-top: 1px solid var(--theme-border);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
  
 .footer-inner {
@@ -17,7 +19,7 @@ header {
     box-sizing: border-box;
     font-size: 12px;
     line-height: 18px;
-    color: #3f484c;
+    color: var(--theme-muted);
 }
  
 @media (min-width: 1024px) {

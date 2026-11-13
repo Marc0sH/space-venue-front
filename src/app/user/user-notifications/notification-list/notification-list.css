@@ -2,8 +2,8 @@
 
 :host {
   display: block;
-  background-color: #f7f9ff;
-  color: #121d26;
+  background-color: var(--theme-background);
+  color: var(--theme-text);
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
 
@@ -19,22 +19,23 @@
   font-size: 24px;
   line-height: 32px;
   font-weight: 600;
+  color: var(--theme-text);
 }
 
-/* Lista a la izquierda, detalle a la derecha */
 .notification-area {
   display: grid;
   grid-template-columns: 20rem 1fr;
   height: 34rem;
   overflow: hidden;
-  background-color: #ffffff;
+  background-color: var(--theme-surface);
+  border: 1px solid var(--theme-border);
   border-radius: 0.75rem;
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 5%), 0 4px 12px rgb(0 0 0 / 4%);
 }
 
 .control-area {
   overflow-y: auto;
-  border-right: 1px solid #e2e8f0;
+  border-right: 1px solid var(--theme-border);
 }
 
 .control-area p {
@@ -42,14 +43,13 @@
   padding: 2rem 1rem;
   text-align: center;
   font-size: 14px;
-  color: #64748b;
+  color: var(--theme-muted);
 }
 
 .control-area .fail {
-  color: rgba(253, 67, 67, 0.712);
+  color: #ef4444;
 }
 
-/* Celular: se ve una sola columna a la vez */
 @media (max-width: 767px) {
   .notification-area {
     grid-template-columns: 1fr;
@@ -63,11 +63,12 @@
     display: none;
   }
 }
-.click{
-color: #678fe6;
+
+.click {
+  color: var(--theme-accent);
 }
 
-.click:hover{
+.click:hover {
   cursor: pointer;
-  color: #1458ec;
+  text-decoration: underline;
 }

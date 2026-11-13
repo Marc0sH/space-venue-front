@@ -4,10 +4,10 @@ form {
   max-width: 100%;
   margin-top: 1rem;
   padding: 1rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--theme-border);
   border-radius: 0.75rem;
-  background-color: #fff;
-  color: #1e293b;
+  background-color: var(--theme-surface);
+  color: var(--theme-text);
   font-family: system-ui, -apple-system, sans-serif;
 }
 
@@ -17,7 +17,7 @@ form > div {
 }
 
 label {
-  color: #0f172a;
+  color: var(--theme-text);
   font-weight: 600;
 }
 
@@ -25,16 +25,16 @@ input {
   box-sizing: border-box;
   width: 100%;
   padding: 0.65rem 0.75rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--theme-border-control);
   border-radius: 0.5rem;
-  background-color: #fff;
-  color: inherit;
+  background-color: var(--theme-surface-raised);
+  color: var(--theme-text);
   font: inherit;
 }
 
 input:focus-visible {
-  border-color: #2563eb;
-  outline: 2px solid #2563eb;
+  border-color: var(--theme-accent);
+  outline: 2px solid var(--theme-accent);
   outline-offset: 1px;
 }
 
@@ -43,8 +43,8 @@ button {
   padding: 0.65rem 1rem;
   border: 0;
   border-radius: 0.5rem;
-  background-color: #2563eb;
-  color: #fff;
+  background-color: #00667f;
+  color: #ffffff;
   font: inherit;
   font-weight: 600;
   cursor: pointer;
@@ -52,11 +52,11 @@ button {
 }
 
 button:hover:not(:disabled) {
-  background-color: #1d4ed8;
+  background-color: #2f7f99;
 }
 
 button:disabled {
-  background-color: #94a3b8;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -68,11 +68,11 @@ button:disabled {
 }
 
 .mensaje-exito {
-  background: #ecfdf5;
+  background: #dcfce7;
   color: #166534;
 }
 
 .mensaje-error {
-  background: #fef2f2;
-  color: #b91c1c;
+  background: #fee2e2;
+  color: #991b1b;
 }

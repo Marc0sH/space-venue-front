@@ -25,7 +25,7 @@
   box-sizing: border-box;
   padding: 1rem 1.25rem;
   border: none;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--theme-border);
   background: transparent;
   font-family: inherit;
   text-align: left;
@@ -34,16 +34,16 @@
 }
 
 .notificacioncard:hover {
-  background-color: #f1f5f9;
+  background-color: var(--theme-surface-hover);
 }
 
 .notificacioncard.selected {
-  background-color: #edf4ff;
-  box-shadow: inset 3px 0 0 #00667f;
+  background-color: var(--theme-surface-raised);
+  box-shadow: inset 3px 0 0 var(--theme-accent);
 }
 
 .notificacioncard:focus-visible {
-  outline: 3px solid #87d1ed;
+  outline: 3px solid var(--theme-accent);
   outline-offset: -3px;
 }
 
@@ -55,8 +55,8 @@
   width: 2rem;
   height: 2rem;
   border-radius: 9999px;
-  background-color: #beeaf6;
-  color: #00667f;
+  background-color: var(--theme-badge);
+  color: var(--theme-accent);
 }
 
 .content-item-main {
@@ -67,12 +67,11 @@
   gap: 2px;
 }
 
-/* En la lista el mensaje se recorta a 2 líneas; el completo se ve en el detalle */
 .notification-message {
   font-size: 14px;
   line-height: 20px;
-  color: #121d26;
-  font-weight: 700;              /* sin ver: en negrita */
+  color: var(--theme-text);
+  font-weight: 700;
   white-space: normal;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -82,14 +81,14 @@
 }
 
 .is-seen .notification-message {
-  font-weight: 400;              /* vista: normal */
-  color: #3f484c;
+  font-weight: 400;
+  color: var(--theme-muted);
 }
 
 time {
   font-size: 12px;
   line-height: 16px;
-  color: #64748b;
+  color: var(--theme-muted);
 }
 
 .unseen-dot {
@@ -98,5 +97,5 @@ time {
   height: 8px;
   margin-top: 6px;
   border-radius: 9999px;
-  background-color: #00667f;
+  background-color: var(--theme-accent);
 }
