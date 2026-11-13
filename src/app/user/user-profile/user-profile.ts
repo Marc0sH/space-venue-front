@@ -2,7 +2,7 @@ import { Component, computed, inject, input, signal } from '@angular/core';
 import { User } from '../user';
 import { Session } from '../../auth/session/session';
 import { RouterLink } from '@angular/router';
-import { etiquetaEstadoCuenta } from '../../models/user.model';
+import { etiquetaEstadoCuenta, etiquetaRol } from '../../models/user.model';
 import { mensajeDeError } from '../../common/http-error';
 
 @Component({
@@ -26,6 +26,7 @@ export class UserProfile {
   );
 
   protected readonly etiquetaEstado = etiquetaEstadoCuenta;
+  protected readonly etiquetaRol = etiquetaRol;
 
   protected confirmingDeletion = signal(false);
   protected deleting = signal(false);

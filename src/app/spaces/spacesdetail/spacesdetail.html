@@ -8,13 +8,30 @@
       <p>No se pudo cargar el espacio</p>
     </div>
   } @else if (space.value(); as s) {
+
+    <!-- Encabezado -->
+    <div class="title-row">
+      <h2>{{ formatName(s.nameSpace) }}</h2>
+      @if (esDuenio()) {
+        <a class="edit-button" [routerLink]="['/espacios', s.idSpace, 'editar']">
+          <span class="material-symbols-outlined">edit</span>
+          <span>Editar datos</span>
+        </a>
+      }
+    </div>
+
+    <!-- Galería (mismo markup que antes: solo cambia el estilo) -->
     @if (images.hasValue() && images.value().length > 0) {
       @let imageList = images.value();
       @let selectedIndex = currentImageIndex() % imageList.length;
       <div class="gallery">
         <div class="gallery-track" [style.transform]="'translateX(-' + selectedIndex * 100 + '%)'">
           @for (img of imageList; track img.idSpaceImages) {
-            <img [src]="service.imageUrl(img.urlImage)" [alt]="img.fileName" loading="lazy">
+            <div class="slide">
+              <!-- Fondo difuminado de la misma foto: rellena los costados sin recortar -->
+              <img class="slide-bg" [src]="service.imageUrl(img.urlImage)" alt="" aria-hidden="true" loading="lazy">
+              <img class="slide-img" [src]="service.imageUrl(img.urlImage)" [alt]="img.fileName" loading="lazy">
+            </div>
           }
         </div>
         @if (imageList.length > 1) {
@@ -39,90 +56,126 @@
       </div>
     }
 
-    <div class="title-row">
-      <h2>{{ formatName(s.nameSpace) }}</h2>
-      @if (esDuenio()) {
-        <a class="edit-button" [routerLink]="['/espacios', s.idSpace, 'editar']">Editar datos</a>
-      }
-    </div>
-    <p class="price">${{ s.basePrice }}</p>
-    
-    <div class="info-group">
-      <p><strong>Descripción:</strong> {{ formatName(s.description) }}</p>
-      <p class="meta-date"><strong>Publicado:</strong> {{ s.publicationDate }}</p> 
-      
-    </div>
+    <!-- Dos columnas: contenido (izquierda) y tarjeta de reserva fija (derecha) -->
+    <div class="detail-grid">
 
-    <div class="owner-name">
-      <p><strong>Dueño:</strong> {{s.consumerOwner.firstname + ' ' + s.consumerOwner.lastname}}</p>
-    </div>
+      <div class="detail-main">
 
-    @if (hasLocation(s.location)) {
-      <div class="location">
-        <strong>Ubicación</strong>
-        <app-location-map [ubicacion]="s.location"></app-location-map>
+        <!-- Dueño -->
+        <section class="card owner-card">
+          <div class="owner-avatar">
+            <span class="material-symbols-outlined">person</span>
+          </div>
+          <div>
+            <p class="owner-label">Dueño</p>
+            <h3>{{ s.consumerOwner.firstname + ' ' + s.consumerOwner.lastname }}</h3>
+          </div>
+        </section>
+
+        <!-- Descripción -->
+        <section class="card about">
+          <h3>Acerca de este espacio</h3>
+          @if (s.description?.trim()) {
+            <p class="description">{{ formatName(s.description) }}</p>
+          } @else {
+            <p class="muted">Este espacio no tiene descripción.</p>
+          }
+          <div class="chips">
+            <span class="chip">
+              <span class="material-symbols-outlined">event</span>
+              Publicado: {{ s.publicationDate }}
+            </span>
+          </div>
+        </section>
+
+        <!-- Servicios -->
+        <section class="card">
+          <div class="card-title-row">
+            <h3>Servicios disponibles</h3>
+            <span class="material-symbols-outlined title-icon">tune</span>
+          </div>
+
+          @if (s.services?.length) {
+            <div class="service-list">
+              @for (servicio of s.services; track servicio.id) {
+                <div class="service-item">
+                  <div class="service-main">
+                    <div class="service-icon">
+                      <span class="material-symbols-outlined">room_service</span>
+                    </div>
+                    <p class="service-desc">{{ servicio.description }}</p>
+                  </div>
+                  <span class="service-price">${{ servicio.price }}</span>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="muted">No hay servicios</p>
+          }
+        </section>
+
+        <!-- Ubicación -->
+        @if (hasLocation(s.location)) {
+          <section class="card location">
+            <div class="card-title-row">
+              <h3>Ubicación</h3>
+              <span class="material-symbols-outlined title-icon">explore</span>
+            </div>
+            <app-location-map [ubicacion]="s.location"></app-location-map>
+          </section>
+        }
+
+        <!-- Reseñas -->
+        <section class="card comments">
+          <h3>Reseñas</h3>
+
+          @if (haveToComment()) {
+            <app-comment-creation [idSpace]="id()"></app-comment-creation>
+          } @else {
+            <p class="unavailable">Usted no puede comentar en este espacio</p>
+          }
+
+          <app-comments-list [idSpace]="id()"></app-comments-list>
+        </section>
       </div>
-    }
 
-    <strong>Servicios disponibles</strong>
+      <!-- Tarjeta de reserva -->
+      <aside class="detail-aside">
+        <div class="booking-card">
+          <div class="booking-price">
+            <span class="booking-amount">${{ s.basePrice }}</span>
+            <span class="booking-unit">/ hora</span>
+          </div>
 
-    @if (s.services?.length) {
-      @for (s of s.services; track s.id) {
-        <div class="service-item">
-          <p>Descripcion: {{s.description}}</p>
-          <p>Precio: ${{s.price}}</p>
+          <!-- AQUÍ va el componente de reserva (ver explicación) -->
+
+          @if (esDuenio()) {
+            <button
+              class="reserve-button"
+              [class.loading]="space.isLoading()"
+              [class.unavailable]="!space.isLoading() && (space.error() || !space.hasValue())"
+              type="button"
+              [disabled]="space.isLoading() || !!space.error() || !space.hasValue()"
+              (click)="navToReservations()"
+            >
+              @if (space.isLoading()) {
+                Cargando...
+              } @else if (space.error() || !space.hasValue()) {
+                No disponible
+              } @else {
+                <span>Ver reservas</span>
+                <span class="material-symbols-outlined">arrow_forward</span>
+              }
+            </button>
+          }
+          @else if (s.isActive) {
+     <app-reservation-create [idSpace]="id()"></app-reservation-create>
+   } @else {
+     <button class="reserve-button unavailable" type="button" disabled>No disponible</button>
+   }
         </div>
-      }
-    } @else {
-      <p>No hay servicios</p>
-    }
-  }
+      </aside>
 
-  @if (esDuenio()) {
-    <button
-      class="reserve-button"
-      [class.loading]="space.isLoading()"
-      [class.unavailable]="!space.isLoading() && (space.error() || !space.hasValue())"
-      type="button"
-      [disabled]="space.isLoading() || !!space.error() || !space.hasValue()"
-      (click)="navToReservations()"
-    >
-      @if (space.isLoading()) {
-        Cargando...
-      } @else if (space.error() || !space.hasValue()) {
-        No disponible
-      } @else {
-        Ver reservas
-      }
-    </button>
-  } @else{
-    <button
-      class="reserve-button"
-      [class.loading]="space.isLoading()"
-      [class.unavailable]="!space.isLoading() && (space.error() || !space.hasValue() || !space.value().isActive)"
-      type="button"
-      [disabled]="space.isLoading() || !!space.error() || !space.hasValue() || !space.value().isActive"
-      (click)="onReserve()"
-    >
-      @if (space.isLoading()) {
-        Cargando...
-      } @else if (space.error() || !space.hasValue() || !space.value().isActive) {
-        No disponible
-      } @else {
-        Reservar
-      }
-    </button>
+    </div>
   }
-</div>
-
-<div class="comments">
-  <h2>Reseñas</h2>
-  
-  @if (haveToComment()) {
-    <app-comment-creation [idSpace]="id()"></app-comment-creation>
-  } @else {
-    <p class="unavailable">Usted no puede comentar en este espacio</p>
-  }
-
-  <app-comments-list [idSpace]="id()"></app-comments-list>
 </div>

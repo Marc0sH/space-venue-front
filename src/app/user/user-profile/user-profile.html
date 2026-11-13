@@ -22,7 +22,7 @@
       @if (vistaAdmin()) {
         <div class="data-row">
           <dt>Rol</dt>
-          <dd>{{ u.credentials.rol === 'ROLE_ADMIN' ? 'Admin' : 'Cliente' }}</dd>
+          <dd>{{ etiquetaRol(u.credentials.rol) }}</dd>
         </div>
         <div class="data-row">
           <dt>Estado de la cuenta</dt>

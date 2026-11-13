@@ -1,4 +1,5 @@
 <section class="comments-list" aria-label="Reseñas del espacio">
+    <app-comment-filter (filtersChanged)="changeFilters($event)"></app-comment-filter>
     @if (comments.error()) {
         <p class="list-message error" role="alert">No se pudieron cargar las reseñas.</p>
     } @else if (comments.isLoading()) {
