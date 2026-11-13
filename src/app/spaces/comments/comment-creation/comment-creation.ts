@@ -1,6 +1,6 @@
-import { Component, effect, inject, input, signal } from '@angular/core';
+import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { CommentForm } from '../../../models/comment.model';
+import { CommentComplete, CommentForm } from '../../../models/comment.model';
 import { form, max, min, required, FormField } from '@angular/forms/signals';
 import { Comment } from '../comment';
 
@@ -13,12 +13,22 @@ import { Comment } from '../comment';
 export class CommentCreation {
   private readonly commentService = inject(Comment)
   readonly idSpace = input.required<string>()
+  readonly isEditing = input(false)
+  readonly commentToEdit = input<CommentComplete | null>(null)
+  readonly saved = output<void>()
+  readonly cancelled = output<void>()
 
   model = signal<CommentForm>({description:'', score:0, idSpace:''})
 
   constructor() {
     effect(() => {
-      this.model().idSpace = this.idSpace()
+      const comment = this.commentToEdit()
+      this.model.update(model => ({
+        ...model,
+        idSpace: comment ? comment.idSpace.toString() : this.idSpace(),
+        description: comment?.description ?? '',
+        score: comment?.score ?? 0,
+      }))
     })
   }
 
@@ -39,14 +49,28 @@ export class CommentCreation {
       return
     }
 
+    const editing = this.isEditing()
+    const comment = this.commentToEdit()
+    if (editing && !comment) {
+      this.error.set('No se pudo identificar el comentario a modificar.')
+      return
+    }
+
     this.enviando.set(true)
     this.mensajeExito.set('')
     this.error.set('')
 
-    this.commentService.createComment(this.model()).subscribe({
+    const request = editing && comment
+      ? this.commentService.modifyComment(comment.idComment, this.model())
+      : this.commentService.createComment(this.model())
+
+    request.subscribe({
       next: () => {
-        this.mensajeExito.set('Tu comentario se publicó correctamente.')
+        this.mensajeExito.set(editing
+          ? 'Tu comentario se modificó correctamente.'
+          : 'Tu comentario se publicó correctamente.')
         this.enviando.set(false)
+        this.saved.emit()
       },
       error: (e: HttpErrorResponse) => {
         this.enviando.set(false)
@@ -58,10 +82,17 @@ export class CommentCreation {
         this.error.set(
           e.status === 0
             ? 'No se pudo conectar con el servidor.'
-            : `No se pudo publicar el comentario.${detalle ? ` ${detalle}` : ' Intentá nuevamente.'}`
+            : `${editing ? 'No se pudo modificar' : 'No se pudo publicar'} el comentario.${detalle ? ` ${detalle}` : ' Intentá nuevamente.'}`
         )
-        console.error('Error al publicar el comentario:', e)
+        console.error(
+          editing ? 'Error al modificar el comentario:' : 'Error al publicar el comentario:',
+          e
+        )
       }
     })
+  }
+
+  onCancel(){
+    this.cancelled.emit()
   }
 }

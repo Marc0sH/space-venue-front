@@ -13,7 +13,7 @@ export class CommentsList {
   readonly idSpace = input.required<string>()
   comments = this.commentService.getCommentsOfSpace(this.idSpace)
 
-  onDeleted(event: any){
+  onCommentChanged(){
     this.comments.reload()
   }
 }

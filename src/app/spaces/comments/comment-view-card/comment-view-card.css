@@ -64,17 +64,43 @@
 
 }
 
+.comment-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.edit-button,
 .delete-button {
   padding: 0.4rem 0.75rem;
-  border: 1px solid #fecaca;
   border-radius: 0.5rem;
-  background-color: #fff;
-  color: #b91c1c;
   font: inherit;
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.edit-button {
+  border: 1px solid #bfdbfe;
+  background-color: #fff;
+  color: #1d4ed8;
+}
+
+.edit-button:hover {
+  border-color: #1d4ed8;
+  background-color: #eff6ff;
+}
+
+.edit-button:active {
+  background-color: #dbeafe;
+}
+
+.delete-button {
+  border: 1px solid #fecaca;
+  background-color: #fff;
+  color: #b91c1c;
 }
 
 .delete-button:hover {
@@ -84,6 +110,11 @@
 
 .delete-button:active {
   background-color: #fee2e2;
+}
+
+.edit-button:focus-visible {
+  outline: 2px solid #1d4ed8;
+  outline-offset: 2px;
 }
 
 .delete-button:focus-visible {

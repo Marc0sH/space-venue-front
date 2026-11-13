@@ -1,6 +1,6 @@
 <form (submit)="onSubmit($event)" [attr.aria-busy]="enviando()">
     <div>
-        <label for="description">¿Cuál es su reseña? </label>
+        <label for="description">{{ isEditing() ? 'Modificá tu reseña' : '¿Cuál es su reseña?' }}</label>
         <input id="description" type="text" [formField]="formComment.description">
     </div>
 
@@ -10,8 +10,11 @@
     </div>
 
     <button type="submit" [disabled]="formComment().invalid() || enviando()">
-        {{ enviando() ? 'Publicando...' : 'Comentar' }}
+        {{ enviando() ? (isEditing() ? 'Guardando...' : 'Publicando...') : (isEditing() ? 'Guardar cambios' : 'Comentar') }}
     </button>
+    @if (isEditing()) {
+        <button type="button" [disabled]="enviando()" (click)="onCancel()">Cancelar</button>
+    }
 
     @if (mensajeExito()) {
         <p class="mensaje-exito" role="status">{{ mensajeExito() }}</p>
