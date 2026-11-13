@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, computed, HostListener, inject, signal } from '@angular/core';
+import { Component, computed, ElementRef, HostListener, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Session } from '../../auth/session/session';
 import { Notificationservice } from '../../user/user-notifications/notificationservice';
@@ -12,23 +12,42 @@ import { Notificationservice } from '../../user/user-notifications/notifications
 })
 export class Header {
   private readonly document = inject(DOCUMENT);
-  readonly isDarkMode = signal(false);
+  private readonly elementRef = inject(ElementRef);
+  private readonly router = inject(Router);
 
-  protected notiService = inject(Notificationservice)
+  protected readonly sessionService = inject(Session);
+  protected readonly notiService = inject(Notificationservice);
+
+  readonly isDarkMode = signal(false);
+  readonly showScrollTop = signal(false);
+
+  // Controla qué desplegable está abierto ('perfil' | 'admin' | null)
+  readonly openDropdown = signal<'perfil' | 'admin' | null>(null);
 
   readonly notificaciones = this.notiService.getUnseen();
-  // value() lanza si el pedido falló, y eso cortaría el change detection de toda la app
   readonly notificacionesCount = computed(
-    () => this.notificaciones.hasValue() ? this.notificaciones.value().length : 0
+    () => (this.notificaciones.hasValue() ? this.notificaciones.value().length : 0)
   );
-  readonly showScrollTop = signal(false);
-   
-  protected sessionService = inject(Session);
-  private router = inject(Router)
 
   constructor() {
     this.isDarkMode.set(localStorage.getItem('space-venue-theme') === 'dark');
     this.applyTheme();
+  }
+
+  protected toggleDropdown(menu: 'perfil' | 'admin', event: Event): void {
+    event.stopPropagation();
+    this.openDropdown.update((current) => (current === menu ? null : menu));
+  }
+
+  protected closeDropdowns(): void {
+    this.openDropdown.set(null);
+  }
+
+  @HostListener('document:click', ['$event'])
+  protected onDocumentClick(event: MouseEvent): void {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.closeDropdowns();
+    }
   }
 
   protected toggleTheme(): void {
@@ -50,7 +69,8 @@ export class Header {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  navigate(){
-      this.router.navigate(['/espacios']);
+  navigate(): void {
+    this.closeDropdowns();
+    this.router.navigate(['/espacios']);
   }
 }

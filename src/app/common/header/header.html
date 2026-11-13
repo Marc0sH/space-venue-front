@@ -1,58 +1,114 @@
 <header>
-    <h1 (click)="navigate()" class="nombre">Space&Venue</h1>
+  <div class="header-container">
+    <!-- Izquierda: Marca -->
+    <div class="header-left">
+      <h1 (click)="navigate()" class="nombre">Space&amp;Venue</h1>
+    </div>
 
-    <nav class="commonPaths">
-        @if (sessionService.isLoggedIn()) {
-            @if (sessionService.puedePublicar()) {
-                <a routerLink="/espacios/crear">Crear un espacio</a>
-                <a routerLink="/espacios/espaciospropios">Mis espacios</a>
-            }
-            @if (sessionService.isAdmin()) {
-                <a routerLink="/admin/espacios">Administrar espacios</a>
-                <a routerLink="/admin/usuarios">Administrar usuarios</a>
-            }
-            <a routerLink="/reservas">Mis reservas</a>
-            <a routerLink="/perfil">Mi perfil</a>
-
-            @if(notificacionesCount() == 0){
-                <a class="notificacionLogo" routerLink="/notificaciones">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope-open-fill" viewBox="0 0 16 16">
-                        <path d="M8.941.435a2 2 0 0 0-1.882 0l-6 3.2A2 2 0 0 0 0 5.4v.314l6.709 3.932L8 8.928l1.291.718L16 5.714V5.4a2 2 0 0 0-1.059-1.765zM16 6.873l-5.693 3.337L16 13.372v-6.5Zm-.059 7.611L8 10.072.059 14.484A2 2 0 0 0 2 16h12a2 2 0 0 0 1.941-1.516M0 13.373l5.693-3.163L0 6.873z"/>
-                    </svg>
-                </a>
-            } @else {
-                <a class="notificacionLogo" routerLink="/notificaciones">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-envelope-arrow-down-fill" viewBox="0 0 16 16">
-                        <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414zM0 4.697v7.104l5.803-3.558zm.192 8.159 6.57-4.027L8 9.586l1.239-.757.367.225A4.49 4.49 0 0 0 8 12.5c0 .526.09 1.03.256 1.5H2a2 2 0 0 1-1.808-1.144M16 4.697v4.974A4.5 4.5 0 0 0 12.5 8a4.5 4.5 0 0 0-1.965.45l-.338-.207z"/>
-                        <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.354-1.646a.5.5 0 0 1-.722-.016l-1.149-1.25a.5.5 0 1 1 .737-.676l.28.305V11a.5.5 0 0 1 1 0v1.793l.396-.397a.5.5 0 0 1 .708.708z"/>
-                    </svg> 
-                    {{notificacionesCount()}} 
-                </a>
-            }
-            
-            <button #redBtn (click)="sessionService.logoutUser()">Cerrar sesión</button>
-        } @else {
-            <a routerLink="/espacios">Lista de espacios</a>
-            <a routerLink="/login">Iniciar sesión</a>
+    <!-- Derecha: Todo el grupo de navegación y acciones -->
+    <div class="header-right">
+      @if (sessionService.isLoggedIn()) {
+        @if (sessionService.puedePublicar()) {
+          <a class="nav-link" routerLink="/espacios/crear" (click)="closeDropdowns()">Publicar espacio</a>
         }
-        <button
-            class="themeToggle"
-            type="button"
-            (click)="toggleTheme()"
-            [attr.aria-label]="isDarkMode() ? 'Cambiar a modo luminoso' : 'Cambiar a modo oscuro'"
-            [attr.title]="isDarkMode() ? 'Cambiar a modo luminoso' : 'Cambiar a modo oscuro'">
-            @if (isDarkMode()) {
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                    <path d="M8 4.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7M8 0a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 8 0m0 14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 8 14m8-6a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1 0-1h1a.5.5 0 0 1 .5.5M2 8a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1 0-1h1A.5.5 0 0 1 2 8m11.657-5.657a.5.5 0 0 1 0 .707l-.707.707a.5.5 0 1 1-.707-.707l.707-.707a.5.5 0 0 1 .707 0m-9.9 9.9a.5.5 0 0 1 0 .707l-.707.707a.5.5 0 0 1-.707-.707l.707-.707a.5.5 0 0 1 .707 0m9.9 1.414a.5.5 0 0 1-.707 0l-.707-.707a.5.5 0 1 1 .707-.707l.707.707a.5.5 0 0 1 0 .707m-9.9-9.9a.5.5 0 0 1-.707 0l-.707-.707a.5.5 0 1 1 .707-.707l.707.707a.5.5 0 0 1 0 .707"/>
-                </svg>
-                <span>Modo iluminado</span>
-            } @else {
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                    <path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.286 7.318 7.286.548 0 1.08-.06 1.594-.175a.75.75 0 0 1 .744 1.171A8.3 8.3 0 0 1 8.007 16C3.58 16 0 12.435 0 8.035 0 4.872 1.85 2.139 4.551.92A.78.78 0 0 1 6 .278"/>
-                </svg>
-                <span>Modo oscuro</span>
-            }
-        </button>
-    </nav>
 
+        <!-- Desplegable: Panel admin -->
+        @if (sessionService.isAdmin()) {
+          <div class="dropdown">
+            <button
+              type="button"
+              class="dropdown-trigger"
+              [class.active]="openDropdown() === 'admin'"
+              (click)="toggleDropdown('admin', $event)">
+              <span>Panel admin</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+              </svg>
+            </button>
+
+            @if (openDropdown() === 'admin') {
+              <div class="dropdown-menu">
+                <a routerLink="/admin/usuarios" (click)="closeDropdowns()">Administrar usuarios</a>
+                <a routerLink="/admin/espacios" (click)="closeDropdowns()">Administrar espacios</a>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Desplegable: Mi perfil -->
+        <div class="dropdown">
+          <button
+            type="button"
+            class="dropdown-trigger profile-pill"
+            [class.active]="openDropdown() === 'perfil'"
+            (click)="toggleDropdown('perfil', $event)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+              <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+            </svg>
+            <span>Mi perfil</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+            </svg>
+          </button>
+
+          @if (openDropdown() === 'perfil') {
+            <div class="dropdown-menu">
+              <a routerLink="/perfil" (click)="closeDropdowns()">Perfil</a>
+              <a routerLink="/reservas" (click)="closeDropdowns()">Mis reservas</a>
+              @if (sessionService.puedePublicar()) {
+                <a routerLink="/espacios/espaciospropios" (click)="closeDropdowns()">Mis espacios</a>
+              }
+              <div class="dropdown-divider"></div>
+              <button
+                type="button"
+                class="dropdown-logout"
+                (click)="closeDropdowns(); sessionService.logoutUser()">
+                Cerrar sesión
+              </button>
+            </div>
+          }
+        </div>
+
+        <!-- Notificaciones -->
+        <a class="notificacionLogo" routerLink="/notificaciones" (click)="closeDropdowns()" aria-label="Notificaciones">
+          @if (notificacionesCount() == 0) {
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8.941.435a2 2 0 0 0-1.882 0l-6 3.2A2 2 0 0 0 0 5.4v.314l6.709 3.932L8 8.928l1.291.718L16 5.714V5.4a2 2 0 0 0-1.059-1.765zM16 6.873l-5.693 3.337L16 13.372v-6.5Zm-.059 7.611L8 10.072.059 14.484A2 2 0 0 0 2 16h12a2 2 0 0 0 1.941-1.516M0 13.373l5.693-3.163L0 6.873z"/>
+            </svg>
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414zM0 4.697v7.104l5.803-3.558zm.192 8.159 6.57-4.027L8 9.586l1.239-.757.367.225A4.49 4.49 0 0 0 8 12.5c0 .526.09 1.03.256 1.5H2a2 2 0 0 1-1.808-1.144M16 4.697v4.974A4.5 4.5 0 0 0 12.5 8a4.5 4.5 0 0 0-1.965.45l-.338-.207z"/>
+              <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.354-1.646a.5.5 0 0 1-.722-.016l-1.149-1.25a.5.5 0 1 1 .737-.676l.28.305V11a.5.5 0 0 1 1 0v1.793l.396-.397a.5.5 0 0 1 .708.708z"/>
+            </svg>
+            <span class="noti-badge">{{ notificacionesCount() }}</span>
+          }
+        </a>
+
+      } @else {
+        <a class="nav-link" routerLink="/espacios">Explorar espacios</a>
+        <a class="nav-link" routerLink="/login">Iniciar sesión</a>
+      }
+
+      <!-- Botón de tema -->
+      <button
+        class="themeToggle"
+        type="button"
+        (click)="toggleTheme()"
+        [attr.aria-label]="isDarkMode() ? 'Cambiar a modo luminoso' : 'Cambiar a modo oscuro'"
+        [attr.title]="isDarkMode() ? 'Cambiar a modo luminoso' : 'Cambiar a modo oscuro'">
+        @if (isDarkMode()) {
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M8 4.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7M8 0a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 8 0m0 14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 8 14m8-6a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1 0-1h1a.5.5 0 0 1 .5.5M2 8a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1 0-1h1A.5.5 0 0 1 2 8m11.657-5.657a.5.5 0 0 1 0 .707l-.707.707a.5.5 0 1 1-.707-.707l.707-.707a.5.5 0 0 1 .707 0m-9.9 9.9a.5.5 0 0 1 0 .707l-.707.707a.5.5 0 0 1-.707-.707l.707-.707a.5.5 0 0 1 .707 0m9.9 1.414a.5.5 0 0 1-.707 0l-.707-.707a.5.5 0 1 1 .707-.707l.707.707a.5.5 0 0 1 0 .707m-9.9-9.9a.5.5 0 0 1-.707 0l-.707-.707a.5.5 0 1 1 .707-.707l.707.707a.5.5 0 0 1 0 .707"/>
+          </svg>
+          <span>Modo iluminado</span>
+        } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.286 7.318 7.286.548 0 1.08-.06 1.594-.175a.75.75 0 0 1 .744 1.171A8.3 8.3 0 0 1 8.007 16C3.58 16 0 12.435 0 8.035 0 4.872 1.85 2.139 4.551.92A.78.78 0 0 1 6 .278"/>
+          </svg>
+          <span>Modo oscuro</span>
+        }
+      </button>
+    </div>
+  </div>
 </header>

@@ -1,89 +1,209 @@
-
-#redBtn {
-    border: solid 1px rgb(73, 0, 0);
-    background-color: rgba(177, 0, 0, 0.836);
-}
-
-#redBtn:hover {
-    cursor: pointer;
-}
-
-#redBtn:active {
-    background-color: rgba(177, 0, 0, 0.705);
-}
 header {
   position: sticky;
   top: 0;
   z-index: 1000;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 40px;
+  width: 100%;
+  min-height: 80px;
   background-color: var(--theme-surface);
   border-bottom: 1px solid var(--theme-border);
-  font-family: system-ui, -apple-system, sans-serif;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 4%);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  box-sizing: border-box;
 }
 
+/* Contenedor centrado alineado a los bordes de la página */
+.header-container {
+  max-width: 1280px;
+  height: 80px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
 
+.header-left {
+  display: flex;
+  align-items: center;
+}
 
-/* Título de la marca */
 header h1 {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 700;
+  line-height: 26px;
   color: var(--theme-text);
   letter-spacing: -0.02em;
   cursor: pointer;
-}
-header h1:hover{
-  transform: translateY(-3px);
-  border-color: #cbd5e1;
-  font-size: 1.35rem;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
-/* Contenedor de enlaces */
-.commonPaths {
+header h1:hover {
+  color: var(--theme-accent);
+  transform: translateY(-1px);
+}
+
+/* Bloque derecho agrupado */
+.header-right {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 12px;
 }
 
-
-
-/* Estilo de los links de navegación */
-.commonPaths a {
-  color: var(--theme-muted);
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  color: var(--theme-text);
   text-decoration: none;
-  font-size: 0.95rem;
-  font-weight: 500;
-  transition: color 0.2s ease;
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.commonPaths a:hover {
-  color: #2563eb;
+.nav-link:hover {
+  color: var(--theme-accent);
+  background-color: var(--theme-surface-raised);
 }
 
-/* Botón de Logout para que coincida con el resto de la navegación */
-.commonPaths button {
-  background-color: transparent;
+/* Desplegables */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 9999px;
   border: 1px solid var(--theme-border-control);
-  border-radius: 20px;
-  padding: 6px 16px;
+  background-color: var(--theme-surface);
+  color: var(--theme-text);
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dropdown-trigger:hover,
+.dropdown-trigger.active {
+  background-color: var(--theme-surface-raised);
+  border-color: var(--theme-accent);
+}
+
+/* Caja flotante del menú */
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 210px;
+  padding: 8px;
+  background-color: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgb(0 0 0 / 18%);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 1100;
+}
+
+.dropdown-menu a {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 10px;
+  color: var(--theme-text);
+  text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
-  color:var(--theme-text);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.dropdown-menu a:hover {
+  background-color: var(--theme-surface-raised);
+  color: var(--theme-accent);
+}
+
+.dropdown-divider {
+  height: 1px;
+  margin: 4px 0;
+  background-color: var(--theme-border);
+}
+
+.dropdown-logout {
+  width: 100%;
+  text-align: left;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #ef4444;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.15s ease;
 }
 
-.commonPaths button:hover {
-  background-color: #f1f5f9;
-  border-color: #94a3b8;
-  color: #0f172a;
+.dropdown-logout:hover {
+  background-color: rgb(239 68 68 / 12%);
 }
 
+/* Icono de notificaciones */
+.notificacionLogo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 12px;
+  border-radius: 9999px;
+  color: var(--theme-text);
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
 
+.notificacionLogo:hover {
+  background-color: var(--theme-surface-raised);
+  color: var(--theme-accent);
+}
 
+.noti-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--theme-accent);
+}
+
+/* Botón cambio de tema */
+.themeToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  border: 1px solid var(--theme-border-control);
+  background-color: var(--theme-surface);
+  color: var(--theme-text);
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.themeToggle:hover {
+  background-color: var(--theme-surface-raised);
+}
+
+/* Scroll to top */
 .scrollTopBtn {
   position: fixed;
   right: 24px;
@@ -95,7 +215,7 @@ header h1:hover{
   height: 48px;
   padding: 0;
   color: #ffffff;
-  background-color: #6daef8;;
+  background-color: var(--theme-accent);
   border: none;
   border-radius: 50%;
   box-shadow: 0 4px 12px rgb(15 23 42 / 25%);
@@ -104,59 +224,5 @@ header h1:hover{
 }
 
 .scrollTopBtn:hover {
-  background-color: #3662db;
   transform: translateY(-2px);
-}
-
-.scrollTopBtn:focus-visible {
-  outline: 3px solid #aed4ff;
-  outline-offset: 3px;
-}
-
-.cant{
-  color: red;
-}
-
-/* ================= Estilos agregados (no modifican los anteriores) ================= */
-header {
-  min-height: 80px;
-  box-sizing: border-box;
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 4%);
-}
-
-header h1 {
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  line-height: 26px;
-  transition: color 0.2s ease;
-}
-
-.commonPaths a {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: 9999px;
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  line-height: 20px;
-  letter-spacing: 0.01em;
-}
-
-.commonPaths a:hover {
-  background-color: rgb(190 234 246 / 30%);
-}
-
-.commonPaths a svg {
-  display: block;
-}
-
-.commonPaths button {
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  line-height: 20px;
-}
-
-.commonPaths .themeToggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
 }
