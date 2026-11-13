@@ -3,15 +3,16 @@
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
   padding: 20px 0;
-  max-width: 120px;
+  max-width: 1200px;
   margin: 0 auto;
 }
+
 /* Contenedor de los filtros */
 .filters {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-end; /* Alineado a la derecha sobre las tarjetas */
+  justify-content: flex-end;
   gap: 10px 24px;
   max-width: 1200px;
   margin: 20px auto 10px auto;
@@ -31,7 +32,7 @@
 .nearby-container label {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #475569;
+  color: var(--theme-muted);
 }
 
 /* Selector estilizado */
@@ -40,9 +41,9 @@
   padding: 8px 14px;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #1e293b;
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
+  color: var(--theme-text);
+  background-color: var(--theme-surface);
+  border: 1px solid var(--theme-border-control);
   border-radius: 8px;
   outline: none;
   cursor: pointer;
@@ -54,9 +55,10 @@
 .sort-container select:hover,
 .nearby-container select:focus,
 .nearby-container select:hover {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  border-color: var(--theme-accent);
+  box-shadow: 0 0 0 3px rgb(101 201 220 / 20%);
 }
+
 /* Botón de cercanía */
 .nearby-button {
   padding: 8px 14px;
@@ -80,12 +82,13 @@
 }
 
 .nearby-button.active {
-  color: #00667f;
-  background-color: #ffffff;
+  color: var(--theme-accent);
+  background-color: var(--theme-surface);
+  border-color: var(--theme-accent);
 }
 
 .nearby-button.active:hover {
-  background-color: #edf4ff;
+  background-color: var(--theme-surface-raised);
 }
 
 .error {
@@ -94,7 +97,7 @@
   padding: 0 10px;
   text-align: right;
   font-size: 0.9rem;
-  color: #b91c1c;
+  color: #ef4444;
 }
 
 /* Panel con buscador y mapa para elegir la ubicación de referencia */
@@ -102,8 +105,8 @@
   max-width: 1200px;
   margin: 0 auto 10px auto;
   padding: 16px;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--theme-surface);
+  border: 1px solid var(--theme-border);
   border-radius: 12px;
   box-sizing: border-box;
 }
@@ -112,5 +115,5 @@
   margin: 0 0 10px;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #475569;
+  color: var(--theme-muted);
 }

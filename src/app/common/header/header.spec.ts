@@ -8,6 +8,7 @@ describe('Header', () => {
   let fixture: ComponentFixture<Header>;
 
   beforeEach(async () => {
+    localStorage.removeItem('space-venue-theme');
     await TestBed.configureTestingModule({
       imports: [Header],
       providers: [provideHttpClient(), provideRouter([])],
@@ -18,8 +19,31 @@ describe('Header', () => {
     await fixture.whenStable();
   });
 
+  afterEach(() => {
+    localStorage.removeItem('space-venue-theme');
+    document.documentElement.removeAttribute('data-theme');
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should toggle and persist the color theme', () => {
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector('.themeToggle');
+    expect(button.getAttribute('aria-label')).toBe('Cambiar a modo oscuro');
+
+    button.click();
+    fixture.detectChanges();
+
+    expect(document.documentElement.dataset['theme']).toBe('dark');
+    expect(localStorage.getItem('space-venue-theme')).toBe('dark');
+    expect(button.getAttribute('aria-label')).toBe('Cambiar a modo luminoso');
+
+    button.click();
+    fixture.detectChanges();
+
+    expect(document.documentElement.dataset['theme']).toBe('light');
+    expect(localStorage.getItem('space-venue-theme')).toBe('light');
   });
 
   it('should show a button that scrolls to the top after scrolling down', () => {

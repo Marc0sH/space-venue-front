@@ -1,33 +1,39 @@
+:host {
+  display: block;
+  padding: 2.5rem 1rem;
+  background-color: var(--theme-background);
+}
+
 .profile-container {
   max-width: 480px;
-  margin: 40px auto;
+  margin: 0 auto;
   padding: 32px;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--theme-surface);
+  border: 1px solid var(--theme-border);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   font-family: system-ui, -apple-system, sans-serif;
-  color: #1e293b;
+  color: var(--theme-text);
 }
 
 .profile-container h2 {
   margin: 0 0 24px;
   font-size: 1.5rem;
-  color: #0f172a;
+  color: var(--theme-text);
   text-align: center;
 }
 
 .username {
   margin: 4px 0 24px;
   font-size: 0.95rem;
-  color: #64748b;
+  color: var(--theme-muted);
   text-align: center;
 }
 
 /* Datos del usuario */
 .profile-data {
   margin: 0 0 24px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--theme-border);
   border-radius: 8px;
 }
 
@@ -39,23 +45,22 @@
 }
 
 .data-row + .data-row {
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--theme-border);
 }
 
 .data-row dt {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #475569;
+  color: var(--theme-muted);
 }
 
 .data-row dd {
   margin: 0;
-  color: #0f172a;
+  color: var(--theme-text);
   text-align: right;
   word-break: break-word;
 }
 
-/* Botón principal, igual al submit de los formularios */
 .primaryBtn {
   display: block;
   box-sizing: border-box;
@@ -66,20 +71,20 @@
   text-align: center;
   text-decoration: none;
   color: #ffffff;
-  background-color: #2563eb;
+  background-color: #00667f;
   border-radius: 8px;
   transition: background-color 0.2s ease;
 }
 
 .primaryBtn:hover {
-  background-color: #1d4ed8;
+  background-color: #2f7f99;
 }
 
 /* Zona de baja de cuenta */
 .danger-zone {
   margin-top: 24px;
   padding-top: 24px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--theme-border);
 }
 
 .redBtn,
@@ -94,14 +99,14 @@
 
 .redBtn {
   width: 100%;
-  color: #dc2626;
+  color: #ef4444;
   background-color: transparent;
-  border: 1px solid #fca5a5;
+  border: 1px solid #f87171;
 }
 
 .redBtn:hover:not(:disabled) {
-  background-color: #fef2f2;
-  border-color: #dc2626;
+  background-color: rgb(239 68 68 / 12%);
+  border-color: #ef4444;
 }
 
 .redBtn.solid {
@@ -116,14 +121,14 @@
 }
 
 .secondaryBtn {
-  color: #334155;
+  color: var(--theme-text);
   background-color: transparent;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--theme-border-control);
 }
 
 .secondaryBtn:hover:not(:disabled) {
-  background-color: #f1f5f9;
-  border-color: #94a3b8;
+  background-color: var(--theme-surface-raised);
+  border-color: var(--theme-accent);
 }
 
 .redBtn:disabled,
@@ -134,15 +139,15 @@
 
 .confirmacion-baja {
   padding: 16px;
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
+  background-color: var(--theme-surface-raised);
+  border: 1px solid #f87171;
   border-radius: 8px;
 }
 
 .confirmacion-baja p {
   margin: 0 0 16px;
   font-size: 0.95rem;
-  color: #7f1d1d;
+  color: var(--theme-text);
 }
 
 .confirm-actions {
@@ -155,17 +160,16 @@
 .status-message {
   margin: 0;
   text-align: center;
-  color: #64748b;
+  color: var(--theme-muted);
 }
 
 .error {
-  color: #dc2626;
+  color: #ef4444;
   font-size: 0.875rem;
   margin-top: 12px;
   text-align: center;
 }
 
-/* Vista de solo lectura para el admin */
 .backBtn {
   display: block;
   box-sizing: border-box;
@@ -179,8 +183,8 @@
   font-weight: 600;
   padding: 4px 10px;
   border-radius: 9999px;
-  background-color: #f1f5f9;
-  color: #64748b;
+  background-color: var(--theme-surface-raised);
+  color: var(--theme-muted);
 }
 
 .status-badge.active {

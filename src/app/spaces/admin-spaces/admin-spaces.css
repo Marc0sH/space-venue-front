@@ -1,3 +1,10 @@
+:host {
+    display: block;
+    background-color: var(--theme-background);
+    color: var(--theme-text);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
 .admin-section {
     width: 100%;
     max-width: 80rem;
@@ -8,17 +15,17 @@
 
 h2 {
     margin: 0 0 0.25rem;
-    color: #121d26;
+    color: var(--theme-text);
 }
 
 .resumen {
     margin: 0 0 1.25rem;
-    color: #64748b;
+    color: var(--theme-muted);
     font-size: 14px;
 }
 
 .error {
-    color: red;
+    color: #ef4444;
     font-weight: bold;
 }
 
@@ -32,7 +39,9 @@ h2 {
 .filtros input,
 .filtros select {
     padding: 8px 12px;
-    border: 1px solid #cbd5e1;
+    background-color: var(--theme-surface);
+    color: var(--theme-text);
+    border: 1px solid var(--theme-border-control);
     border-radius: 0.5rem;
     font-size: 14px;
 }
@@ -43,7 +52,8 @@ h2 {
 
 .tabla-container {
     overflow-x: auto;
-    background-color: #ffffff;
+    background-color: var(--theme-surface);
+    border: 1px solid var(--theme-border);
     border-radius: 0.75rem;
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 5%);
 }
@@ -57,18 +67,19 @@ table {
 th, td {
     padding: 12px 16px;
     text-align: left;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid var(--theme-border);
+    color: var(--theme-text);
     white-space: nowrap;
 }
 
 th {
-    color: #64748b;
+    color: var(--theme-muted);
     font-weight: 600;
-    background-color: #f8fafc;
+    background-color: var(--theme-surface-raised);
 }
 
 td a {
-    color: #00667f;
+    color: var(--theme-accent);
     font-weight: 600;
     text-decoration: none;
 }
@@ -78,13 +89,13 @@ td a:hover {
 }
 
 tr.inactivo td {
-    background-color: #f8fafc;
-    color: #64748b;
+    background-color: var(--theme-surface-raised);
+    color: var(--theme-muted);
 }
 
 .vacio {
     text-align: center;
-    color: #64748b;
+    color: var(--theme-muted);
 }
 
 .status-badge {
@@ -92,8 +103,8 @@ tr.inactivo td {
     font-weight: 600;
     padding: 4px 10px;
     border-radius: 9999px;
-    background-color: #f1f5f9;
-    color: #64748b;
+    background-color: var(--theme-surface-raised);
+    color: var(--theme-muted);
 }
 
 .status-badge.active {

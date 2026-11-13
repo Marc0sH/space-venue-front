@@ -35,6 +35,24 @@
             <a routerLink="/espacios">Lista de espacios</a>
             <a routerLink="/login">Iniciar sesión</a>
         }
+        <button
+            class="themeToggle"
+            type="button"
+            (click)="toggleTheme()"
+            [attr.aria-label]="isDarkMode() ? 'Cambiar a modo luminoso' : 'Cambiar a modo oscuro'"
+            [attr.title]="isDarkMode() ? 'Cambiar a modo luminoso' : 'Cambiar a modo oscuro'">
+            @if (isDarkMode()) {
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M8 4.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7M8 0a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 8 0m0 14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 8 14m8-6a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1 0-1h1a.5.5 0 0 1 .5.5M2 8a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1 0-1h1A.5.5 0 0 1 2 8m11.657-5.657a.5.5 0 0 1 0 .707l-.707.707a.5.5 0 1 1-.707-.707l.707-.707a.5.5 0 0 1 .707 0m-9.9 9.9a.5.5 0 0 1 0 .707l-.707.707a.5.5 0 0 1-.707-.707l.707-.707a.5.5 0 0 1 .707 0m9.9 1.414a.5.5 0 0 1-.707 0l-.707-.707a.5.5 0 1 1 .707-.707l.707.707a.5.5 0 0 1 0 .707m-9.9-9.9a.5.5 0 0 1-.707 0l-.707-.707a.5.5 0 1 1 .707-.707l.707.707a.5.5 0 0 1 0 .707"/>
+                </svg>
+                <span>Modo iluminado</span>
+            } @else {
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.286 7.318 7.286.548 0 1.08-.06 1.594-.175a.75.75 0 0 1 .744 1.171A8.3 8.3 0 0 1 8.007 16C3.58 16 0 12.435 0 8.035 0 4.872 1.85 2.139 4.551.92A.78.78 0 0 1 6 .278"/>
+                </svg>
+                <span>Modo oscuro</span>
+            }
+        </button>
     </nav>
 
 </header>
