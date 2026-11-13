@@ -16,6 +16,10 @@ export class Comment {
         return httpResource<CommentComplete[]>(() => `${this.baseUrl}/byspaceid/${idSpace()}`)
     }
 
+    getCommentsOfUser(idUser: Signal<string>){
+        return httpResource<CommentComplete[]>(() => `${this.baseUrl}/byconsumerid/${idUser()}`)
+    }
+
     hasCommentOnSpace(idSpace: Signal<string>){
         return httpResource<boolean>(() => `${this.baseUrl}/spaces/${idSpace()}/has-comment`)
     }
