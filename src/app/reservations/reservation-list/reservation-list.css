@@ -1,10 +1,16 @@
+:host {
+  display: block;
+  background-color: var(--theme-background);
+  color: var(--theme-text);
+}
+
 .title {
   box-sizing: border-box;
   width: 100%;
   max-width: 64rem;
   margin: 0 auto;
   padding: 2rem 1.25rem 0;
-  color: #121d26;
+  color: var(--theme-text);
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
@@ -19,7 +25,7 @@
   max-width: 64rem;
   margin: 0 auto;
   padding: 2rem 1.25rem 3rem;
-  color: #121d26;
+  color: var(--theme-text);
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
 
@@ -30,10 +36,10 @@
 .list-message {
   margin: 0;
   padding: 1.25rem 1.5rem;
-  border: 1px solid #dce5eb;
+  border: 1px solid var(--theme-border);
   border-radius: 0.75rem;
-  background-color: #ffffff;
-  color: #3f484c;
+  background-color: var(--theme-surface);
+  color: var(--theme-muted);
   line-height: 1.5;
 }
 

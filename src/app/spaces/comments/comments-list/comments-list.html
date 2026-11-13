@@ -5,8 +5,12 @@
     } @else if (comments.isLoading()) {
         <p class="list-message" role="status">Cargando reseñas...</p>
     } @else if (comments.hasValue()) {
-        @for (c of commentsListFiltered(); track c.idComment) {
-            <app-comment-view-card [comment]="c"></app-comment-view-card>
+        @for (c of comments.value(); track c.idComment) {
+            <app-comment-view-card
+                [comment]="c"
+                (deleted)="onCommentChanged()"
+                (updated)="onCommentChanged()">
+            </app-comment-view-card>
         } @empty {
             <p class="list-message">Todavía no hay reseñas para este espacio.</p>
         }

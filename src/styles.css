@@ -1,1 +1,62 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  color-scheme: light;
+  --theme-background: #f7f9ff;
+  --theme-surface: #ffffff;
+  --theme-surface-raised: #f1f5f9;
+  --theme-surface-hover: #e2e8f0;
+  --theme-badge: #beeaf6;
+
+  --theme-text: #121d26;
+  --theme-muted: #475569;
+  --theme-border: #e2e8f0;
+  --theme-border-control: #cbd5e1;
+  --theme-accent: #00667f;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  /* Fondos neutros carbón/grafito sin tinte verde-azulado */
+  --theme-background: #0b0d10;      /* Fondo principal profundo */
+  --theme-surface: #14171c;         /* Tarjetas, navbar y contenedores */
+  --theme-surface-raised: #1d2128;  /* Inputs, cajas internas y pills */
+  --theme-surface-hover: #262b34;   /* Estados hover */
+  --theme-badge: #16323b;           /* Tint sutil solo para badges de marca */
+
+  /* Tipografía de alto contraste y bordes neutros */
+  --theme-text: #f1f5f9;            /* Blanco suave para lectura cómoda */
+  --theme-muted: #94a3b8;           /* Gris neutro legible para subtítulos */
+  --theme-border: #262b34;          /* Bordes sutiles de tarjetas */
+  --theme-border-control: #363d49;  /* Bordes de inputs y controles */
+  --theme-accent: #4cc9e0;          /* Cian luminoso de marca para acentos */
+}
+
+body,
+app-root {
+  display: block;
+  min-height: 100vh;
+  margin: 0;
+  background-color: var(--theme-background);
+  color: var(--theme-text);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Inputs globales */
+input, select, textarea {
+  background-color: var(--theme-surface);
+  border-color: var(--theme-border-control);
+  color: var(--theme-text);
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--theme-muted);
+}
+
+/* Footer */
+.site-footer {
+  background-color: var(--theme-surface);
+  border-top: 1px solid var(--theme-border);
+}
+
+.footer-inner {
+  color: var(--theme-muted);
+}

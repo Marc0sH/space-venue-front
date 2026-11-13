@@ -26,7 +26,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--theme-border);
 }
 
 .notification-image {
@@ -37,8 +37,8 @@
   width: 2rem;
   height: 2rem;
   border-radius: 9999px;
-  background-color: #beeaf6;
-  color: #00667f;
+  background-color: var(--theme-badge);
+  color: var(--theme-accent);
 }
 
 .detail-title {
@@ -49,13 +49,13 @@
   font-size: 16px;
   line-height: 24px;
   font-weight: 600;
-  color: #121d26;
+  color: var(--theme-text);
 }
 
 time {
   font-size: 12px;
   line-height: 16px;
-  color: #64748b;
+  color: var(--theme-muted);
 }
 
 .detail-content {
@@ -64,12 +64,12 @@ time {
   padding: 1.5rem;
   font-size: 14px;
   line-height: 1.625;
-  color: #3f484c;
+  color: var(--theme-muted);
 }
 
 .detail-content p {
   margin: 0;
-  white-space: pre-line;   /* respeta los saltos de línea del mensaje */
+  white-space: pre-line;
 }
 
 .back-btn {
@@ -85,13 +85,14 @@ time {
   gap: 0.5rem;
   padding: 2rem 1rem;
   text-align: center;
-  color: #64748b;
+  color: var(--theme-muted);
   font-size: 14px;
 }
 
 .empty-detail .material-symbols-outlined {
   font-size: 40px;
-  color: #bfc8cd;
+  color: var(--theme-muted);
+  opacity: 0.6;
 }
 
 .empty-detail p {
@@ -99,7 +100,6 @@ time {
   max-width: 18rem;
 }
 
-/* Celular: aparece el botón "Atrás" */
 @media (max-width: 767px) {
   .back-btn {
     display: inline-flex;
@@ -108,8 +108,8 @@ time {
     padding: 6px 10px;
     border: none;
     border-radius: 9999px;
-    background-color: #edf4ff;
-    color: #00667f;
+    background-color: var(--theme-surface-raised);
+    color: var(--theme-accent);
     font-family: inherit;
     font-size: 13px;
     font-weight: 600;

@@ -11,37 +11,37 @@
     gap: 1rem;
     min-height: 5rem;
     padding: 1.125rem 1.25rem;
-    border: 1px solid #dce5eb;
+    border: 1px solid var(--theme-border);
     border-radius: 0.75rem;
-    background-color: #ffffff;
+    background-color: var(--theme-surface);
     box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
     transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .card:hover {
-    border-color: #9bcbd5;
-    box-shadow: 0 8px 18px rgb(18 29 38 / 8%);
+    border-color: var(--theme-accent);
+    box-shadow: 0 8px 18px rgb(0 0 0 / 15%);
     transform: translateY(-1px);
 }
 
 .card:focus-within {
-    outline: 3px solid rgb(0 102 127 / 20%);
+    outline: 3px solid rgb(101 201 220 / 25%);
     outline-offset: 2px;
 }
 
 .card-title {
     min-width: 0;
     margin: 0;
-    color: #121d26;
+    color: var(--theme-text);
     font-size: 1rem;
     font-weight: 600;
     line-height: 1.5;
     overflow-wrap: anywhere;
-    transition: color 0.5s ease-in-out;
+    transition: color 0.2s ease;
 }
 
 .card-title:hover {
-    color: #286191;
+    color: var(--theme-accent);
     cursor: pointer;
 }
 
@@ -63,7 +63,7 @@
 }
 
 .action-button:focus-visible {
-    outline: 3px solid rgb(0 102 127 / 20%);
+    outline: 3px solid rgb(101 201 220 / 25%);
     outline-offset: 2px;
 }
 
@@ -127,7 +127,7 @@
 .progress {
     border-color: #6ba9f0;
     background-color: #d1e3f8;
-    color: #3b94fa;
+    color: #1e40af;
 }
 
 @media (max-width: 480px) {

@@ -1,6 +1,6 @@
 <div class="create-space-container">
 
-    <h2>Creación de un espacio</h2>
+    <h2>Publicar un espacio</h2>
     
     <form novalidate (submit)="onSubmit($event)">
         <div>
@@ -87,7 +87,7 @@
         </div>
 
         <button type="submit" [disabled]="formSpaceCreation().invalid() || saving() || espacioCreado()">
-            {{saving() ? 'Creando...' : 'Crear'}}
+            {{saving() ? 'Publicando...' : 'Publicar'}}
         </button>
 
         @if (error() != "") {

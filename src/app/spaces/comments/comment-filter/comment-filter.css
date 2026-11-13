@@ -4,9 +4,9 @@
   gap: 0.85rem;
   width: 100%;
   padding: 1rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--theme-border);
   border-radius: 0.75rem;
-  background-color: #fff;
+  background-color: var(--theme-surface);
   font-family: system-ui, -apple-system, sans-serif;
   box-sizing: border-box;
 }
@@ -19,7 +19,7 @@
 }
 
 .filter-label {
-  color: #334155;
+  color: var(--theme-muted);
   font-size: 0.875rem;
   font-weight: 600;
 }
@@ -27,24 +27,24 @@
 .filter-control {
   width: 100%;
   min-height: 2.75rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--theme-border-control);
   border-radius: 0.625rem;
-  background-color: #f8fafc;
-  color: #1e293b;
+  background-color: var(--theme-surface-raised);
+  color: var(--theme-text);
   font: inherit;
   transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
   box-sizing: border-box;
 }
 
 .filter-control:hover {
-  border-color: #94a3b8;
-  background-color: #fff;
+  border-color: var(--theme-accent);
+  background-color: var(--theme-surface);
 }
 
 .filter-control:focus-visible {
-  border-color: #2563eb;
+  border-color: var(--theme-accent);
   outline: none;
-  box-shadow: 0 0 0 3px rgb(37 99 235 / 18%);
+  box-shadow: 0 0 0 3px rgb(101 201 220 / 20%);
 }
 
 .select-control {
@@ -57,8 +57,8 @@
   right: 1rem;
   width: 0.5rem;
   height: 0.5rem;
-  border-right: 2px solid #64748b;
-  border-bottom: 2px solid #64748b;
+  border-right: 2px solid var(--theme-muted);
+  border-bottom: 2px solid var(--theme-muted);
   content: "";
   pointer-events: none;
   transform: translateY(-70%) rotate(45deg);

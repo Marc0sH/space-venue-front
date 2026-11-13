@@ -1,21 +1,18 @@
-
-/* Fondo de la página (se aplica al propio componente, no requiere tocar el HTML) */
 :host {
     display: block;
     padding: 2.5rem 1rem;
-    background-color: #f7f9ff;
+    background-color: var(--theme-background);
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
 
-/* Colores en un solo lugar: si el equipo quiere cambiar la paleta, es acá */
 .create-space-container {
-    --sv-primary: #00667f;
+    --sv-primary: var(--theme-accent);
     --sv-primary-hover: #2f7f99;
-    --sv-text: #121d26;
-    --sv-text-soft: #3f484c;
-    --sv-field: #edf4ff;
-    --sv-field-border: #e4effd;
-    --sv-disabled: #bfc8cd;
+    --sv-text: var(--theme-text);
+    --sv-text-soft: var(--theme-muted);
+    --sv-field: var(--theme-surface-raised);
+    --sv-field-border: var(--theme-border);
+    --sv-disabled: var(--theme-muted);
     --sv-error: #ba1a1a;
     --sv-error-bg: #ffdad6;
     --sv-error-text: #93000a;
@@ -24,7 +21,8 @@
     margin: 0 auto;
     padding: 2rem;
     box-sizing: border-box;
-    background-color: #ffffff;
+    background-color: var(--theme-surface);
+    border: 1px solid var(--theme-border);
     border-radius: 0.75rem;
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 5%), 0 4px 12px rgb(0 0 0 / 4%);
     color: var(--sv-text);
@@ -40,9 +38,6 @@
     color: var(--sv-text);
 }
 
-/* ---------- Formulario ----------
-   Cualquier bloque nuevo que se agregue como <div> dentro del form
-   (fotos, mapa, servicios...) hereda automáticamente este espaciado. */
 .create-space-container form {
     display: flex;
     flex-direction: column;
@@ -72,7 +67,7 @@
     min-height: 3rem;
     margin: 0;
     padding: 0 1rem;
-    border: none;
+    border: 1px solid var(--theme-border);
     border-radius: 0.75rem;
     background-color: var(--sv-field);
     color: var(--sv-text);
@@ -96,7 +91,7 @@
 .create-space-container input:not([type='file']):not([type='checkbox']):not([type='radio']):focus,
 .create-space-container textarea:focus,
 .create-space-container select:focus {
-    background-color: #ffffff;
+    background-color: var(--theme-surface);
     box-shadow: 0 0 0 2px var(--sv-primary);
 }
 
@@ -105,19 +100,19 @@
     box-shadow: 0 0 0 2px var(--sv-error);
 }
 
-/* Título de un bloque que no es un input (ej. el mapa de ubicación) */
 .titulo-campo {
     margin-bottom: 0.5rem;
     font-size: 14px;
     line-height: 20px;
     font-weight: 500;
+    color: var(--sv-text);
 }
 
 /* ---------- Imágenes ---------- */
 .imagenes-error {
     margin: 0.5rem 0 0;
     font-size: 13px;
-    color: var(--sv-error);
+    color: #ef4444;
 }
 
 .previews {
@@ -157,14 +152,13 @@
     font-weight: 600;
 }
 
-/* ---------- Mensajes de error ----------
-   Se muestran antes del botón aunque en el HTML estén después. */
+/* ---------- Mensajes de error ---------- */
 .create-space-container app-form-error-message {
     order: 1;
     display: block;
     font-size: 13px;
     line-height: 18px;
-    color: var(--sv-error);
+    color: #ef4444;
 }
 
 .create-space-container p.error {
@@ -199,16 +193,15 @@
 }
 
 .create-space-container button:hover:not(:disabled) {
-    background-color: var(--sv-field-border);
+    background-color: var(--theme-surface-hover);
 }
 
-/* Botón principal (enviar) */
 .create-space-container button[type='submit'] {
     order: 2;
     align-self: flex-end;
     margin-top: 0.5rem;
     padding: 0.875rem 2rem;
-    background-color: var(--sv-primary);
+    background-color: #00667f;
     color: #ffffff;
     font-weight: 700;
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -2px rgb(0 0 0 / 10%);
@@ -224,13 +217,12 @@
 }
 
 .create-space-container button:focus-visible {
-    outline: 3px solid #87d1ed;
+    outline: 3px solid var(--sv-primary);
     outline-offset: 2px;
 }
 
 .create-space-container button:disabled {
-    background-color: var(--sv-disabled);
-    color: #ffffff;
+    opacity: 0.5;
     box-shadow: none;
     cursor: not-allowed;
 }
@@ -240,7 +232,7 @@
     padding: 1.25rem;
     border: 1px solid var(--sv-field-border);
     border-radius: 0.75rem;
-    background-color: #ffffff;
+    background-color: var(--theme-surface);
 }
 
 .create-space-container ::ng-deep .service-creation h3 {
@@ -275,7 +267,7 @@
     width: 100%;
     min-height: 3rem;
     padding: 0 1rem;
-    border: none;
+    border: 1px solid var(--theme-border);
     border-radius: 0.75rem;
     background-color: var(--sv-field);
     color: var(--sv-text);
@@ -289,7 +281,7 @@
 
 .create-space-container ::ng-deep .service-creation app-form-error-message {
     display: block;
-    color: var(--sv-error);
+    color: #ef4444;
     font-size: 13px;
     line-height: 18px;
 }
@@ -305,11 +297,18 @@
     background-color: transparent;
     color: var(--sv-text-soft);
 }
+
 .contador { 
-    align-self: flex-end; margin-top: 0.375rem; font-size: 12px; line-height: 16px; color: #64748b; 
+    align-self: flex-end;
+    margin-top: 0.375rem;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--theme-muted);
 }
+
 .contador.limite {
-    color: var(--sv-error); font-weight: 600; 
+    color: #ef4444;
+    font-weight: 600; 
 }
 
 /* ---------- Mobile ---------- */

@@ -1,19 +1,19 @@
 :host {
     display: block;
-    background-color: #f7f9ff;
-    color: #121d26;
+    background-color: var(--theme-background);
+    color: var(--theme-text);
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
 
 .error {
-    color: red;
+    color: #ef4444;
     font-weight: bold;
     margin-top: 10px;
 }
 
 .state {
     padding: 2rem 0;
-    color: #3f484c;
+    color: var(--theme-muted);
 }
 
 .spaces-section {
@@ -30,7 +30,7 @@
     line-height: 40px;
     letter-spacing: -0.01em;
     font-weight: 700;
-    color: #121d26;
+    color: var(--theme-text);
 }
 
 .spaces-section app-space-filter {
@@ -40,8 +40,8 @@
 
 .spaces-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);   /* minmax(0, ...) evita que el contenido ensanche una columna */
-    grid-auto-rows: 1fr;                      /* todas las filas miden lo mismo que la más alta */
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: 1fr;
     gap: 1.5rem;
 }
 
@@ -50,10 +50,10 @@
     min-width: 0;
 }
 
-/* Mensajes ("No hay espacios...") ocupan todo el ancho en vez de una sola columna */
 .spaces-grid > p {
     grid-column: 1 / -1;
     margin: 0;
+    color: var(--theme-muted);
 }
 
 @media (min-width: 640px) {
