@@ -12,10 +12,31 @@
         </span>
     </header>
 
-    <p class="comment-description">{{ comment().description }}</p>
+    @if (editing()) {
+        <app-comment-creation
+            [idSpace]="comment().idSpace.toString()"
+            [isEditing]="true"
+            [commentToEdit]="comment()"
+            (saved)="onUpdated()"
+            (cancelled)="onCancelEditing()">
+        </app-comment-creation>
+    } @else {
+        <p class="comment-description">{{ comment().description }}</p>
+    }
 
     <footer class="comment-meta">
         <span>Publicado: {{ comment().created_at | date:'medium' }}</span>
+        @if (session.session()?.consumerId === comment().idConsumer) {
+            @if (!editing()) {
+                <div class="comment-actions">
+                    <button class="edit-button" type="button" (click)="editing.set(true)">Modificar</button>
+                    <button class="delete-button" type="button" (click)="onDelete()">Eliminar</button>
+                </div>
+            }
+        } @else if (session.isAdmin()) {
+            <button class="delete-button" type="button" (click)="onDelete()">Eliminar</button>
+
+        }
     </footer>
 </div>
  

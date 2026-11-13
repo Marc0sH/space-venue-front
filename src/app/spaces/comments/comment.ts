@@ -23,4 +23,12 @@ export class Comment {
     canCommentOnSpace(idSpace: Signal<string>){
         return httpResource<boolean>(() => `${this.baseUrl}/spaces/${idSpace()}/can-comment`)
     }
+
+    deleteComment(idComment: string){
+        return this.http.delete(`${this.baseUrl}/deactivate/${idComment}`)
+    }
+
+    modifyComment(idComment: number, comment: CommentForm){
+        return this.http.put(`${this.baseUrl}/${idComment}`, comment)
+    }
 }

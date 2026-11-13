@@ -39,4 +39,8 @@ export class CommentsList {
   changeFilters(value: CommentFilterOptions) {
     this.filterOptions.set(value);
   }
+
+  onCommentChanged(){
+    this.comments.reload()
+  }
 }
