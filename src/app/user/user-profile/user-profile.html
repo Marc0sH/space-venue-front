@@ -81,11 +81,13 @@
   }
 </div>
 
-<section class="card-comments">
-  <h2>Comentarios realizados</h2>
+
   @if (id(); as idUser) {
     @if (sessionService.isAdmin()) {
+      <section class="card-comments">
+      <h2>Comentarios realizados</h2>
       <app-user-comments-list [idUser]="idUser"></app-user-comments-list>
+      </section>
     }
   }
-</section>
+
