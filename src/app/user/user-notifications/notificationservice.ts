@@ -46,4 +46,13 @@ export class Notificationservice {
             tap(() => this.unseenVersion.update(version => version + 1))
         );
     }
+
+    //El usuario logueado (cliente) pide ser oferente. El back arma el mensaje con sus datos
+    //y se lo manda como notificación a todos los admins. Solo se permite una vez cada 24 hs
+    requestOffererRole(){
+        return this.http.post<{ notifiedAdmins: number }>(
+            `${this.baseUrl}/offerer-request`,
+            null
+        );
+    }
 }
