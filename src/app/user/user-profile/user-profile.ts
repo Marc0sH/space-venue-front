@@ -4,16 +4,17 @@ import { Session } from '../../auth/session/session';
 import { RouterLink } from '@angular/router';
 import { etiquetaEstadoCuenta, etiquetaRol } from '../../models/user.model';
 import { mensajeDeError } from '../../common/http-error';
+import { UserCommentsList } from '../user-comments-list/user-comments-list';
 
 @Component({
-  imports: [RouterLink],
+  imports: [RouterLink, UserCommentsList],
   selector: 'app-user-profile',
   styleUrl: './user-profile.css',
   templateUrl: './user-profile.html',
 })
 export class UserProfile {
   private userService = inject(User);
-  private sessionService = inject(Session);
+  protected sessionService = inject(Session);
 
   //Viene de la ruta admin/usuarios/:id (withComponentInputBinding). En /perfil queda undefined
   readonly id = input<string>();

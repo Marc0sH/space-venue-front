@@ -1,0 +1,14 @@
+<section class="comments-list" aria-label="Reseñas del espacio">
+    <app-comment-filter [isAdminFilter]="true" (filtersChanged)="changeFilters($event)"></app-comment-filter>
+    @if (comments.isLoading()) {
+        <p class="list-message" role="status">Cargando comentarios...</p>
+    } @else if (comments.error()) {
+        <p class="list-message error" role="alert">Error al cargar los comentarios.</p>
+    } @if(comments.hasValue()) {
+        @for (c of commentsListFiltered(); track c.idComment) {
+            <app-comment-view-card [comment]="c" (deleted)="onCommentChanged()"></app-comment-view-card>
+        } @empty {
+            <p class="list-message">No hay comentarios realizados.</p>
+        }
+    }
+</section>
