@@ -41,6 +41,23 @@
     } @else {
       <a routerLink="/perfil/editar" class="primaryBtn">Editar perfil</a>
 
+      @if (u.credentials.rol === 'ROLE_CLIENT') {
+        <div class="offerer-request">
+          @if (offererRequestSent()) {
+            <p class="success">Solicitud enviada. Un administrador se va a contactar con vos por mail a {{ u.email }}.</p>
+          } @else {
+            <p class="hint">¿Querés publicar tus propios espacios? Pedile a un administrador que te habilite como oferente.</p>
+            <button class="secondaryBtn" [disabled]="requestingOfferer()" (click)="requestOffererRole()">
+              {{ requestingOfferer() ? 'Enviando...' : 'Solicitar ser oferente' }}
+            </button>
+          }
+
+          @if (offererRequestError()) {
+            <p class="error">{{ offererRequestError() }}</p>
+          }
+        </div>
+      }
+
       <div class="danger-zone">
         @if (!confirmingDeletion()) {
           <button class="redBtn" (click)="confirmingDeletion.set(true)">Dar de baja mi cuenta</button>

@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { etiquetaEstadoCuenta, etiquetaRol } from '../../models/user.model';
 import { mensajeDeError } from '../../common/http-error';
 import { UserCommentsList } from '../user-comments-list/user-comments-list';
+import { Notificationservice } from '../user-notifications/notificationservice';
 
 @Component({
   imports: [RouterLink, UserCommentsList],
@@ -14,6 +15,7 @@ import { UserCommentsList } from '../user-comments-list/user-comments-list';
 })
 export class UserProfile {
   private userService = inject(User);
+  private notificationService = inject(Notificationservice);
   protected sessionService = inject(Session);
 
   //Viene de la ruta admin/usuarios/:id (withComponentInputBinding). En /perfil queda undefined
@@ -32,6 +34,26 @@ export class UserProfile {
   protected confirmingDeletion = signal(false);
   protected deleting = signal(false);
   protected deletionError = signal<string | null>(null);
+
+  protected requestingOfferer = signal(false);
+  protected offererRequestSent = signal(false);
+  protected offererRequestError = signal<string | null>(null);
+
+  //Manda la solicitud para ser oferente. Al admin le llega como notificación con el mail del usuario
+  requestOffererRole() {
+    this.requestingOfferer.set(true);
+    this.offererRequestError.set(null);
+    this.notificationService.requestOffererRole().subscribe({
+      next: () => {
+        this.offererRequestSent.set(true);
+        this.requestingOfferer.set(false);
+      },
+      error: (err) => {
+        this.offererRequestError.set(mensajeDeError(err, 'No se pudo enviar la solicitud'));
+        this.requestingOfferer.set(false);
+      }
+    });
+  }
 
   softDeleteUser() {
     this.deleting.set(true);
