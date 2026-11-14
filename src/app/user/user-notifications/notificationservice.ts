@@ -36,4 +36,14 @@ export class Notificationservice {
             tap(() => this.unseenVersion.update(version => version + 1))
         );
     }
+
+    //Marca como vistas todas las notificaciones del usuario logueado en una sola petición
+    markAllAsSeen(){
+        return this.http.patch<{ updatedCount: number }>(
+            `${this.baseUrl}/me/read`,
+            null
+        ).pipe(
+            tap(() => this.unseenVersion.update(version => version + 1))
+        );
+    }
 }
