@@ -47,3 +47,14 @@ export type ReservationFormModel = Omit<NewReservation, 'fromDate' | 'untilDate'
 };
 
 export type ReservationForServicesSelected = Omit<ReservationComplete, 'servicesSelected'>
+
+//Reserva reducida que devuelve /reservations/space/{id}/calendar.
+//id, title y consumerName vienen en null si el usuario no es el dueño, admin o el cliente de esa reserva.
+export interface ReservationCalendarEntry {
+    id: number | null,
+    fromDate: string,
+    untilDate: string,
+    status: 'TENTATIVE' | 'CONFIRMED' | 'IN_PROGRESS' | 'COMPLETED',
+    title: string | null,
+    consumerName: string | null
+}

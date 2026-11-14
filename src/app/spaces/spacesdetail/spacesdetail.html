@@ -88,6 +88,21 @@
           </div>
         </section>
 
+        <!-- Disponibilidad (solo usuarios logueados) -->
+        <section class="card">
+          <div class="card-title-row">
+            <h3>Disponibilidad</h3>
+            <span class="material-symbols-outlined title-icon">calendar_month</span>
+          </div>
+          @if (isLoggedIn()) {
+            <app-space-calendar [idSpace]="id()"></app-space-calendar>
+          } @else {
+            <p class="muted">
+              <a routerLink="/login">Iniciá sesión</a> para ver el calendario de reservas de este espacio.
+            </p>
+          }
+        </section>
+
         <!-- Servicios -->
         <section class="card">
           <div class="card-title-row">

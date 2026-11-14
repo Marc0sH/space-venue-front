@@ -1,0 +1,114 @@
+<div class="calendar">
+  <!-- Navegación de mes -->
+  <div class="calendar-header">
+    <button class="nav-button" type="button" aria-label="Mes anterior" (click)="previousMonth()">
+      <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+    <h4 class="month-label" aria-live="polite">{{ monthLabel() }}</h4>
+    <button class="nav-button" type="button" aria-label="Mes siguiente" (click)="nextMonth()">
+      <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+    <button class="today-button" type="button" (click)="goToToday()">Hoy</button>
+  </div>
+
+  <div class="legend">
+    <span class="legend-item"><span class="dot confirmed"></span>Confirmada</span>
+    <span class="legend-item"><span class="dot pending"></span>Pendiente</span>
+  </div>
+
+  @if (reservations.error()) {
+    <p class="calendar-error">No se pudieron cargar las reservas de este mes.</p>
+  }
+
+  <!-- Grilla -->
+  <div class="grid" role="grid" [class.loading]="reservations.isLoading()">
+    <div class="week week-header" role="row">
+      @for (wd of weekDays; track wd) {
+        <span class="weekday" role="columnheader">{{ wd }}</span>
+      }
+    </div>
+
+    @for (week of weeks(); track week[0].key) {
+      <div class="week" role="row">
+        @for (day of week; track day.key) {
+          <button
+            type="button"
+            role="gridcell"
+            class="day"
+            [class.outside]="!day.inMonth"
+            [class.today]="day.isToday"
+            [class.past]="day.isPast"
+            [class.selected]="selectedKey() === day.key"
+            [class.has-entries]="day.entries.length > 0"
+            [attr.aria-label]="dayAriaLabel(day)"
+            [attr.aria-selected]="selectedKey() === day.key"
+            (click)="selectDay(day)">
+            <span class="day-number">{{ day.date.getDate() }}</span>
+
+            @if (day.entries.length > 0) {
+              <!-- Escritorio: horarios. Mobile: solo puntos -->
+              <span class="pills">
+                @for (entry of day.entries.slice(0, 2); track $index) {
+                  <span class="pill" [class.pending]="entry.status === 'TENTATIVE'">
+                    {{ formatTime(entry.fromDate) }}
+                  </span>
+                }
+                @if (day.entries.length > 2) {
+                  <span class="more">+{{ day.entries.length - 2 }} más</span>
+                }
+              </span>
+              <span class="dots" aria-hidden="true">
+                @for (entry of day.entries.slice(0, 3); track $index) {
+                  <span class="dot" [class.pending]="entry.status === 'TENTATIVE'" [class.confirmed]="entry.status !== 'TENTATIVE'"></span>
+                }
+              </span>
+            }
+          </button>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Detalle del día seleccionado -->
+  @if (selectedDay(); as sel) {
+    <section class="day-detail" aria-live="polite">
+      <div class="detail-header">
+        <h4>{{ longDate(sel.date) }}</h4>
+        <button class="nav-button" type="button" aria-label="Cerrar detalle" (click)="closeDetail()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      @if (sel.entries.length === 0) {
+        <p class="empty">No hay reservas para este día. El espacio está libre.</p>
+      } @else {
+        <ol class="entry-list">
+          @for (entry of sel.entries; track $index) {
+            <li class="entry" [class.pending]="entry.status === 'TENTATIVE'">
+              <span class="entry-time">{{ formatRange(entry, sel.key) }}</span>
+              <div class="entry-body">
+                <span class="status-badge" [class.pending]="entry.status === 'TENTATIVE'">
+                  {{ statusLabels[entry.status] }}
+                </span>
+                @if (entry.title) {
+                  <span class="entry-title">{{ entry.title }}</span>
+                }
+                @if (entry.consumerName) {
+                  <span class="entry-consumer">{{ entry.consumerName }}</span>
+                }
+                @if (!entry.title && !entry.consumerName) {
+                  <span class="entry-consumer">Horario ocupado</span>
+                }
+              </div>
+              @if (entry.id != null) {
+                <a class="entry-link" [routerLink]="['/reservas', entry.id]" aria-label="Ver reserva">
+                  <span class="material-symbols-outlined">arrow_forward</span>
+                </a>
+              }
+            </li>
+          }
+        </ol>
+      }
+    </section>
+  }
+</div>
