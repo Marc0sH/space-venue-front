@@ -4,28 +4,34 @@
     color: var(--theme-text);
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
- 
+
 .error {
     color: #ef4444;
     font-weight: bold;
     margin-top: 10px;
 }
- 
+
 .state {
     padding: 2rem 0;
     color: var(--theme-muted);
 }
- 
+
 /* ---------- Lista de espacios ---------- */
 .spaces-section {
     width: 100%;
     max-width: 80rem;
     margin: 0 auto;
-    padding: 2rem 1.5rem 3.5rem;
+    padding: 2.5rem 1.5rem 2rem;
     box-sizing: border-box;
 }
- 
+
+.spaces-section + .spaces-section {
+    padding-top: 1.5rem;
+    padding-bottom: 3.5rem;
+}
+
 /* ---------- Carrusel ---------- */
+
 .carousel-head {
     display: flex;
     align-items: flex-end;
@@ -38,7 +44,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-bottom: 0.25rem; 
+    margin-bottom: 0.25rem;
     font-size: 12px;
     line-height: 16px;
     letter-spacing: 0.05em;
@@ -60,8 +66,17 @@
     color: var(--theme-text);
 }
 
-.carousel-title-link { display: inline-flex; align-items: center; gap: 0.5rem; color: inherit; text-decoration: none; }
-.carousel-title-link:hover { color: var(--theme-accent); }
+.carousel-title-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: inherit;
+    text-decoration: none;
+}
+
+.carousel-title-link:hover {
+    color: var(--theme-accent);
+}
 
 .carousel-controls {
     display: flex;
@@ -122,16 +137,16 @@
     min-width: 0;
     scroll-snap-align: start;
 }
- 
+
 @media (min-width: 640px) {
     .carousel-track app-spacescard { flex-basis: calc((100% - 1.5rem) / 2); }
 }
- 
+
 @media (min-width: 1024px) {
     .spaces-section { padding-left: 3rem; padding-right: 3rem; }
     .carousel-track app-spacescard { flex-basis: calc((100% - 4.5rem) / 4); }
 }
- 
+
 /* ---------- Cómo funciona ---------- */
 .how-it-works {
     width: 100%;
@@ -140,17 +155,17 @@
     padding: 5rem 1.5rem;
     box-sizing: border-box;
 }
- 
+
 @media (min-width: 1024px) {
     .how-it-works { padding-left: 3rem; padding-right: 3rem; }
 }
- 
+
 .how-header {
     text-align: center;
     max-width: 42rem;
     margin: 0 auto 4rem;
 }
- 
+
 .how-label {
     font-size: 12px;
     line-height: 16px;
@@ -159,7 +174,7 @@
     text-transform: uppercase;
     color: var(--theme-accent);
 }
- 
+
 .how-header h2 {
     margin: 0.5rem 0 0.75rem;
     font-size: 32px;
@@ -168,24 +183,24 @@
     font-weight: 700;
     color: var(--theme-text);
 }
- 
+
 .how-header p {
     margin: 0;
     font-size: 16px;
     line-height: 24px;
     color: var(--theme-muted);
 }
- 
+
 .steps-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 2rem;
 }
- 
+
 @media (min-width: 768px) {
     .steps-grid { grid-template-columns: repeat(3, 1fr); }
 }
- 
+
 .step-card {
     display: flex;
     flex-direction: column;
@@ -196,11 +211,11 @@
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 5%);
     transition: background-color 0.2s ease;
 }
- 
+
 .step-card:hover {
     background-color: var(--theme-surface-hover);
 }
- 
+
 .step-icon {
     display: flex;
     align-items: center;
@@ -213,11 +228,11 @@
     color: var(--theme-accent);
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 5%);
 }
- 
+
 .step-icon .material-symbols-outlined {
     font-size: 28px;
 }
- 
+
 .step-number {
     margin-bottom: 0.25rem;
     font-size: 12px;
@@ -227,7 +242,7 @@
     text-transform: uppercase;
     color: var(--theme-accent);
 }
- 
+
 .step-card h3 {
     margin: 0 0 0.75rem;
     font-size: 24px;
@@ -236,14 +251,14 @@
     font-weight: 600;
     color: var(--theme-text);
 }
- 
+
 .step-card p {
     margin: 0;
     font-size: 14px;
     line-height: 1.625;
     color: var(--theme-muted);
 }
- 
+
 .material-symbols-outlined {
     font-family: 'Material Symbols Outlined';
     font-weight: normal;

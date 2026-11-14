@@ -3,9 +3,10 @@ import { Space, etiquetaEstadoEspacio } from '../../models/space.model';
 import { Router } from '@angular/router';
 import { Spaceservice } from '../spaceservice';
 import { SpaceImage } from '../../models/space-image.model';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
-  imports: [],
+  imports: [DecimalPipe],
   selector: 'app-spacescard',
   styleUrl: './spacescard.css',
   templateUrl: './spacescard.html',

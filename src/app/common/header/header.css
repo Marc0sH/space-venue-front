@@ -28,20 +28,35 @@ header {
   align-items: center;
 }
 
-header h1 {
+/* Marca: Logo + Nombre */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--theme-text);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.brand:hover {
+  color: var(--theme-accent);
+  transform: translateY(-1px);
+}
+
+.brand-logo {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.brand .nombre {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 700;
   line-height: 26px;
-  color: var(--theme-text);
   letter-spacing: -0.02em;
-  cursor: pointer;
-  transition: color 0.2s ease, transform 0.2s ease;
-}
-
-header h1:hover {
-  color: var(--theme-accent);
-  transform: translateY(-1px);
 }
 
 /* Bloque derecho agrupado */

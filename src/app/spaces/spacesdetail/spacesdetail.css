@@ -43,12 +43,18 @@
 }
 
 /* ---------- Encabezado ---------- */
+.header-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
 .title-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 1.5rem;
 }
 
 .title-row h2 {
@@ -63,6 +69,61 @@
 
 @media (min-width: 640px) {
   .title-row h2 { font-size: 32px; line-height: 40px; }
+}
+
+/* Subtítulo de calificación bajo el título */
+.subtitle-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.rating-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--theme-text);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.rating-summary:hover {
+  cursor: default;
+}
+
+.star-icon {
+  font-size: 19px;
+  color: #f59e0b;
+  font-variation-settings: 'FILL' 1;
+}
+
+.star-icon-muted {
+  font-size: 18px;
+  color: var(--theme-muted);
+}
+
+.rating-score {
+  font-weight: 700;
+}
+
+.rating-count {
+  color: var(--theme-muted);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+
+.rating-empty {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--theme-muted);
+  font-weight: 500;
 }
 
 .edit-button {
@@ -423,6 +484,35 @@
 }
 
 /* Reseñas */
+.reviews-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.reviews-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  background-color: var(--theme-surface-raised);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--theme-text);
+}
+
+.reviews-score {
+  font-weight: 700;
+}
+
+.reviews-total {
+  color: var(--theme-muted);
+  font-weight: 500;
+}
+
 .comments .unavailable {
   margin: 0;
   font-size: 14px;
@@ -440,6 +530,13 @@
   border-radius: 1rem;
   background-color: var(--theme-surface);
   box-shadow: 0 20px 25px -5px rgb(0 0 0 / 15%), 0 8px 10px -6px rgb(0 0 0 / 10%);
+}
+
+.booking-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .booking-price {
@@ -460,6 +557,28 @@
   font-size: 14px;
   line-height: 20px;
   color: var(--theme-muted);
+}
+
+.booking-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.booking-rating .star-icon {
+  font-size: 17px;
+}
+
+.booking-rating-score {
+  font-weight: 700;
+  color: var(--theme-text);
+}
+
+.booking-rating-count {
+  color: var(--theme-muted);
+  font-weight: 400;
 }
 
 .reserve-button {
