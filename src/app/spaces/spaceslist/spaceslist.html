@@ -1,3 +1,23 @@
+<!-- Brillos ambientales de fondo para toda la página -->
+<div class="page-glow page-glow--right" aria-hidden="true"></div>
+<div class="page-glow page-glow--left" aria-hidden="true"></div>
+
+<!-- HERO SECTION -->
+<section class="hero-section">
+    <div class="hero-inner">
+        <div class="hero-pill">
+            <span class="hero-pill-dot"></span>
+            <span>Alquiler temporal por hora o por día en Argentina</span>
+        </div>
+
+        <h1 class="hero-title">Encontrá el espacio ideal para tu evento</h1>
+
+        <p class="hero-subtitle">
+            Reservá salones, quintas, casas y estudios sin contratos largos. Solo pagás las horas o días que usás.
+        </p>
+    </div>
+</section>
+
 @if (loading()) {
     <p class="state">Cargando espacios...</p>
 } @else if (error()) {
@@ -5,7 +25,7 @@
 } @else {
     <!-- SECCIÓN 1: Espacios destacados (rating > 4.5) -->
     @if (featuredSpaces().length > 0) {
-        <section class="spaces-section">
+        <section class="spaces-section-destacado">
             <div class="carousel-head">
                 <div>
                     <div class="carousel-eyebrow">
