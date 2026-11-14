@@ -1,6 +1,6 @@
 import { HttpClient, httpResource } from '@angular/common/http';
 import { inject, Service, Signal } from '@angular/core';
-import { NewReservation, ReservationComplete } from '../models/reservation.model';
+import { NewReservation, ReservationCalendarEntry, ReservationComplete } from '../models/reservation.model';
 import { environment } from '../../environments/enviroment';
 import { ServiceSelected, ServiceSpace } from '../models/service.model';
 
@@ -32,6 +32,19 @@ export class Reservation {
 
     getReservationsOfAnSpace(idSpace : string){
         return this.http.get<ReservationComplete[]>(`${environment.apiUrl}/reservations/space/${idSpace}`)
+    }
+
+    //Reservas pendientes y confirmadas de un espacio entre dos fechas (yyyy-MM-dd, ambas inclusive).
+    //Devuelve undefined en la request (no pide nada) mientras range() sea null.
+    getCalendarOfSpace(idSpace : Signal<string>, range : Signal<{ from: string, to: string } | null>){
+        return httpResource<ReservationCalendarEntry[]>(() => {
+            const r = range();
+            if (!r) return undefined;
+            return {
+                url: `${environment.apiUrl}/reservations/space/${idSpace()}/calendar`,
+                params: { from: r.from, to: r.to }
+            };
+        }, { defaultValue: [] });
     }
 
     getReservation(idReservation : Signal<string>){

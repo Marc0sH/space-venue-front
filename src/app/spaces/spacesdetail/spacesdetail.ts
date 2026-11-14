@@ -8,9 +8,10 @@ import { hasLocation } from '../../models/location.model';
 import { Comment } from '../comments/comment';
 import { CommentCreation } from '../comments/comment-creation/comment-creation';
 import { CommentsList } from '../comments/comments-list/comments-list';
+import { SpaceCalendar } from '../space-calendar/space-calendar';
 
 @Component({
-   imports: [LocationMap, RouterLink, CommentCreation, CommentsList, ReservationCreate],  selector: 'app-spacesdetail',
+   imports: [LocationMap, RouterLink, CommentCreation, CommentsList, ReservationCreate, SpaceCalendar],  selector: 'app-spacesdetail',
   styleUrl: './spacesdetail.css',
   templateUrl: './spacesdetail.html',
 })
@@ -23,6 +24,7 @@ export class Spacesdetail {
   protected readonly currentImageIndex = signal(0);
   protected readonly hasLocation = hasLocation;
   private readonly session = inject(Session);
+  protected readonly isLoggedIn = this.session.isLoggedIn;
   private readonly commentService = inject(Comment)
 
   readonly hasComment = this.commentService.hasCommentOnSpace(this.id);
