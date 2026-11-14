@@ -15,13 +15,15 @@ describe('Spacesdetail', () => {
     idSpace: 1,
     consumerOwner: { idConsumer: 1, firstname: 'Test', lastname: 'User' },
     location: { idLocation: 1, latitude: -34.6, longitude: -58.4 },
-    cancellationPolicies: 'FLEXIBLE',
+    cancellationPolicies: null,
     nameSpace: 'Salón',
     description: '',
     basePrice: 0,
     publicationDate: new Date(),
     bufferTime: 0,
     isActive: true,
+    deletedByOwner: false,
+    deactivationReason: null,
     services: [],
   };
 

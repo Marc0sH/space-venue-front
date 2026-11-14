@@ -11,13 +11,15 @@ describe('Spacescard', () => {
     idSpace: 1,
     consumerOwner: { idConsumer: 1, firstname: 'Test', lastname: 'User' },
     location: { idLocation: 1, longitude: 0, latitude: 0 },
-    cancellationPolicies: 'FLEXIBLE',
+    cancellationPolicies: null,
     nameSpace: 'CafÃ©',
     description: '',
     basePrice: 0,
     publicationDate: new Date(),
     bufferTime: 0,
     isActive: true,
+    deletedByOwner: false,
+    deactivationReason: null,
     services: [],
   };
 
