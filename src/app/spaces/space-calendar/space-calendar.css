@@ -1,0 +1,359 @@
+:host {
+  display: block;
+  --cal-confirmed: var(--theme-accent);
+  --cal-pending: #d97706;
+  --cal-pending-bg: rgb(217 119 6 / 14%);
+  --cal-confirmed-bg: color-mix(in srgb, var(--theme-accent) 14%, transparent);
+}
+
+:host-context([data-theme='dark']) {
+  --cal-pending: #fbbf24;
+  --cal-pending-bg: rgb(251 191 36 / 14%);
+}
+
+.calendar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Encabezado */
+.calendar-header {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.month-label {
+  flex: 1;
+  margin: 0;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--theme-text);
+}
+
+.nav-button,
+.today-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--theme-border-control);
+  border-radius: 0.5rem;
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.nav-button {
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+}
+
+.today-button {
+  height: 2.25rem;
+  padding: 0 0.75rem;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.nav-button:hover,
+.today-button:hover {
+  background: var(--theme-surface-hover);
+}
+
+.legend {
+  display: flex;
+  gap: 1rem;
+  font-size: 12px;
+  color: var(--theme-muted);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.calendar-error {
+  margin: 0;
+  font-size: 14px;
+  color: #dc2626;
+}
+
+/* Grilla */
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: opacity 0.15s ease;
+}
+
+.grid.loading {
+  opacity: 0.55;
+}
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+}
+
+.weekday {
+  padding: 0.25rem 0;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--theme-muted);
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.25rem;
+  min-height: 5.25rem;
+  padding: 0.375rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 0.5rem;
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.day:hover {
+  background: var(--theme-surface-hover);
+}
+
+.day:focus-visible {
+  outline: 2px solid var(--theme-accent);
+  outline-offset: 1px;
+}
+
+.day.outside {
+  background: var(--theme-surface-raised);
+  color: var(--theme-muted);
+}
+
+.day.outside .pills,
+.day.outside .dots {
+  opacity: 0.6;
+}
+
+.day.past:not(.outside) .day-number {
+  color: var(--theme-muted);
+}
+
+.day.selected {
+  border-color: var(--theme-accent);
+  box-shadow: inset 0 0 0 1px var(--theme-accent);
+}
+
+.day-number {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5rem;
+}
+
+.day.today .day-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  min-width: 1.5rem;
+  border-radius: 999px;
+  background: var(--theme-accent);
+  color: var(--theme-surface);
+}
+
+.pills {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pill {
+  padding: 1px 0.375rem;
+  border-left: 3px solid var(--cal-confirmed);
+  border-radius: 0.25rem;
+  background: var(--cal-confirmed-bg);
+  font-size: 11px;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.pill.pending {
+  border-left-color: var(--cal-pending);
+  background: var(--cal-pending-bg);
+}
+
+.more {
+  font-size: 11px;
+  color: var(--theme-muted);
+}
+
+.dots {
+  display: none;
+  gap: 3px;
+  justify-content: center;
+}
+
+.dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--cal-confirmed);
+}
+
+.dot.pending {
+  background: var(--cal-pending);
+}
+
+/* Detalle del día */
+.day-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 0.75rem;
+  background: var(--theme-surface-raised);
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.detail-header h4 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--theme-text);
+}
+
+.empty {
+  margin: 0;
+  font-size: 14px;
+  color: var(--theme-muted);
+}
+
+.entry-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entry {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-left: 4px solid var(--cal-confirmed);
+  border-radius: 0.5rem;
+  background: var(--theme-surface);
+}
+
+.entry.pending {
+  border-left-color: var(--cal-pending);
+}
+
+.entry-time {
+  flex-shrink: 0;
+  min-width: 6.5rem;
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--theme-text);
+}
+
+.entry-body {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+  min-width: 0;
+}
+
+.status-badge {
+  padding: 1px 0.5rem;
+  border-radius: 999px;
+  background: var(--cal-confirmed-bg);
+  color: var(--cal-confirmed);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-badge.pending {
+  background: var(--cal-pending-bg);
+  color: var(--cal-pending);
+}
+
+.entry-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--theme-text);
+  overflow-wrap: anywhere;
+}
+
+.entry-consumer {
+  font-size: 13px;
+  color: var(--theme-muted);
+}
+
+.entry-link {
+  display: inline-flex;
+  color: var(--theme-accent);
+}
+
+/* Mobile: celdas compactas con puntos en vez de horarios */
+@media (max-width: 640px) {
+  .day {
+    align-items: center;
+    min-height: 3rem;
+    padding: 0.25rem 0.125rem;
+  }
+
+  .day.today .day-number {
+    align-self: center;
+  }
+
+  .pills {
+    display: none;
+  }
+
+  .dots {
+    display: flex;
+  }
+
+  .entry {
+    flex-wrap: wrap;
+  }
+
+  .entry-time {
+    min-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grid,
+  .day,
+  .nav-button,
+  .today-button {
+    transition: none;
+  }
+}
