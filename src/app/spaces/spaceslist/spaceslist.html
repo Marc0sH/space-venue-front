@@ -123,3 +123,65 @@
         </div>
     </div>
 </section>
+
+<!-- BANNER CTA PARA OFERENTES -->
+@if (mostrarBannerOferente()) {
+    <section class="host-cta-section">
+        <div class="host-cta-card">
+            <div class="host-cta-glow" aria-hidden="true"></div>
+
+            <div class="host-cta-grid">
+                <div class="host-cta-content">
+                    <span class="host-cta-badge">
+                        <span class="material-symbols-outlined">monetization_on</span>
+                        <span>Para dueños de espacios</span>
+                    </span>
+
+                    <h2>¿Tenés un espacio? Publicalo y empezá a recibir reservas</h2>
+
+                    <p>
+                        Monetizá tu casa, terraza, quincho o estudio alquilándolo por horas para eventos y producciones sin complicaciones.
+                    </p>
+
+                    <div class="host-cta-perks">
+                        <span>
+                            <span class="material-symbols-outlined">check_circle</span>
+                            Vos ponés las reglas y precios
+                        </span>
+                        <span>
+                            <span class="material-symbols-outlined">check_circle</span>
+                            Seguro y verificación de clientes
+                        </span>
+                        <span>
+                            <span class="material-symbols-outlined">check_circle</span>
+                            Cobro directo en cuenta bancaria
+                        </span>
+                    </div>
+                </div>
+
+                <div class="host-cta-action">
+                    @if (!sessionService.session()) {
+                        <a routerLink="/login" class="host-cta-btn">
+                            <span>Solicitar ser oferente</span>
+                            <span class="material-symbols-outlined">arrow_forward</span>
+                        </a>
+                    } @else if (offererRequestSent()) {
+                        <div class="host-cta-feedback host-cta-feedback--success">
+                            <span class="material-symbols-outlined">check_circle</span>
+                            <span>Solicitud enviada. Un administrador se va a contactar con vos por mail.</span>
+                        </div>
+                    } @else {
+                        <button type="button" class="host-cta-btn" [disabled]="requestingOfferer()" (click)="requestOffererRole()">
+                            <span>{{ requestingOfferer() ? 'Enviando solicitud...' : 'Solicitar ser oferente' }}</span>
+                            <span class="material-symbols-outlined">arrow_forward</span>
+                        </button>
+                    }
+
+                    @if (offererRequestError()) {
+                        <p class="host-cta-feedback host-cta-feedback--error">{{ offererRequestError() }}</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+}
