@@ -35,9 +35,11 @@ export class NotificationList {
   protected recargarNotificaciones(): void {
     this.notificaciones.reload();
   }
-  markAllAsSeen(){
-    for(let noti of this.notificacionesOrdenadas()){
-      this.notiservice.markAsSeen(noti.idNotification)
-    }
+  protected markAllAsSeen(): void {
+    if (!this.notificacionesOrdenadas().some(n => !n.isSeen)) return;
+    this.notiservice.markAllAsSeen().subscribe({
+      next: () => this.notificaciones.reload(),
+      error: (e) => console.error('Hubo un error al marcar todas las notificaciones como vistas', e),
+    });
   }
 }
