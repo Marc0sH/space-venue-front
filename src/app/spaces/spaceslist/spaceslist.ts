@@ -1,7 +1,10 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Spaceservice } from '../spaceservice';
 import { Spacescard } from '../spacescard/spacescard';
+import { Session } from '../../auth/session/session';
+import { Notificationservice } from '../../user/user-notifications/notificationservice';
+import { mensajeDeError } from '../../common/http-error';
 
 @Component({
   imports: [Spacescard, RouterLink],
@@ -11,6 +14,9 @@ import { Spacescard } from '../spacescard/spacescard';
 })
 export class Spaceslist {
   private readonly spaceService = inject(Spaceservice);
+  private readonly notificationService = inject(Notificationservice);
+  protected readonly sessionService = inject(Session);
+
   private readonly spacesResource = this.spaceService.getSpaces();
 
   readonly spaces = computed(() => this.spacesResource.value() ?? []);
@@ -28,4 +34,34 @@ export class Spaceslist {
       ? 'No se pudieron cargar los espacios'
       : null,
   );
+
+  // Estado para la solicitud de ser oferente
+  protected readonly requestingOfferer = signal(false);
+  protected readonly offererRequestSent = signal(false);
+  protected readonly offererRequestError = signal<string | null>(null);
+
+  // Muestra el banner a visitantes no logueados o usuarios con rol ROLE_CLIENT
+  protected readonly mostrarBannerOferente = computed(() => {
+    const sesion = this.sessionService.session();
+    if (!sesion) return true;
+    return sesion.rol === 'ROLE_CLIENT';
+  });
+
+  requestOffererRole() {
+    this.requestingOfferer.set(true);
+    this.offererRequestError.set(null);
+
+    this.notificationService.requestOffererRole().subscribe({
+      next: () => {
+        this.offererRequestSent.set(true);
+        this.requestingOfferer.set(false);
+      },
+      error: (err) => {
+        this.offererRequestError.set(
+          mensajeDeError(err, 'No se pudo enviar la solicitud')
+        );
+        this.requestingOfferer.set(false);
+      },
+    });
+  }
 }
