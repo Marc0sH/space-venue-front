@@ -11,6 +11,23 @@
   --theme-border: #e2e8f0;
   --theme-border-control: #cbd5e1;
   --theme-accent: #00667f;
+
+  /* Banner CTA Oferente */
+  --theme-cta-start: #beeaf6;
+  --theme-cta-end: rgb(135 209 237 / 40%);
+  --theme-cta-border: transparent;
+  --theme-cta-glow: rgb(255 255 255 / 30%);
+  --theme-cta-badge-bg: rgb(255 255 255 / 80%);
+  --theme-cta-badge-text: #2f7f99;
+  --theme-cta-title: #001f26;
+  --theme-cta-subtitle: #416a75;
+  --theme-cta-check: #006b49;
+  --theme-cta-btn-bg: #2f7f99;
+  --theme-cta-btn-hover: #00667f;
+  --theme-cta-btn-text: #ffffff;
+  --theme-cta-feedback-bg: rgb(255 255 255 / 90%);
+  --theme-cta-success: #006b49;
+  --theme-cta-error: #ba1a1a;
 }
 
 :root[data-theme='dark'] {
@@ -28,6 +45,23 @@
   --theme-border: #262b34;          /* Bordes sutiles de tarjetas */
   --theme-border-control: #363d49;  /* Bordes de inputs y controles */
   --theme-accent: #4cc9e0;          /* Cian luminoso de marca para acentos */
+
+  /* Banner CTA Oferente en modo oscuro */
+  --theme-cta-start: #14262e;
+  --theme-cta-end: #1a333e;
+  --theme-cta-border: #254856;
+  --theme-cta-glow: rgb(76 201 224 / 12%);
+  --theme-cta-badge-bg: #1d2128;
+  --theme-cta-badge-text: #4cc9e0;
+  --theme-cta-title: #f1f5f9;
+  --theme-cta-subtitle: #a3bec9;
+  --theme-cta-check: #4edea3;
+  --theme-cta-btn-bg: #4cc9e0;
+  --theme-cta-btn-hover: #72d6e8;
+  --theme-cta-btn-text: #001f26;
+  --theme-cta-feedback-bg: #1d2128;
+  --theme-cta-success: #4edea3;
+  --theme-cta-error: #f87171;
 }
 
 body,

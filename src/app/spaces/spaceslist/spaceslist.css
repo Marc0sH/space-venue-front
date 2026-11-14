@@ -397,7 +397,7 @@
     color: var(--theme-muted);
 }
 
-/* ---------- Banner CTA Oferente (idéntico a 1 Inicio.html) ---------- */
+/* ---------- Banner CTA Oferente ---------- */
 .host-cta-section {
     position: relative;
     z-index: 1;
@@ -422,11 +422,13 @@
     padding: 2rem;
     background: linear-gradient(
         90deg,
-        #beeaf6 0%,
-        #beeaf6 50%,
-        rgb(135 209 237 / 40%) 100%
+        var(--theme-cta-start) 0%,
+        var(--theme-cta-start) 50%,
+        var(--theme-cta-end) 100%
     );
+    border: 1px solid var(--theme-cta-border);
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -2px rgb(0 0 0 / 10%);
+    transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 @media (min-width: 768px) {
@@ -442,7 +444,7 @@
     width: 20rem;
     height: 20rem;
     border-radius: 9999px;
-    background-color: rgb(255 255 255 / 30%);
+    background-color: var(--theme-cta-glow);
     filter: blur(40px);
     pointer-events: none;
 }
@@ -481,8 +483,8 @@
     padding: 0.25rem 0.75rem;
     margin-bottom: 1rem;
     border-radius: 9999px;
-    background-color: rgb(255 255 255 / 80%);
-    color: #2f7f99;
+    background-color: var(--theme-cta-badge-bg);
+    color: var(--theme-cta-badge-text);
     font-size: 12px;
     line-height: 16px;
     letter-spacing: 0.02em;
@@ -501,7 +503,7 @@
     line-height: 40px;
     letter-spacing: -0.025em;
     font-weight: 700;
-    color: #001f26;
+    color: var(--theme-cta-title);
 }
 
 .host-cta-content p {
@@ -510,7 +512,7 @@
     font-size: 16px;
     line-height: 24px;
     font-weight: 400;
-    color: #416a75;
+    color: var(--theme-cta-subtitle);
 }
 
 .host-cta-perks {
@@ -522,7 +524,7 @@
     line-height: 20px;
     letter-spacing: 0.01em;
     font-weight: 600;
-    color: #001f26;
+    color: var(--theme-cta-title);
 }
 
 .host-cta-perks > span {
@@ -533,7 +535,7 @@
 
 .host-cta-perks .material-symbols-outlined {
     font-size: 20px;
-    color: #006b49;
+    color: var(--theme-cta-check);
     font-variation-settings: 'FILL' 1;
 }
 
@@ -561,8 +563,8 @@
     padding: 1rem 2rem;
     border: none;
     border-radius: 9999px;
-    background-color: #2f7f99;
-    color: #ffffff;
+    background-color: var(--theme-cta-btn-bg);
+    color: var(--theme-cta-btn-text);
     font-family: inherit;
     font-size: 18px;
     line-height: 26px;
@@ -580,7 +582,7 @@
 }
 
 .host-cta-btn:hover:not(:disabled) {
-    background-color: #00667f;
+    background-color: var(--theme-cta-btn-hover);
     box-shadow: 0 20px 25px -5px rgb(0 0 0 / 10%), 0 8px 10px -6px rgb(0 0 0 / 10%);
 }
 
@@ -604,22 +606,22 @@
     font-size: 14px;
     line-height: 20px;
     font-weight: 600;
-    background-color: rgb(255 255 255 / 90%);
+    background-color: var(--theme-cta-feedback-bg);
     box-shadow: 0 1px 3px 0 rgb(0 0 0 / 8%);
 }
 
 .host-cta-feedback--success {
-    color: #006b49;
+    color: var(--theme-cta-success);
 }
 
 .host-cta-feedback--success .material-symbols-outlined {
     font-size: 20px;
-    color: #006b49;
+    color: var(--theme-cta-success);
     flex-shrink: 0;
 }
 
 .host-cta-feedback--error {
-    color: #ba1a1a;
+    color: var(--theme-cta-error);
 }
 
 .material-symbols-outlined {
