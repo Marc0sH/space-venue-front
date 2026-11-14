@@ -10,10 +10,17 @@ import { Spacescard } from '../spacescard/spacescard';
   templateUrl: './spaceslist.html',
 })
 export class Spaceslist {
-  private readonly spaceService = inject(Spaceservice)
+  private readonly spaceService = inject(Spaceservice);
   private readonly spacesResource = this.spaceService.getSpaces();
 
   readonly spaces = computed(() => this.spacesResource.value() ?? []);
+
+  // Espacios que superan 4.5 de valoración, ordenados de mayor a menor rating
+  readonly featuredSpaces = computed(() =>
+    this.spaces()
+      .filter((s) => s.rating > 4.5)
+      .sort((a, b) => b.rating - a.rating)
+  );
 
   readonly loading = this.spacesResource.isLoading;
   readonly error = computed(() =>

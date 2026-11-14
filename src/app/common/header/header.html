@@ -1,8 +1,11 @@
 <header>
   <div class="header-container">
-    <!-- Izquierda: Marca -->
+    <!-- Izquierda: Marca con Logo -->
     <div class="header-left">
-      <h1 (click)="navigate()" class="nombre">Space&amp;Venue</h1>
+      <a class="brand" (click)="navigate()" role="button" tabindex="0" (keydown.enter)="navigate()">
+        <img src="logo.png" alt="Space &amp; Venue Logo" class="brand-logo">
+        <span class="nombre">Space&amp;Venue</span>
+      </a>
     </div>
 
     <!-- Derecha: Todo el grupo de navegación y acciones -->

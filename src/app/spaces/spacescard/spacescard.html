@@ -1,19 +1,29 @@
-
 <div class="SpaceCard" (click)="navigate()" [class.inactivo]="!space().isActive">
-        @if(firstImage(); as image){
-          <div class="gallery">
-         <img [src]="service.imageUrl(image.urlImage)" [alt]="image.fileName" loading="lazy">  
-          </div>
-        }
-        @else {
-          <p>No hay imagenes cargadas</p>
-        }
-        <div>
-    <div class="card-header">
-          <h3>{{ formatName(space().nameSpace) }}</h3>
-        </div>
-    
+  @if (firstImage(); as image) {
+    <div class="gallery">
+      <img [src]="service.imageUrl(image.urlImage)" [alt]="image.fileName" loading="lazy">
+    </div>
+  } @else {
+    <div class="gallery empty-gallery">
+      <p>Sin imágenes cargadas</p>
+    </div>
+  }
+
+  <div class="card-header">
+    <h3>{{ formatName(space().nameSpace) }}</h3>
+
+    @if (space().commentCount > 0) {
+      <span class="rating-pill" [attr.aria-label]="'Calificación ' + space().rating">
+        <span class="material-symbols-outlined star-icon">star</span>
+        <span>{{ space().rating | number:'1.1-2' }}</span>
+      </span>
+    } @else {
+      <span class="rating-new">Nuevo</span>
+    }
   </div>
 
-  <p class="price">${{ space().basePrice }}/hora</p>
+  <p class="price">
+    <span class="price-amount">${{ space().basePrice }}</span>
+    <span class="price-unit">/ hora</span>
+  </p>
 </div>

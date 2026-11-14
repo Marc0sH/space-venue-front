@@ -9,18 +9,37 @@
     </div>
   } @else if (space.value(); as s) {
 
-    <!-- Encabezado -->
-    <div class="title-row">
-      <h2>{{ formatName(s.nameSpace) }}</h2>
-      @if (esDuenio()) {
-        <a class="edit-button" [routerLink]="['/espacios', s.idSpace, 'editar']">
-          <span class="material-symbols-outlined">edit</span>
-          <span>Editar datos</span>
-        </a>
-      }
+    <!-- Encabezado con Título + Subtítulo de Rating y Reseñas -->
+    <div class="header-block">
+      <div class="title-row">
+        <h2>{{ formatName(s.nameSpace) }}</h2>
+        @if (esDuenio()) {
+          <a class="edit-button" [routerLink]="['/espacios', s.idSpace, 'editar']">
+            <span class="material-symbols-outlined">edit</span>
+            <span>Editar datos</span>
+          </a>
+        }
+      </div>
+
+      <div class="subtitle-meta">
+        @if (s.commentCount > 0) {
+          <div class="rating-summary" href="#seccion-resenas">
+            <span class="material-symbols-outlined star-icon">star</span>
+            <span class="rating-score">{{ s.rating.toFixed(2) }}</span>
+            <span class="rating-count">
+              ({{ s.commentCount }} {{ s.commentCount === 1 ? 'reseña' : 'reseñas' }})
+            </span>
+          </div>
+        } @else {
+          <span class="rating-empty">
+            <span class="material-symbols-outlined star-icon-muted">star</span>
+            <span>Sin reseñas todavía</span>
+          </span>
+        }
+      </div>
     </div>
 
-    <!-- Galería (mismo markup que antes: solo cambia el estilo) -->
+    <!-- Galería -->
     @if (images.hasValue() && images.value().length > 0) {
       @let imageList = images.value();
       @let selectedIndex = currentImageIndex() % imageList.length;
@@ -28,7 +47,6 @@
         <div class="gallery-track" [style.transform]="'translateX(-' + selectedIndex * 100 + '%)'">
           @for (img of imageList; track img.idSpaceImages) {
             <div class="slide">
-              <!-- Fondo difuminado de la misma foto: rellena los costados sin recortar -->
               <img class="slide-bg" [src]="service.imageUrl(img.urlImage)" alt="" aria-hidden="true" loading="lazy">
               <img class="slide-img" [src]="service.imageUrl(img.urlImage)" [alt]="img.fileName" loading="lazy">
             </div>
@@ -141,8 +159,17 @@
         }
 
         <!-- Reseñas -->
-        <section class="card comments">
-          <h3>Reseñas</h3>
+        <section id="seccion-resenas" class="card comments">
+          <div class="reviews-header">
+            <h3>Reseñas</h3>
+            @if (s.commentCount > 0) {
+              <div class="reviews-badge">
+                <span class="material-symbols-outlined star-icon">star</span>
+                <span class="reviews-score">{{ s.rating.toFixed(2) }}</span>
+                <span class="reviews-total">· {{ s.commentCount }} {{ s.commentCount === 1 ? 'opinión' : 'opiniones' }}</span>
+              </div>
+            }
+          </div>
 
           @if (haveToComment()) {
             <app-comment-creation [idSpace]="id()"></app-comment-creation>
@@ -157,12 +184,20 @@
       <!-- Tarjeta de reserva -->
       <aside class="detail-aside">
         <div class="booking-card">
-          <div class="booking-price">
-            <span class="booking-amount">${{ s.basePrice }}</span>
-            <span class="booking-unit">/ hora</span>
-          </div>
+          <div class="booking-header">
+            <div class="booking-price">
+              <span class="booking-amount">${{ s.basePrice }}</span>
+              <span class="booking-unit">/ hora</span>
+            </div>
 
-          <!-- AQUÍ va el componente de reserva (ver explicación) -->
+            @if (s.commentCount > 0) {
+              <div class="booking-rating">
+                <span class="material-symbols-outlined star-icon">star</span>
+                <span class="booking-rating-score">{{ s.rating.toFixed(2) }}</span>
+                <span class="booking-rating-count">({{ s.commentCount }})</span>
+              </div>
+            }
+          </div>
 
           @if (esDuenio()) {
             <button
@@ -182,12 +217,11 @@
                 <span class="material-symbols-outlined">arrow_forward</span>
               }
             </button>
+          } @else if (s.isActive) {
+            <app-reservation-create [idSpace]="id()"></app-reservation-create>
+          } @else {
+            <button class="reserve-button unavailable" type="button" disabled>No disponible</button>
           }
-          @else if (s.isActive) {
-     <app-reservation-create [idSpace]="id()"></app-reservation-create>
-   } @else {
-     <button class="reserve-button unavailable" type="button" disabled>No disponible</button>
-   }
         </div>
       </aside>
 

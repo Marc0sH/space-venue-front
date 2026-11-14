@@ -19,6 +19,8 @@ export interface Space{
     publicationDate: Date,
     bufferTime: number,
     isActive: boolean,
+    rating: number,
+    commentCount: number,
     //true si el dueño lo eliminó (soft delete); el admin lo sigue viendo pero no puede reactivarlo
     deletedByOwner: boolean,
     //Por qué está inactivo (ESpaceDeactivationReason en el back). null si está activo
@@ -41,7 +43,7 @@ export function etiquetaEstadoEspacio(s: Pick<Space, 'isActive' | 'deactivationR
 
 export type NewSpace = Omit<
     Space,
-    'idSpace' | 'consumerOwner' | 'publicationDate' | 'isActive' | 'deletedByOwner' | 'deactivationReason' | 'location' | 'services' | 'cancellationPolicies'
+    'idSpace' | 'consumerOwner' | 'publicationDate' | 'isActive' | 'deletedByOwner' | 'deactivationReason' | 'location' | 'services' | 'cancellationPolicies' | 'rating' | 'commentCount'
 > & {
     cancellationPolicies: string
     location: Coordinates

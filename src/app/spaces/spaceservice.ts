@@ -18,6 +18,9 @@ export class Spaceservice {
       } else if (order === 'Nombre') {
         lista.sort((a, b) => a.nameSpace.localeCompare(b.nameSpace));
       }
+      else if (order === 'Rating') {
+        lista.sort((a,b) => b.rating - a.rating )
+      }
 
       return lista;
     }
