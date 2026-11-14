@@ -5,6 +5,8 @@ export interface CommentComplete {
     idSpace: number;
     description: string;
     score: number;
+    isActive: boolean;
+    deactivationReason: string | null;
     created_at: string;
 }
 

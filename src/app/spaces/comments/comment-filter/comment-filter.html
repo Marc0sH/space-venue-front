@@ -28,4 +28,17 @@
         <label class="filter-label" for="comment-username">Nombre de usuario</label>
         <input #usernameInput id="comment-username" class="filter-control filter-input" type="search" placeholder="Buscar usuario" (input)="onUsernameChange(usernameInput.value)">
     </div>
+
+    @if (sessionService.isAdmin() && isAdminFilter()) {
+        <div class="filter-field">
+            <label class="filter-label" for="comment-status">Estado del comentario</label>
+            <div class="select-control">
+                <select #statusSelect id="comment-status" class="filter-control filter-select" (change)="onStatusChange(statusSelect.value)">
+                    <option value="all" selected>Todos los estados</option>
+                    <option value="active">Activos</option>
+                    <option value="inactive">Desactivados</option>
+                </select>
+            </div>
+        </div>
+    }
 </section>

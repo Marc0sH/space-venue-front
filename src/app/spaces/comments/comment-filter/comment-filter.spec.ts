@@ -26,12 +26,23 @@ describe('CommentFilter', () => {
     component.onScoreChange('4');
     component.onScoreOrderChange('desc');
     component.onUsernameChange('ana');
+    component.onStatusChange('inactive');
     component.onScoreChange('');
 
     expect(emitted[emitted.length - 1]).toEqual({
       score: null,
       username: 'ana',
       scoreOrder: 'desc',
+      status: 'inactive',
     });
+  });
+
+  it('defaults invalid status values to all comments', () => {
+    const emitted: CommentFilterOptions[] = [];
+    component.filtersChanged.subscribe((filters) => emitted.push(filters));
+
+    component.onStatusChange('unknown');
+
+    expect(emitted[emitted.length - 1].status).toBe('all');
   });
 });

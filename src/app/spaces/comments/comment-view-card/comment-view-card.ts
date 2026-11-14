@@ -1,9 +1,11 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { CommentComplete } from '../../../models/comment.model';
 import { Session } from '../../../auth/session/session';
 import { Comment } from '../comment';
 import { CommentCreation } from '../comment-creation/comment-creation';
+import { Spaceservice } from '../../spaceservice';
+import { Space } from '../../../models/space.model';
 
 @Component({
   imports: [DatePipe, CommentCreation],
@@ -12,12 +14,16 @@ import { CommentCreation } from '../comment-creation/comment-creation';
   templateUrl: './comment-view-card.html',
 })
 export class CommentViewCard {
+  private readonly spaceService = inject(Spaceservice)
   private readonly commentService = inject(Comment)
   readonly session = inject(Session)
   comment = input.required<CommentComplete>()
   readonly deleted = output<void>()
   readonly updated = output<void>()
   readonly editing = signal(false)
+
+  readonly spaceId = computed(() => this.comment().idSpace.toString());
+  readonly space = this.spaceService.getById(this.spaceId);
 
   onUpdated(){
     this.editing.set(false)
@@ -36,6 +42,18 @@ export class CommentViewCard {
       },
       error: (e) => {
         console.error("Hubo un error al eliminar el comentario")
+      }
+    })
+  }
+
+  onActivate(){
+    this.commentService.activateComment(this.comment().idComment.toString()).subscribe({
+      next: () => {
+        console.log("Comentario activado exitosamente")
+        this.deleted.emit()
+      },
+      error: (e) => {
+        console.error("Hubo un error al activar el comentario")
       }
     })
   }
