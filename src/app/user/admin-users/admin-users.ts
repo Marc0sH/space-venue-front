@@ -97,7 +97,8 @@ export class AdminUsers {
   }
 
   //Pasa un usuario de cliente a oferente (puede publicar espacios) o al revés.
-  //Si el back lo rechaza (por ej. el oferente todavía tiene espacios) el select vuelve al rol anterior
+  //Al pasar a cliente, el back oculta sus espacios y cancela sus reservas futuras.
+  //Si lo rechaza (por ej. tiene una reserva en curso) el select vuelve al rol anterior
   cambiarRol(id: number, select: HTMLSelectElement) {
     const rol = select.value as Rol;
     const anterior = this.usuarios.value()?.find(u => u.idConsumer === id)?.credentials?.rol;
