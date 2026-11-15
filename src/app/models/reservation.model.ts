@@ -10,6 +10,8 @@ export interface ReservationComplete {
     untilDate: string,
     finalPrice: number,
     status: string,
+    //Por qué se canceló (ECancellationReason en el back). Solo si status es CANCELLED; null en las canceladas antes de existir el campo
+    cancellationReason?: CancellationReason | null,
     createdAt: Date,
     isActive: boolean,
     consumer: UserComplete,
@@ -17,8 +19,31 @@ export interface ReservationComplete {
     servicesSelected: ServiceSpace[]
 }
 
+export type CancellationReason = 'CLIENT' | 'OWNER' | 'EXPIRED' | 'PAYMENT_REJECTED' | 'PLATFORM';
+
+//Texto del estado de una reserva; en las canceladas incluye el motivo
+export function etiquetaEstadoReserva(r: Pick<ReservationComplete, 'status' | 'cancellationReason'> | undefined): string {
+    switch (r?.status) {
+        case 'CONFIRMED': return 'Confirmada';
+        case 'REJECTED': return 'Rechazada';
+        case 'TENTATIVE': return 'En espera de validación';
+        case 'COMPLETED': return 'Completada';
+        case 'IN_PROGRESS': return 'En curso';
+        case 'CANCELLED':
+            switch (r.cancellationReason) {
+                case 'CLIENT': return 'Cancelada por el cliente';
+                case 'OWNER': return 'Cancelada por el dueño';
+                case 'EXPIRED': return 'Cancelada: no se confirmó a tiempo';
+                case 'PAYMENT_REJECTED': return 'Cancelada: pago rechazado';
+                case 'PLATFORM': return 'Cancelada por la plataforma';
+                default: return 'Cancelada'; //Canceladas antes de que existiera el motivo
+            }
+        default: return '';
+    }
+}
+
 export interface NewReservation extends Omit<ReservationComplete,
-    'id' | 'consumer' | 'space' | 'servicesSelected'> {
+    'id' | 'consumer' | 'space' | 'servicesSelected' | 'cancellationReason'> {
   idConsumer: number;
   idSpace: number;
   idServicesSelect: number[];

@@ -3,6 +3,7 @@ import { Reservation } from '../reservation';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Session } from '../../auth/session/session';
 import { mensajeDeError } from '../../common/http-error';
+import { etiquetaEstadoReserva } from '../../models/reservation.model';
 
 @Component({
   imports: [DatePipe, CurrencyPipe],
@@ -14,6 +15,7 @@ export class ReservationDetails {
   private readonly reservationService = inject(Reservation)
   private readonly session = inject(Session)
   readonly idReservation = input.required<string>()
+  protected readonly etiquetaEstado = etiquetaEstadoReserva
 
   
   readonly reservation = this.reservationService.getReservation(this.idReservation)

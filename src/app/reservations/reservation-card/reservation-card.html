@@ -23,19 +23,6 @@
         [class.accepted]="reservation().status === 'CONFIRMED' || reservation().status === 'COMPLETED'"
         [class.negative]="reservation().status === 'REJECTED' || reservation().status === 'CANCELLED'"
         [class.progress]="reservation().status === 'IN_PROGRESS'">
-
-        @if (reservation().status === 'CONFIRMED') {
-            Confirmada
-        } @else if (reservation().status === 'REJECTED'){
-            Rechazada
-        } @else if (reservation().status === 'TENTATIVE') {
-            En espera de validación
-        } @else if (reservation().status === 'COMPLETED') {
-            Completada
-        } @else if (reservation().status === 'CANCELLED') {
-            Cancelada
-        } @else if (reservation().status === 'IN_PROGRESS') {
-            En curso
-        }
+        {{ etiquetaEstado(reservation()) }}
     </p>
 </div>
