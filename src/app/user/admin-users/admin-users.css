@@ -196,3 +196,28 @@ tr.inactivo td {
 .rol-select:disabled {
     opacity: 0.6;
 }
+/* Fila de confirmación debajo del usuario: qué se va a hacer y sus consecuencias */
+.confirmacion td {
+    background-color: var(--theme-surface);
+    border-left: 3px solid #ef4444;
+    padding: 0.75rem 1rem;
+}
+
+.confirmacion p {
+    margin: 0 0 0.35rem;
+    font-size: 14px;
+    color: var(--theme-text);
+}
+
+.confirmacion p.pregunta {
+    color: #ef4444;
+}
+
+.confirmacion .bloqueo {
+    font-weight: 600;
+    color: #b45309;
+}
+
+.confirmacion .acciones {
+    margin-top: 0.5rem;
+}

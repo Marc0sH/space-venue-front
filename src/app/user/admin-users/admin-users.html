@@ -77,8 +77,8 @@
                                     {{ etiquetaRol(u.credentials.rol) }}
                                 } @else {
                                     <select class="rol-select" [value]="u.credentials?.rol"
-                                        [disabled]="cambiandoRol() === u.idConsumer"
-                                        (change)="cambiarRol(u.idConsumer, $any($event.target))">
+                                        [disabled]="cambiandoRol() === u.idConsumer || pendiente()?.id === u.idConsumer"
+                                        (change)="pedirCambioRol(u.idConsumer, $any($event.target))">
                                         <option value="ROLE_CLIENT">{{ etiquetaRol('ROLE_CLIENT') }}</option>
                                         <option value="ROLE_OFFERER">{{ etiquetaRol('ROLE_OFFERER') }}</option>
                                     </select>
@@ -98,24 +98,44 @@
                                         {{ actualizando() === u.idConsumer ? 'Procesando...' : 'Activar' }}
                                     </button>
                                 } @else if (u.idConsumer !== miId()) {
-                                    @if (confirmando() === u.idConsumer) {
-                                        <span class="pregunta">¿Desactivar?</span>
-                                        <button type="button" class="secondaryBtn"
-                                            [disabled]="actualizando() === u.idConsumer"
-                                            (click)="confirmando.set(null)">No</button>
-                                        <button type="button" class="redBtn"
-                                            [disabled]="actualizando() === u.idConsumer"
-                                            (click)="cambiarEstado(u.idConsumer, false)">
-                                            {{ actualizando() === u.idConsumer ? 'Procesando...' : 'Sí' }}
-                                        </button>
-                                    } @else {
-                                        <button type="button" class="redBtn" (click)="confirmando.set(u.idConsumer)">
-                                            Desactivar
-                                        </button>
-                                    }
+                                    <button type="button" class="redBtn"
+                                        [disabled]="pendiente()?.id === u.idConsumer"
+                                        (click)="pedirDesactivar(u.idConsumer)">
+                                        Desactivar
+                                    </button>
                                 }
                             </td>
                         </tr>
+                        <!-- Confirmación de desactivar o cambiar el rol, con lo que va a pasar -->
+                        @if (pendiente(); as p) {
+                            @if (p.id === u.idConsumer) {
+                                <tr class="confirmacion">
+                                    <td colspan="8">
+                                        @if (p.cargando) {
+                                            <p>Calculando qué cambiaría...</p>
+                                        } @else {
+                                            @for (linea of lineasConfirmacion(p); track $index) {
+                                                <p [class.pregunta]="$first">{{ linea }}</p>
+                                            }
+                                            @if (p.impacto?.bloqueado) {
+                                                <p class="bloqueo">No se puede hacer ahora: {{ p.impacto?.motivoBloqueo }}</p>
+                                            }
+                                        }
+                                        <div class="acciones">
+                                            <button type="button" class="secondaryBtn"
+                                                [disabled]="actualizando() === u.idConsumer || cambiandoRol() === u.idConsumer"
+                                                (click)="cancelarConfirmacion()">Cancelar</button>
+                                            <button type="button" [class]="p.tipo === 'DESACTIVAR' || p.rol === 'ROLE_CLIENT' ? 'redBtn' : 'greenBtn'"
+                                                [disabled]="p.cargando || p.impacto?.bloqueado || actualizando() === u.idConsumer || cambiandoRol() === u.idConsumer"
+                                                (click)="confirmar()">
+                                                {{ actualizando() === u.idConsumer || cambiandoRol() === u.idConsumer ? 'Procesando...'
+                                                    : (p.tipo === 'DESACTIVAR' ? 'Desactivar' : 'Cambiar rol') }}
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
                     } @empty {
                         <tr><td colspan="8" class="vacio">No hay usuarios que coincidan</td></tr>
                     }
