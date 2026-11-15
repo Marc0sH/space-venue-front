@@ -2,8 +2,19 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { User } from '../user';
 import { Session } from '../../auth/session/session';
-import { ConsumerFilter, Rol, etiquetaEstadoCuenta, etiquetaRol } from '../../models/user.model';
+import { ConsumerFilter, ImpactoCuenta, Rol, etiquetaEstadoCuenta, etiquetaRol } from '../../models/user.model';
 import { mensajeDeError } from '../../common/http-error';
+
+//Operación esperando confirmación del admin. impacto es null mientras carga (o si no hace falta, como al pasar a oferente)
+interface Pendiente {
+  id: number;
+  tipo: 'DESACTIVAR' | 'ROL';
+  rol?: Rol;
+  impacto: ImpactoCuenta | null;
+  cargando: boolean;
+}
+
+const plural = (n: number, uno: string, varios: string) => `${n} ${n === 1 ? uno : varios}`;
 
 const FILTRO_VACIO: ConsumerFilter = { firstname: null, lastname: null, email: null, phone: null, username: null };
 
@@ -19,8 +30,8 @@ export class AdminUsers {
 
   //El admin no puede desactivarse a sí mismo desde acá
   readonly miId = computed(() => this.sessionService.session()?.consumerId);
-  //Fila en la que se pidió confirmación y fila que se está procesando
-  readonly confirmando = signal<number | null>(null);
+  //Desactivar y cambiar el rol se confirman antes, mostrando qué va a pasar (espacios, reservas)
+  readonly pendiente = signal<Pendiente | null>(null);
   readonly actualizando = signal<number | null>(null);
   readonly error = signal<string | null>(null);
   //Fila a la que se le está cambiando el rol y mensaje de confirmación del back
@@ -75,6 +86,81 @@ export class AdminUsers {
     });
   }
 
+  pedirDesactivar(id: number) {
+    this.abrirConfirmacion({ id, tipo: 'DESACTIVAR', impacto: null, cargando: true });
+  }
+
+  //El select no cambia hasta que se confirma: vuelve al rol actual y se abre la confirmación
+  pedirCambioRol(id: number, select: HTMLSelectElement) {
+    const rol = select.value as Rol;
+    const actual = this.usuarios.value()?.find(u => u.idConsumer === id)?.credentials?.rol;
+    if (actual) select.value = actual;
+    if (rol === actual) return;
+    //Pasar a oferente no tiene consecuencias sobre espacios ni reservas: no hace falta calcular el impacto
+    this.abrirConfirmacion({ id, tipo: 'ROL', rol, impacto: null, cargando: rol === 'ROLE_CLIENT' });
+  }
+
+  private abrirConfirmacion(p: Pendiente) {
+    this.error.set(null);
+    this.aviso.set(null);
+    this.pendiente.set(p);
+    if (!p.cargando) return;
+    this.userService.getImpacto(p.id, p.tipo === 'DESACTIVAR' ? 'DESACTIVAR' : 'CAMBIAR_A_CLIENTE').subscribe({
+      next: (impacto) => {
+        //Si mientras cargaba se abrió otra confirmación, esta respuesta ya no importa
+        if (this.pendiente() === p) this.pendiente.set({ ...p, impacto, cargando: false });
+      },
+      error: (err) => {
+        if (this.pendiente() !== p) return;
+        this.error.set(mensajeDeError(err, 'No se pudo calcular qué cambiaría'));
+        this.pendiente.set(null);
+      },
+    });
+  }
+
+  cancelarConfirmacion() {
+    this.pendiente.set(null);
+  }
+
+  confirmar() {
+    const p = this.pendiente();
+    if (!p || p.cargando || p.impacto?.bloqueado) return;
+    if (p.tipo === 'DESACTIVAR') this.cambiarEstado(p.id, false);
+    else if (p.rol) this.cambiarRol(p.id, p.rol);
+  }
+
+  //Texto de la confirmación: qué se hace y qué consecuencias tiene
+  lineasConfirmacion(p: Pendiente): string[] {
+    const usuario = this.usuarios.value()?.find(u => u.idConsumer === p.id);
+    const nombre = usuario ? `${usuario.firstname} ${usuario.lastname}`.trim() || usuario.credentials?.username : 'el usuario';
+    if (p.tipo === 'ROL' && p.rol === 'ROLE_OFFERER') {
+      return [`¿Pasar a ${nombre} a oferente? Va a poder publicar espacios.`];
+    }
+    const lineas = [p.tipo === 'DESACTIVAR'
+      ? `¿Desactivar la cuenta de ${nombre}?`
+      : `¿Pasar a ${nombre} a cliente? Ya no va a poder publicar espacios.`];
+    const i = p.impacto;
+    if (!i) return lineas;
+    if (i.espaciosOcultos > 0) {
+      lineas.push(`${plural(i.espaciosOcultos, 'espacio publicado deja', 'espacios publicados dejan')} de verse.`);
+    }
+    if (i.reservasACancelar > 0) {
+      lineas.push(`Se ${i.reservasACancelar === 1 ? 'cancela' : 'cancelan'} ${plural(i.reservasACancelar, 'reserva futura', 'reservas futuras')} y se avisa a cada persona afectada.`);
+    }
+    if (i.reservasPagadas > 0) {
+      lineas.push(`${plural(i.reservasPagadas, 'está pagada y queda', 'están pagadas y quedan')} pendiente${i.reservasPagadas === 1 ? '' : 's'} de reintegro.`);
+    }
+    if (i.espaciosOcultos === 0 && i.reservasACancelar === 0) {
+      lineas.push(p.tipo === 'DESACTIVAR' ? 'No tiene espacios publicados ni reservas futuras.' : 'No tiene espacios publicados ni reservas futuras en ellos.');
+    }
+    if (i.espaciosOcultos > 0 || i.reservasACancelar > 0) {
+      lineas.push(p.tipo === 'DESACTIVAR'
+        ? 'Si se reactiva la cuenta, los espacios vuelven a verse, pero las reservas canceladas no se recuperan.'
+        : 'Si vuelve a ser oferente, los espacios vuelven a verse, pero las reservas canceladas no se recuperan.');
+    }
+    return lineas;
+  }
+
   cambiarEstado(id: number, active: boolean) {
     this.actualizando.set(id);
     this.error.set(null);
@@ -86,7 +172,7 @@ export class AdminUsers {
             ? { ...u, credentials: { ...u.credentials, isActive: active, deactivationReason: active ? null : 'ADMIN' } }
             : u)
         );
-        this.confirmando.set(null);
+        this.pendiente.set(null);
         this.actualizando.set(null);
       },
       error: (err) => {
@@ -96,11 +182,10 @@ export class AdminUsers {
     });
   }
 
-  //Pasa un usuario de cliente a oferente (puede publicar espacios) o al revés.
-  //Si el back lo rechaza (por ej. el oferente todavía tiene espacios) el select vuelve al rol anterior
-  cambiarRol(id: number, select: HTMLSelectElement) {
-    const rol = select.value as Rol;
-    const anterior = this.usuarios.value()?.find(u => u.idConsumer === id)?.credentials?.rol;
+  //Pasa un usuario de cliente a oferente (puede publicar espacios) o al revés. Se llama al confirmar.
+  //Al pasar a cliente, el back oculta sus espacios y cancela sus reservas futuras.
+  //Si lo rechaza (por ej. tiene una reserva en curso) el select sigue en el rol actual
+  private cambiarRol(id: number, rol: Rol) {
     this.cambiandoRol.set(id);
     this.error.set(null);
     this.aviso.set(null);
@@ -110,10 +195,11 @@ export class AdminUsers {
           lista?.map(u => u.idConsumer === id ? { ...u, credentials: { ...u.credentials, rol } } : u)
         );
         this.aviso.set(res?.mensaje ?? 'Rol actualizado');
+        this.pendiente.set(null);
         this.cambiandoRol.set(null);
       },
       error: (err) => {
-        if (anterior) select.value = anterior;
+        this.pendiente.set(null);
         this.error.set(mensajeDeError(err, 'No se pudo cambiar el rol del usuario'));
         this.cambiandoRol.set(null);
       },

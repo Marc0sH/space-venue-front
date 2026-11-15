@@ -217,7 +217,7 @@
                 <span class="material-symbols-outlined">arrow_forward</span>
               }
             </button>
-          } @else if (s.isActive) {
+          } @else if (s.isActive && s.ownerAvailable !== false) {
             <app-reservation-create [idSpace]="id()"></app-reservation-create>
           } @else {
             <button class="reserve-button unavailable" type="button" disabled>No disponible</button>

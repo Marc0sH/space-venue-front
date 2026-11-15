@@ -69,6 +69,16 @@ export function etiquetaEstadoCuenta(c: UserProfileData['credentials'] | undefin
 
 export type UserUpdate = Omit<CredentialRegister, 'username' | 'password'>;
 
+//Lo que pasaría al desactivar una cuenta o pasarla a cliente (GET /usuarios/{id}/impacto, AccountImpactDTO). No cambia nada
+export type AccionImpacto = 'DESACTIVAR' | 'CAMBIAR_A_CLIENTE';
+export interface ImpactoCuenta {
+    espaciosOcultos: number;
+    reservasACancelar: number;
+    reservasPagadas: number;
+    bloqueado: boolean;      //true si el back va a rechazar la operación
+    motivoBloqueo: string | null;
+}
+
 //Filtros de /usuarios/byfields (ConsumerFilterDTO). null = no filtrar por ese campo
 export interface ConsumerFilter {
     firstname: string | null;

@@ -15,20 +15,7 @@
                 [class.accepted]="reservation.value()?.status === 'CONFIRMED' || reservation.value()?.status === 'COMPLETED'"
                 [class.negative]="reservation.value()?.status === 'REJECTED' || reservation.value()?.status === 'CANCELLED'"
                  [class.progress]="reservation.value()?.status === 'IN_PROGRESS'">
-
-                @if (reservation.value()?.status === 'CONFIRMED') {
-                    Confirmada
-                } @else if (reservation.value()?.status === 'REJECTED'){
-                    Rechazada
-                } @else if (reservation.value()?.status === 'TENTATIVE') {
-                    En espera de validación
-                } @else if (reservation.value()?.status === 'COMPLETED') {
-                    Completada
-                } @else if (reservation.value()?.status === 'CANCELLED') {
-                    Cancelada
-                } @else if (reservation.value()?.status === 'IN_PROGRESS') {
-                    En curso
-                }
+                {{ etiquetaEstado(reservation.value()) }}
             </p>
         </header>
 

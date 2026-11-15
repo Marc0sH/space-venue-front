@@ -1,6 +1,6 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ReservationComplete } from '../../models/reservation.model';
+import { ReservationComplete, etiquetaEstadoReserva } from '../../models/reservation.model';
 import { Router } from '@angular/router';
 import { Session } from '../../auth/session/session';
 import { Reservation } from '../reservation';
@@ -17,7 +17,9 @@ export class ReservationCard {
   private readonly session = inject(Session)
   private readonly reservationService = inject(Reservation)
   readonly reservation = input.required<ReservationComplete>()
-  readonly statusChange = output<ReservationComplete['status']>()
+  //El back devuelve la reserva actualizada: se emite el estado y, si se canceló, el motivo
+  readonly statusChange = output<Pick<ReservationComplete, 'status' | 'cancellationReason'>>()
+  protected readonly etiquetaEstado = etiquetaEstadoReserva
   protected readonly isUpdating = signal(false)
   protected readonly actionError = signal('')
 
@@ -49,8 +51,12 @@ export class ReservationCard {
     this.isUpdating.set(true)
     this.actionError.set('')
     action(this.reservation().id.toString()).subscribe({
-      next: () => {
-        this.statusChange.emit(status)
+      next: (res) => {
+        const actualizada = res as Partial<ReservationComplete> | null
+        this.statusChange.emit({
+          status: actualizada?.status ?? status,
+          cancellationReason: actualizada?.cancellationReason ?? null,
+        })
         this.isUpdating.set(false)
       },
       error: (error: unknown) => {

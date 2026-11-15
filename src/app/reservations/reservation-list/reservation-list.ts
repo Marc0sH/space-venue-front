@@ -21,10 +21,10 @@ export class ReservationList {
   isLoading = signal(true)
   error = signal('')
 
-  protected onStatusChange(id: number, status: ReservationComplete['status']): void {
+  protected onStatusChange(id: number, cambio: Pick<ReservationComplete, 'status' | 'cancellationReason'>): void {
     this.reservations.update(reservations =>
       reservations.map(reservation =>
-        reservation.id === id ? { ...reservation, status } : reservation
+        reservation.id === id ? { ...reservation, ...cambio } : reservation
       )
     )
   }

@@ -25,14 +25,16 @@ export interface Space{
     deletedByOwner: boolean,
     //Por qué está inactivo (ESpaceDeactivationReason en el back). null si está activo
     deactivationReason: SpaceDeactivationReason | null,
+    //false si el dueño está dado de baja o ya no es oferente: el espacio queda oculto y no se puede reservar aunque isActive sea true
+    ownerAvailable: boolean,
     services: ServiceSpace[]
 }
 
 export type SpaceDeactivationReason = 'OWNER_DELETED' | 'ADMIN' | 'PENDING_APPROVAL';
 
 //Texto del estado de un espacio para mostrar en la tabla del admin y en las tarjetas
-export function etiquetaEstadoEspacio(s: Pick<Space, 'isActive' | 'deactivationReason'>): string {
-    if (s.isActive) return 'Activo';
+export function etiquetaEstadoEspacio(s: Pick<Space, 'isActive' | 'deactivationReason' | 'ownerAvailable'>): string {
+    if (s.isActive) return s.ownerAvailable === false ? 'Oculto: dueño no disponible' : 'Activo';
     switch (s.deactivationReason) {
         case 'OWNER_DELETED': return 'Eliminado por el dueño';
         case 'ADMIN': return 'Desactivado por el admin';
@@ -43,7 +45,7 @@ export function etiquetaEstadoEspacio(s: Pick<Space, 'isActive' | 'deactivationR
 
 export type NewSpace = Omit<
     Space,
-    'idSpace' | 'consumerOwner' | 'publicationDate' | 'isActive' | 'deletedByOwner' | 'deactivationReason' | 'location' | 'services' | 'cancellationPolicies' | 'rating' | 'commentCount'
+    'idSpace' | 'consumerOwner' | 'publicationDate' | 'isActive' | 'deletedByOwner' | 'deactivationReason' | 'ownerAvailable' | 'location' | 'services' | 'cancellationPolicies' | 'rating' | 'commentCount'
 > & {
     cancellationPolicies: string
     location: Coordinates
