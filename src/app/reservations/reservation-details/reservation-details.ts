@@ -45,6 +45,13 @@ export class ReservationDetails {
   protected readonly esDuenio = computed(() => {
     const s = this.reservation.hasValue() ? this.reservation.value().space : undefined;
     const idLogueado = this.session.session()?.consumerId;
-    return !!s && idLogueado != null && s.consumerOwner?.idConsumer === idLogueado && !s.deletedByOwner;
+    return !!s && idLogueado != null && s.consumerOwner?.idConsumer === idLogueado;
+  });
+
+  protected readonly esCliente = computed(() => {
+    const consumer = this.reservation.hasValue() ? this.reservation.value().consumer : undefined;
+    const idLogueado = this.session.session()?.consumerId;
+    const idCliente = consumer && 'idConsumer' in consumer ? consumer.idConsumer : undefined;
+    return idLogueado != null && typeof idCliente === 'number' && idCliente === idLogueado;
   });
 }
