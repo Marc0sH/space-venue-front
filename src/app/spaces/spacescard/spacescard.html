@@ -1,4 +1,4 @@
-<div class="SpaceCard" (click)="navigate()" [class.inactivo]="!space().isActive">
+<div class="SpaceCard" (click)="navigate()" [class.inactivo]="!space().isActive || space().ownerAvailable === false">
   @if (firstImage(); as image) {
     <div class="gallery">
       <img [src]="service.imageUrl(image.urlImage)" [alt]="image.fileName" loading="lazy">
