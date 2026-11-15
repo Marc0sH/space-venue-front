@@ -20,3 +20,9 @@
 - For backend integration, match the backend contract already modeled in `user.model.ts` and `space.model.ts` (for example `LoginResponse` has `token`, `tipo`, `rol`, and `consumerId`).
 - For new components, follow the existing pattern of `selector`, `styleUrl`, `templateUrl`, and `imports` in the component decorator rather than adding a module declaration.
 - Prefer minimal, local component state; keep cross-feature data in the service layer (`Session`, `Spaceservice`).
+## Responsive & UI Rules
+- Use a mobile-first approach with standard breakpoints: `480px` (mobile), `768px` (tablet), and `1024px` (desktop).
+- NEVER hardcode hex colors for backgrounds, text, or borders; ALWAYS use the CSS custom properties defined in `src/styles.css` (`--theme-background`, `--theme-surface`, `--theme-surface-raised`, `--theme-text`, `--theme-muted`, `--theme-border`, `--theme-accent`).
+- Keep the existing visual aesthetic: `Plus Jakarta Sans` font, pill-shaped buttons (`border-radius: 9999px`), subtle borders, and `Material Symbols Outlined` icons.
+- Use Angular 22 signals (`signal()`, `computed()`) and modern control flow (`@if`, `@for`) for any responsive UI state (such as drawers or modals).
+- Avoid horizontal overflow (`overflow-x: hidden` / `min-width: 0` on flex/grid children).
