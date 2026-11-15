@@ -46,10 +46,10 @@
       <div class="gallery">
         <div class="gallery-track" [style.transform]="'translateX(-' + selectedIndex * 100 + '%)'">
           @for (img of imageList; track img.idSpaceImages) {
-            <div class="slide">
-              <img class="slide-bg" [src]="service.imageUrl(img.urlImage)" alt="" aria-hidden="true" loading="lazy">
-              <img class="slide-img" [src]="service.imageUrl(img.urlImage)" [alt]="img.fileName" loading="lazy">
-            </div>
+            <div class="slide" (click)="openLightbox(selectedIndex)" style="cursor: zoom-in;">
+  <img class="slide-bg" [src]="service.imageUrl(img.urlImage)" alt="" aria-hidden="true" loading="lazy">
+  <img class="slide-img" [src]="service.imageUrl(img.urlImage)" [alt]="img.fileName" loading="lazy">
+</div>
           }
         </div>
         @if (imageList.length > 1) {
@@ -227,4 +227,34 @@
 
     </div>
   }
+
+  @if (lightboxOpen() && images.hasValue() && images.value().length > 0) {
+  @let imageList = images.value();
+  @let selectedIndex = currentImageIndex() % imageList.length;
+  @let activeImg = imageList[selectedIndex];
+
+  <div class="lightbox-backdrop" (click)="closeLightbox()" role="dialog" aria-modal="true" aria-label="Vista ampliada de imagen">
+    <button type="button" class="lightbox-close" aria-label="Cerrar visor" (click)="closeLightbox()">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+
+    <div class="lightbox-content" (click)="$event.stopPropagation()">
+      <img [src]="service.imageUrl(activeImg.urlImage)" [alt]="activeImg.fileName" class="lightbox-img">
+      <p class="lightbox-caption">{{ selectedIndex + 1 }} / {{ imageList.length }}</p>
+    </div>
+
+    @if (imageList.length > 1) {
+      <button type="button" class="lightbox-nav prev" aria-label="Anterior"
+        [disabled]="selectedIndex === 0"
+        (click)="$event.stopPropagation(); showPreviousImage()">
+        &#10094;
+      </button>
+      <button type="button" class="lightbox-nav next" aria-label="Siguiente"
+        [disabled]="selectedIndex === imageList.length - 1"
+        (click)="$event.stopPropagation(); showNextImage()">
+        &#10095;
+      </button>
+    }
+  </div>
+}
 </div>

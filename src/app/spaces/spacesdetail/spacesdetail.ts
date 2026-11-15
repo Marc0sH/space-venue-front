@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal, HostListener } from '@angular/core';
 import { Spaceservice } from '../spaceservice';
 import { Router, RouterLink } from '@angular/router';
 import { Session } from '../../auth/session/session';
@@ -91,4 +91,23 @@ export class Spacesdetail {
   navToReservations(){
     this.router.navigate(['/reservas/byspace', this.space.value()?.idSpace])
   }
+protected readonly lightboxOpen = signal(false);
+
+protected openLightbox(index: number): void {
+  this.currentImageIndex.set(index);
+  this.lightboxOpen.set(true);
+}
+
+protected closeLightbox(): void {
+  this.lightboxOpen.set(false);
+}
+
+@HostListener('document:keydown', ['$event'])
+protected onKeydown(event: KeyboardEvent): void {
+  if (!this.lightboxOpen()) return;
+  if (event.key === 'Escape') this.closeLightbox();
+  if (event.key === 'ArrowLeft') this.showPreviousImage();
+  if (event.key === 'ArrowRight') this.showNextImage();
+}
+
 }
