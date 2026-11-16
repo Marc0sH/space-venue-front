@@ -17,7 +17,10 @@
 
             <div>
                 <label for="description">Descripción: </label>
-                <input id="description" type="text" [formField]="formEdit.description">
+                <textarea id="description" rows="3" [formField]="formEdit.description"></textarea>
+                <span class="contador" [class.limite]="model().description.length >= 250">
+                    {{ model().description.length }} / 250
+                </span>
             </div>
 
             <div>

@@ -1,5 +1,5 @@
 import { Component, computed, DestroyRef, inject, input, linkedSignal, signal } from '@angular/core';
-import { form, FormField, min, required } from '@angular/forms/signals';
+import { form, FormField, maxLength, min, minLength, required } from '@angular/forms/signals';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
 import { Spaceservice } from '../spaceservice';
@@ -59,7 +59,10 @@ export class SpaceEdit {
 
   formEdit = form(this.model, (path) => {
     required(path.nameSpace, { message: 'El nombre del espacio es obligatorio' });
+    minLength(path.nameSpace, 3, { message: 'El nombre del espacio no puede tener menos de 3 caracteres' });
+    maxLength(path.nameSpace, 100, { message: 'El nombre del espacio no puede exceder los 100 caracteres' });
     required(path.description, { message: 'La descripción del espacio es obligatoria' });
+    maxLength(path.description, 250, { message: 'La descripción excede el máximo de caracteres' });
     required(path.basePrice, { message: 'El precio base es obligatorio' });
     min(path.basePrice, 1, { message: 'El precio base debe ser mayor a 0' });
     required(path.bufferTime, { message: 'El tiempo de receso es obligatorio' });
