@@ -4,7 +4,6 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Session } from '../../auth/session/session';
 import { mensajeDeError } from '../../common/http-error';
 import { etiquetaEstadoReserva } from '../../models/reservation.model';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   imports: [DatePipe, CurrencyPipe],
@@ -21,12 +20,6 @@ export class ReservationDetails {
   
   readonly reservation = this.reservationService.getReservation(this.idReservation)
   readonly serviceSelected = this.reservationService.getServicesSelected(this.idReservation)
-
-  constructor() {
-    this.reservationService.refreshTrigger$()
-      .pipe(takeUntilDestroyed())
-      .subscribe(() => this.reservation.reload());
-  }
 
   readonly errorReserva = computed(() =>
     mensajeDeError(this.reservation.error(), 'No se pudieron obtener los datos de la reserva')
