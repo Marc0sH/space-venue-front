@@ -2,7 +2,7 @@ import { HttpClient, httpResource } from '@angular/common/http';
 import { inject, Service, Signal, signal } from '@angular/core';
 import { switchMap } from 'rxjs';
 import { environment } from '../../environments/enviroment';
-import { NewSpace, Space, SpaceUpdate } from '../models/space.model';
+import { NewSpace, Space, SpaceSearch, SpaceUpdate } from '../models/space.model';
 import { ImageUploadUrl, SpaceImage } from '../models/space-image.model';
 import { NearbyFilter } from '../models/location.model';
 
@@ -23,6 +23,18 @@ export class Spaceservice {
       }
 
       return lista;
+    }
+
+    //Filtra por nombre (sin distinguir mayúsculas ni tildes), por rango de precio base y por calificación promedio mínima
+    spaceListSearch(spaces: Space[], busqueda: SpaceSearch) {
+      const normalizar = (t: string) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+      const nombre = normalizar(busqueda.nombre);
+      return spaces.filter(s =>
+        (!nombre || normalizar(s.nameSpace).includes(nombre)) &&
+        (busqueda.precioMin === null || s.basePrice >= busqueda.precioMin) &&
+        (busqueda.precioMax === null || s.basePrice <= busqueda.precioMax) &&
+        (busqueda.calificacionMin === null || (s.rating ?? 0) >= busqueda.calificacionMin)
+      );
     }
 
     //Arma la URL pública de una imagen a partir de la key guardada en el back
