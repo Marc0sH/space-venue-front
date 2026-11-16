@@ -31,7 +31,6 @@ export const routes: Routes = [
     {path: 'espacios/espaciospropios', component: ListMySpaces, canActivate: [publicadorGuard]},
     {path: 'espacios/:id/editar', component: SpaceEdit, canActivate: [publicadorGuard]},
     {path: 'espacios/:id', component: Spacesdetail},
-    {path: 'reserva/:idSpace', component: ReservationCreate, canActivate: [logInGuard]},
     {path: 'reservas', component: ReservationList, canActivate: [logInGuard]},
     {path: 'reservas/:idReservation', component: ReservationDetails, canActivate: [logInGuard]},
     {path: 'reservas/byspace/:idSpace', component: ReservationList, canActivate: [publicadorGuard]},
