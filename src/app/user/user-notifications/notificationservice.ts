@@ -1,4 +1,4 @@
-import { effect, inject, Service, signal } from '@angular/core';
+import { effect, inject, Service, signal, untracked } from '@angular/core';
 import { environment } from '../../../environments/enviroment';
 import { HttpClient, httpResource } from '@angular/common/http';
 import { Session } from '../../auth/session/session';
@@ -11,9 +11,9 @@ export class Notificationservice {
     private http = inject(HttpClient);
     private sessionService = inject(Session);
 
-    private unseenVersion = signal(0);
-    // Tick del polling: cada incremento dispara un refetch de getUnseen() en el header
-    private pollVersion = signal(0);
+    // Cada incremento dispara un reload() de getUnseen() en el header:
+    // lo incrementan el polling y markAsSeen/markAllAsSeen.
+    private refreshTick = signal(0);
     private static readonly POLL_INTERVAL_MS = 10_000;
 
     constructor() {
@@ -24,11 +24,25 @@ export class Notificationservice {
         effect((onCleanup) => {
             if (!this.sessionService.session()) return;
             const id = setInterval(
-                () => this.pollVersion.update(version => version + 1),
+                () => {
+                    // Con la pestaña oculta no se consulta; al volver se refresca enseguida.
+                    if (document.visibilityState === 'visible') this.bumpRefresh();
+                },
                 Notificationservice.POLL_INTERVAL_MS
             );
-            onCleanup(() => clearInterval(id));
+            const onVisible = () => {
+                if (document.visibilityState === 'visible') this.bumpRefresh();
+            };
+            document.addEventListener('visibilitychange', onVisible);
+            onCleanup(() => {
+                clearInterval(id);
+                document.removeEventListener('visibilitychange', onVisible);
+            });
         });
+    }
+
+    private bumpRefresh(){
+        this.refreshTick.update(version => version + 1);
     }
 
     getNotification(){
@@ -36,15 +50,21 @@ export class Notificationservice {
     }
 
     getUnseen(){
-        return httpResource<Notificacion[]>(() => {
-            const session = this.sessionService.session();
-            this.unseenVersion();
-            this.pollVersion();
+        // La request depende solo de la sesión. Si el tick se leyera acá, cada cambio sería
+        // una request "nueva": el recurso pasa a 'loading' y value() vuelve a undefined, y el
+        // badge del header parpadea a 0. Con reload() el estado es 'reloading' y conserva el valor.
+        const resource = httpResource<Notificacion[]>(() =>
+            this.sessionService.session()
+                ? { url: `${this.baseUrl}/consumer/onlyunseen` }
+                : undefined
+        );
 
-            return session
-            ? { url: `${this.baseUrl}/consumer/onlyunseen` }
-            : undefined;
-        });    
+        effect(() => {
+            if (this.refreshTick() === 0) return;
+            untracked(() => resource.reload());
+        });
+
+        return resource;
     }
 
     markAsSeen(idNotification : number){
@@ -52,7 +72,7 @@ export class Notificationservice {
             `${this.baseUrl}/${idNotification}`,
             null
         ).pipe(
-            tap(() => this.unseenVersion.update(version => version + 1))
+            tap(() => this.bumpRefresh())
         );
     }
 
@@ -62,7 +82,7 @@ export class Notificationservice {
             `${this.baseUrl}/me/read`,
             null
         ).pipe(
-            tap(() => this.unseenVersion.update(version => version + 1))
+            tap(() => this.bumpRefresh())
         );
     }
 
