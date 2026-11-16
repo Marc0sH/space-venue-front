@@ -30,6 +30,15 @@ export interface Space{
     services: ServiceSpace[]
 }
 
+//Filtro por nombre, rango de precio y calificación mínima de la lista de espacios; los campos vacíos no filtran
+export interface SpaceSearch {
+    nombre: string,
+    precioMin: number | null,
+    precioMax: number | null,
+    //Calificación promedio mínima (0 a 5)
+    calificacionMin: number | null
+}
+
 export type SpaceDeactivationReason = 'OWNER_DELETED' | 'ADMIN' | 'PENDING_APPROVAL';
 
 //Texto del estado de un espacio para mostrar en la tabla del admin y en las tarjetas

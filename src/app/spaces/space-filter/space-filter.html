@@ -1,35 +1,80 @@
-<div class="filters">
+<div class="filters" [class.filters-completos]="conBusqueda() || conCercania()">
+    @if (conBusqueda()) {
+        <div class="field field-nombre">
+            <label for="nombre">Nombre</label>
+            <input id="nombre" type="search" placeholder="Buscar por nombre"
+                [value]="nombre()" (input)="cambiarNombre($event)">
+        </div>
+
+        <div class="field field-precio" role="group" aria-labelledby="precio-label">
+            <span id="precio-label" class="field-label">Precio</span>
+            <div class="price-range">
+                <input id="precio-min" class="price-input" type="number" min="0" inputmode="numeric"
+                    placeholder="Mín." aria-label="Precio mínimo"
+                    [value]="precioMin() ?? ''" (input)="cambiarPrecioMin($event)">
+                <span class="price-separator" aria-hidden="true">–</span>
+                <input id="precio-max" class="price-input" type="number" min="0" inputmode="numeric"
+                    placeholder="Máx." aria-label="Precio máximo"
+                    [value]="precioMax() ?? ''" (input)="cambiarPrecioMax($event)">
+            </div>
+        </div>
+
+        <div class="field field-calificacion">
+            <label for="calificacion">Calificación</label>
+            <select id="calificacion" (change)="seleccionarCalificacion($event)">
+                <option value="" [selected]="calificacionMin() === null">Cualquiera</option>
+                @for (c of calificaciones; track c) {
+                    <option [value]="c" [selected]="c === calificacionMin()">
+                        {{ c === 5 ? '★ 5' : '★ ' + c + ' o más' }}
+                    </option>
+                }
+            </select>
+        </div>
+    }
+
     @if (conCercania()) {
-        <div class="nearby-container">
-            <label for="radio">Distancia: </label>
+        <div class="field field-distancia">
+            <label for="radio">Distancia</label>
             <select id="radio" (change)="seleccionarRadio($event)">
                 @for (r of radios; track r) {
                     <option [value]="r" [selected]="r === radioKm()">Hasta {{ r }} km</option>
                 }
             </select>
-
-            <button type="button" class="nearby-button" [attr.aria-expanded]="mostrarMapa()"
-                aria-controls="ubicacion-referencia" (click)="alternarMapa()">
-                {{ mostrarMapa() ? 'Ocultar mapa' : (ubicacion() ? 'Cambiar ubicación' : 'Buscar cerca de una ubicación') }}
-            </button>
-
-            @if (ubicacion()) {
-                <button type="button" class="nearby-button active" (click)="quitarCercania()">
-                    Quitar filtro de cercanía
-                </button>
-            }
         </div>
     }
 
-    <div class="sort-container">
-        <label for="orden">Ordenar: </label>
+    <div class="field field-orden">
+        <label for="orden">Ordenar</label>
         <select id="orden" (change)="seleccionarOrden($event)">
             <option value="Sin ordenar">Sin ordenar</option>
             <option value="Precio">Precio (Menor a Mayor)</option>
             <option value="Nombre">Nombre (A-Z)</option>
             <option value="Rating">Rating (Mayor a Menor)</option>
-      </select>
+        </select>
     </div>
+
+    @if (conCercania() || (conBusqueda() && hayBusqueda())) {
+        <div class="filter-actions">
+            @if (conCercania()) {
+                <button type="button" class="nearby-button" [attr.aria-expanded]="mostrarMapa()"
+                    aria-controls="ubicacion-referencia" (click)="alternarMapa()">
+                    {{ mostrarMapa() ? 'Ocultar mapa' : (ubicacion() ? 'Cambiar ubicación' : 'Buscar cerca de una ubicación') }}
+                </button>
+
+                @if (ubicacion()) {
+                    <button type="button" class="nearby-button active" (click)="quitarCercania()">
+                        Quitar filtro de cercanía
+                    </button>
+                }
+            }
+
+            @if (conBusqueda() && hayBusqueda()) {
+                <button type="button" class="nearby-button active" (click)="limpiarBusqueda()">
+                    Limpiar búsqueda
+                </button>
+            }
+        </div>
+    }
 </div>
 
 @if (conCercania() && mostrarMapa()) {
