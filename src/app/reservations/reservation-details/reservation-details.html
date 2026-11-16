@@ -27,6 +27,23 @@
             <p class="payment"><span>Pago total</span><strong>${{reservation.value()?.finalPrice}}</strong></p>
         </section>
 
+        @if (esDuenio()) {
+            <section class="space-details">
+                <h3>Datos del cliente</h3>
+                <p><strong>Nombre:</strong> {{reservation.value()?.consumer?.firstname}}</p>
+                <p><strong>Apellido:</strong> {{reservation.value()?.consumer?.lastname}}</p>
+                <p><strong>Email:</strong> {{reservation.value()?.consumer?.email}}</p>
+            </section>
+        }
+
+        @if (esCliente()) {
+            <section class="space-details">
+                <h3>Datos del oferente</h3>
+                <p><strong>Nombre:</strong> {{reservation.value()?.space?.consumerOwner?.firstname}}</p>
+                <p><strong>Apellido:</strong> {{reservation.value()?.space?.consumerOwner?.lastname}}</p>
+            </section>
+        }
+
         <section class="space-details">
             <h3>Detalles del espacio</h3>
             <p><strong>Nombre:</strong> {{reservation.value()?.space?.nameSpace}}</p>

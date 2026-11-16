@@ -1,62 +1,160 @@
-.spaces-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-  padding: 20px 0;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-/* Contenedor de los filtros */
+/* Contenedor de los filtros.
+   Caso simple (solo "Ordenar", ej. mis espacios): una fila alineada a la derecha.
+   Caso completo (.filters-completos): grilla de campos con la etiqueta arriba y una fila de acciones abajo */
 .filters {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
-  gap: 10px 24px;
+  gap: 12px 16px;
   max-width: 1200px;
   margin: 20px auto 10px auto;
   padding: 0 10px;
+  box-sizing: border-box;
   font-family: system-ui, -apple-system, sans-serif;
 }
 
-.sort-container,
-.nearby-container {
+.field {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
+  min-width: 0;
 }
 
-.sort-container label,
-.nearby-container label {
+.field label,
+.field .field-label {
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--theme-muted);
 }
 
-/* Selector estilizado */
-.sort-container select,
-.nearby-container select {
+/* Inputs y selects */
+.field select,
+.field input {
+  box-sizing: border-box;
+  min-width: 0;
+  height: 40px;
   padding: 8px 14px;
   font-size: 0.9rem;
   font-weight: 500;
+  font-family: inherit;
   color: var(--theme-text);
   background-color: var(--theme-surface);
   border: 1px solid var(--theme-border-control);
   border-radius: 8px;
   outline: none;
-  cursor: pointer;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.sort-container select:focus,
-.sort-container select:hover,
-.nearby-container select:focus,
-.nearby-container select:hover {
+.field select {
+  cursor: pointer;
+}
+
+.field input {
+  cursor: text;
+}
+
+.field select:focus,
+.field select:hover,
+.field input:focus,
+.field input:hover {
   border-color: var(--theme-accent);
   box-shadow: 0 0 0 3px rgb(101 201 220 / 20%);
+}
+
+/* Rango de precio: mínimo y máximo siempre en el mismo renglón y del mismo ancho */
+.price-range {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.price-range .price-input {
+  flex: 1 1 0;
+  width: 0;
+}
+
+.price-separator {
+  color: var(--theme-muted);
+}
+
+/* Saca las flechitas del input numérico */
+.price-input::-webkit-outer-spin-button,
+.price-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.price-input {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* ---- Caso completo: grilla ---- */
+.filters.filters-completos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: end;
+  gap: 14px 16px;
+  padding: 16px;
+  background-color: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+}
+
+.filters-completos .field {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.filters-completos .field > select,
+.filters-completos .field > input,
+.filters-completos .price-range {
+  width: 100%;
+}
+
+.filter-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Mobile: un campo por renglón y botones a todo el ancho */
+@media (max-width: 639px) {
+  .filters.filters-completos {
+    margin-top: 12px;
+    padding: 14px;
+  }
+
+  .filter-actions .nearby-button {
+    flex: 1 1 100%;
+  }
+}
+
+/* Tablet: dos columnas; el nombre ocupa su propio renglón y el resto va de a pares */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .filters.filters-completos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .filters-completos .field-nombre {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Escritorio: todos los campos en una fila; nombre y precio un poco más anchos */
+@media (min-width: 1024px) {
+  .filters.filters-completos {
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  }
+
+  .filters.filters-completos:has(.field-nombre):has(.field-distancia) {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+  }
 }
 
 /* Botón de cercanía */

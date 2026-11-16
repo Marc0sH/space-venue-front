@@ -3,6 +3,8 @@
 
     <app-space-filter
         [conCercania]="true"
+        [conBusqueda]="true"
+        (busquedaSalida)="cambiarBusqueda($event)"
         (ordenSalida)="cambiarOrden($event)"
         (cercaniaSalida)="cambiarCercania($event)">
     </app-space-filter>
@@ -16,7 +18,9 @@
             @for (s of spacesOrdenados(); track s.idSpace) {
                 <app-spacescard [space]="s"></app-spacescard>
             } @empty {
-                @if (cercania(); as c) {
+                @if (sinResultadosBusqueda()) {
+                    <p>Ningún espacio coincide con la búsqueda</p>
+                } @else if (cercania(); as c) {
                     <p>No hay espacios a menos de {{ c.radiusKm }} km de tu ubicación</p>
                 } @else {
                     <p>No hay espacios publicados</p>
