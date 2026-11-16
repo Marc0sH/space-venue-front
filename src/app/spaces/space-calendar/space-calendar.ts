@@ -2,6 +2,7 @@ import { Component, computed, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Reservation } from '../../reservations/reservation';
 import { ReservationCalendarEntry } from '../../models/reservation.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 interface CalendarDay {
   key: string;          // yyyy-MM-dd
@@ -42,6 +43,12 @@ function addDays(date: Date, days: number): Date {
 })
 export class SpaceCalendar {
   private readonly reservationService = inject(Reservation);
+
+  constructor() {
+    this.reservationService.refreshTrigger$()
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.reservations.reload());
+  }
 
   readonly idSpace = input.required<string>();
 

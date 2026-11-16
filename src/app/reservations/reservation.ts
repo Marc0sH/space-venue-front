@@ -3,10 +3,31 @@ import { inject, Service, Signal } from '@angular/core';
 import { NewReservation, ReservationCalendarEntry, ReservationComplete } from '../models/reservation.model';
 import { environment } from '../../environments/enviroment';
 import { ServiceSelected, ServiceSpace } from '../models/service.model';
+import { filter, fromEvent, map, merge, Observable, timer } from 'rxjs';
 
 @Service()
 export class Reservation {
     private readonly http = inject(HttpClient)
+
+    refreshTrigger$(): Observable<void> {
+        const isVisible = () => document.visibilityState === 'visible';
+
+        // Se utiliza solo un segundo para probar visibilidad inmediata, 
+        // pero este rango es muy corto, por lo que compromete recursos, tráfico,
+        // y rendimiento básico del sistema en todo su conjunto. Lo recomendable son de 60 
+        // segundos para arriba.
+        const everyMinute$ = timer(1_000, 1_000).pipe(
+            filter(isVisible),
+            map((): void => undefined)
+        );
+
+        const whenTabBecomesVisible$ = fromEvent(document, 'visibilitychange').pipe(
+            filter(isVisible),
+            map((): void => undefined)
+        );
+
+        return merge(everyMinute$, whenTabBecomesVisible$);
+    }
 
     localDateTimeWithSeconds(value: string): string {
         return value.length === 16 ? `${value}:00` : value;
