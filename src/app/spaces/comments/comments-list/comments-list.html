@@ -5,7 +5,7 @@
     } @else if (comments.isLoading()) {
         <p class="list-message" role="status">Cargando reseñas...</p>
     } @else if (comments.hasValue()) {
-        @for (c of comments.value(); track c.idComment) {
+        @for (c of commentsListFiltered(); track c.idComment) {
             <app-comment-view-card
                 [comment]="c"
                 (deleted)="onCommentChanged()"
