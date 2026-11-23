@@ -27,7 +27,6 @@ export class SpaceFilter {
   nombre = signal('');
   precioMin = signal<number | null>(null);
   precioMax = signal<number | null>(null);
-  // Calificación promedio mínima: los espacios van de 0 a 5
   readonly calificaciones = [1, 2, 3, 4, 5];
   calificacionMin = signal<number | null>(null);
   busquedaSalida = output<SpaceSearch>();

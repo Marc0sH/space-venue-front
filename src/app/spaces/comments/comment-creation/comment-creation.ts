@@ -18,7 +18,7 @@ export class CommentCreation {
   readonly saved = output<void>()
   readonly cancelled = output<void>()
 
-  model = signal<CommentForm>({description:'', score:0, idSpace:''})
+  model = signal<CommentForm>({description:'', score:1, idSpace:''})
 
   constructor() {
     effect(() => {
@@ -27,14 +27,14 @@ export class CommentCreation {
         ...model,
         idSpace: comment ? comment.idSpace.toString() : this.idSpace(),
         description: comment?.description ?? '',
-        score: comment?.score ?? 0,
+        score: comment?.score ?? 1,
       }))
     })
   }
 
   formComment = form(this.model, (path) => {
     required(path.score, {message:'La calificación es obligatoria.'})
-    min(path.score, 0, {message:'La calificación no puede ser negativa.'})
+    min(path.score, 1, {message:'La calificación mínima es 1 estrella.'})
     max(path.score, 5, {message:'La calificación no puede ser mayor a 5 puntos.'})
   })
 
