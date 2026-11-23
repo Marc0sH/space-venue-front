@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import { Component, ElementRef, computed, effect, inject, input, output, signal, viewChild } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { CommentComplete } from '../../../models/comment.model';
 import { Session } from '../../../auth/session/session';
@@ -34,14 +34,40 @@ export class CommentViewCard {
     this.editing.set(false)
   }
 
+  // Pop-up de confirmación antes de eliminar/desactivar el comentario
+  private readonly confirmDialog = viewChild.required<ElementRef<HTMLDialogElement>>('confirmDialog')
+  readonly deleting = signal(false)
+  readonly deleteError = signal('')
+
+  openDeleteConfirmation(){
+    this.deleteError.set('')
+    this.confirmDialog().nativeElement.showModal()
+  }
+
+  closeDeleteConfirmation(){
+    if (this.deleting()) return
+    this.confirmDialog().nativeElement.close()
+  }
+
+  // Cierra el pop-up al hacer clic en el fondo oscuro (fuera del contenido)
+  onDialogClick(event: MouseEvent){
+    if (event.target === this.confirmDialog().nativeElement) {
+      this.closeDeleteConfirmation()
+    }
+  }
+
   onDelete(){
+    this.deleting.set(true)
+    this.deleteError.set('')
     this.commentService.deleteComment(this.comment().idComment.toString()).subscribe({
       next: () => {
-        console.log("Comentario eliminado exitosamente")
+        this.deleting.set(false)
+        this.confirmDialog().nativeElement.close()
         this.deleted.emit()
       },
-      error: (e) => {
-        console.error("Hubo un error al eliminar el comentario")
+      error: () => {
+        this.deleting.set(false)
+        this.deleteError.set('No se pudo eliminar el comentario. Intentá de nuevo.')
       }
     })
   }
