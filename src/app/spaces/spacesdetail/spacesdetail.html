@@ -173,9 +173,11 @@
 
           @if (canWriteComment()) {
             <app-comment-creation [idSpace]="id()" (saved)="onCommentCreated()"></app-comment-creation>
-          } @else if (hasComment.hasValue() && hasComment.value()) {
+          } @else if (commentStatus.hasValue() && commentStatus.value() === 'MODERATED') {
+            <p class="unavailable">No podés comentar en este espacio porque un administrador desactivó tu reseña.</p>
+          } @else if (commentStatus.hasValue() && commentStatus.value() === 'ACTIVE') {
             <p class="unavailable">Ya dejaste tu reseña en este espacio. Podés modificarla o eliminarla desde la lista de reseñas.</p>
-          } @else if (hasComment.hasValue() && canComment.hasValue()) {
+          } @else if (commentStatus.hasValue() && canComment.hasValue()) {
             <p class="unavailable">Usted no puede comentar en este espacio</p>
           }
 

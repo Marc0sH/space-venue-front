@@ -16,3 +16,6 @@ export type CommentInsertion = Pick<CommentComplete, 'description' | 'score' > &
 }
 
 export type CommentForm = Omit<CommentInsertion, 'idConsumer'> 
+
+// Estado del comentario del usuario logueado en un espacio (GET /comments/spaces/{id}/comment-status)
+export type CommentStatus = 'NONE' | 'ACTIVE' | 'MODERATED'
