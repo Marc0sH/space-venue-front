@@ -7,7 +7,7 @@
                 <p class="comment-author-unavailable">Usuario no disponible</p>
             }
             @if (!comment().isActive) {
-                <span class="comment-status-badge">Desactivado</span>
+                <span class="comment-status-badge">{{ eliminadoPorAutor() ? 'Eliminado por el autor' : 'Desactivado' }}</span>
             }
         </div>
         <span class="comment-score" aria-label="Calificación">
@@ -49,7 +49,9 @@
             @if (comment().isActive) {
                 <button class="delete-button" type="button" (click)="openDeleteConfirmation()">Desactivar</button>            
             } @else {
-                <button class="activate-button" type="button" (click)="onActivate()">Activar</button>            
+                @if (!eliminadoPorAutor()) {
+                    <button class="activate-button" type="button" (click)="onActivate()">Activar</button>
+                }            
             }
         }
     </footer>

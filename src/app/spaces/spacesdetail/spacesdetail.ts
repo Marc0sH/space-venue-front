@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal, HostListener } from '@angular/core';
+import { Component, computed, inject, input, signal, HostListener, viewChild } from '@angular/core';
 import { Spaceservice } from '../spaceservice';
 import { Router, RouterLink } from '@angular/router';
 import { Session } from '../../auth/session/session';
@@ -30,13 +30,26 @@ export class Spacesdetail {
   readonly hasComment = this.commentService.hasCommentOnSpace(this.id);
   readonly canComment = this.commentService.canCommentOnSpace(this.id);
 
-  readonly haveToComment = computed(() => {
+  readonly canWriteComment = computed(() => {
     if (!this.hasComment.hasValue() || !this.canComment.hasValue()) {
       return false;
     }
 
     return !this.hasComment.value() && this.canComment.value();
   });
+
+  private readonly commentsList = viewChild(CommentsList); //viewChild le da acceso a spacesDetail al primer componente de de cierto tipo, aca lo uso para que spacesDetail pueda recargar la lista de cometarios caundo se publica una resenia
+
+  // Al publicar un comentario: se oculta el formulario y la reseña nueva aparece en la lista
+  protected onCommentCreated(): void {
+    this.hasComment.reload();
+    this.commentsList()?.reload();
+  }
+
+  // Al eliminar o modificar un comentario se vuelve a consultar si el usuario puede comentar
+  protected onCommentsChanged(): void {
+    this.hasComment.reload();
+  }
 
   //Solo el dueño puede editar, y no si ya eliminó el espacio. Además tiene que poder gestionar espacios (ADMIN u OFFERER)
   protected readonly esDuenio = computed(() => {
