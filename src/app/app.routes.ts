@@ -20,6 +20,7 @@ import { AdminUsers } from './user/admin-users/admin-users';
 import { ReservationCreate } from './reservations/reservation-create/reservation-create';
 import { ReservationList } from './reservations/reservation-list/reservation-list';
 import { ReservationDetails } from './reservations/reservation-details/reservation-details';
+import { ReservationOwnerList } from './reservations/reservation-owner-list/reservation-owner-list';
 
 export const routes: Routes = [
     {path: '', redirectTo: 'espacios', pathMatch: 'full'},
@@ -32,6 +33,7 @@ export const routes: Routes = [
     {path: 'espacios/:id/editar', component: SpaceEdit, canActivate: [publicadorGuard]},
     {path: 'espacios/:id', component: Spacesdetail},
     {path: 'reservas', component: ReservationList, canActivate: [logInGuard]},
+    {path: 'reservas/recibidas', component: ReservationOwnerList, canActivate: [publicadorGuard]},
     {path: 'reservas/:idReservation', component: ReservationDetails, canActivate: [logInGuard]},
     {path: 'reservas/byspace/:idSpace', component: ReservationList, canActivate: [publicadorGuard]},
     {path: 'perfil', component: UserProfile, canActivate: [logInGuard]},

@@ -1,4 +1,4 @@
-@if (reservation.isLoading()) {
+@if (reservation.isLoading() && !reservation.hasValue()) {
     <p class="detail-message">Cargando datos de reserva...</p>
 } @else if (reservation.error()) {
     <p class="detail-message fail">{{ errorReserva() }}</p>
@@ -20,6 +20,18 @@
         </header>
 
         <section class="reservation-summary" aria-label="Resumen de la reserva">
+             @if (puedeResponder()) {
+            <section class="reservation-actions" aria-label="Responder solicitud">
+                <p class="actions-text">Esta reserva está pendiente de tu respuesta.</p>
+                <div class="actions-buttons">
+                    <button class="action-button reject-button" type="button" [disabled]="isUpdating()" (click)="onReject()">Rechazar</button>
+                    <button class="action-button accept-button" type="button" [disabled]="isUpdating()" (click)="onAccept()">Aceptar</button>
+                </div>
+                @if (actionError()) {
+                    <p class="action-error" role="alert">{{ actionError() }}</p>
+                }
+            </section>
+        }
             <div class="dates">
                 <p><span>Desde</span>{{reservation.value()?.fromDate | date:'dd/MM/yyyy HH:mm'}}</p>
                 <p><span>Hasta</span>{{reservation.value()?.untilDate | date:'dd/MM/yyyy HH:mm'}}</p>
