@@ -21,7 +21,8 @@ label {
   font-weight: 600;
 }
 
-input {
+input,
+textarea {
   box-sizing: border-box;
   width: 100%;
   padding: 0.65rem 0.75rem;
@@ -32,10 +33,26 @@ input {
   font: inherit;
 }
 
-input:focus-visible {
+input:focus-visible,
+textarea:focus-visible {
   border-color: var(--theme-accent);
   outline: 2px solid var(--theme-accent);
   outline-offset: 1px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.contador {
+  justify-self: end;
+  font-size: 12px;
+  color: var(--theme-muted);
+}
+
+.contador.limite {
+  color: #ef4444;
+  font-weight: 600;
 }
 
 button {

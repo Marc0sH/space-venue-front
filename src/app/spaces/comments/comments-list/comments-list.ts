@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { Comment } from '../comment';
 import { CommentViewCard } from '../comment-view-card/comment-view-card';
 import { CommentFilter, type CommentFilterOptions } from '../comment-filter/comment-filter';
@@ -12,6 +12,7 @@ import { CommentFilter, type CommentFilterOptions } from '../comment-filter/comm
 export class CommentsList {
   private commentService = inject(Comment)
   readonly idSpace = input.required<string>()
+  readonly commentsChanged = output<void>()
   filterOptions = signal<CommentFilterOptions>({
     score: null,
     username: '',
@@ -43,6 +44,11 @@ export class CommentsList {
   }
 
   onCommentChanged(){
+    this.reload()
+    this.commentsChanged.emit()
+  }
+
+  reload(){
     this.comments.reload()
   }
 }

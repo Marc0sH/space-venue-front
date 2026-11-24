@@ -145,3 +145,102 @@
   outline: 2px solid #90f787;
   outline-offset: 2px;
 }
+
+/* ---------- Pop-up de confirmación ---------- */
+.confirm-dialog {
+  width: min(26rem, calc(100vw - 2rem));
+  padding: 1.5rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 0.75rem;
+  background-color: var(--theme-surface);
+  color: var(--theme-text);
+  font-family: system-ui, -apple-system, sans-serif;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 25%);
+}
+
+.confirm-dialog::backdrop {
+  background-color: rgb(0 0 0 / 50%);
+}
+
+.confirm-dialog-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
+}
+
+.confirm-dialog-text {
+  margin: 0;
+  color: var(--theme-muted);
+  line-height: 1.5;
+}
+
+.confirm-dialog-error {
+  margin: 1rem 0 0;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.5rem;
+  background: #fee2e2;
+  color: #991b1b;
+  font-size: 0.875rem;
+}
+
+.confirm-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.cancel-button,
+.confirm-delete-button,
+.confirm-activate-button {
+  padding: 0.5rem 0.9rem;
+  border-radius: 0.5rem;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cancel-button {
+  border: 1px solid var(--theme-border);
+  background-color: transparent;
+  color: var(--theme-text);
+}
+
+.cancel-button:hover:not(:disabled) {
+  background-color: var(--theme-surface-raised);
+}
+
+.confirm-delete-button {
+  border: 1px solid #dc2626;
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+.confirm-delete-button:hover:not(:disabled) {
+  background-color: #b91c1c;
+}
+
+.confirm-activate-button {
+  border: 1px solid #16a34a;
+  background-color: #16a34a;
+  color: #ffffff;
+}
+
+.confirm-activate-button:hover:not(:disabled) {
+  background-color: #15803d;
+}
+
+.cancel-button:disabled,
+.confirm-delete-button:disabled,
+.confirm-activate-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancel-button:focus-visible,
+.confirm-delete-button:focus-visible,
+.confirm-activate-button:focus-visible {
+  outline: 2px solid var(--theme-accent);
+  outline-offset: 2px;
+}

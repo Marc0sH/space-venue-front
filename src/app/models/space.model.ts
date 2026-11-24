@@ -35,7 +35,6 @@ export interface SpaceSearch {
     nombre: string,
     precioMin: number | null,
     precioMax: number | null,
-    //Calificación promedio mínima (0 a 5)
     calificacionMin: number | null
 }
 

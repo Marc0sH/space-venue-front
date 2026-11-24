@@ -21,7 +21,7 @@ export class Login {
   model = signal<LoginRequest>({username: "", password: ""});
   loginForm = form(this.model, (path) => {
     required(path.username, {message: "El nombre de usuario es requerido"})
-    required(path.password, {message: "La contrseña es equerida"})
+    required(path.password, {message: "La contraseña es requerida"})
     //Por el momento no voy a incluir mas restricciones, no vaya a ser que no coincidan con las de registro
   })
 

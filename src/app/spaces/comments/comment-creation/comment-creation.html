@@ -1,11 +1,15 @@
 <form (submit)="onSubmit($event)" [attr.aria-busy]="enviando()">
     <div>
         <label for="description">{{ isEditing() ? 'Modificá tu reseña' : '¿Cuál es su reseña?' }}</label>
-        <input id="description" type="text" [formField]="formComment.description">
+        <textarea id="description" rows="4" [formField]="formComment.description"></textarea>
+        <span class="contador" [class.limite]="model().description.length > 250">
+            {{ model().description.length }} / 250
+        </span>
+        <app-form-error-message [campo]="formComment.description()"></app-form-error-message>
     </div>
 
     <div>
-        <label for="score">Calificación (0 al 5): </label>
+        <label for="score">Calificación (1 al 5): </label>
         <input id="score" type="number" step="1" [formField]="formComment.score">
     </div>
 
