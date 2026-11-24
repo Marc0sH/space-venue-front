@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal, viewChildren } from '@angular/core';
 import { Comment } from '../comment';
 import { CommentViewCard } from '../comment-view-card/comment-view-card';
 import { CommentFilter, type CommentFilterOptions } from '../comment-filter/comment-filter';
@@ -11,6 +11,7 @@ import { CommentFilter, type CommentFilterOptions } from '../comment-filter/comm
 })
 export class CommentsList {
   private commentService = inject(Comment)
+  private readonly commentCards = viewChildren(CommentViewCard);
   readonly idSpace = input.required<string>()
   readonly commentsChanged = output<void>()
   filterOptions = signal<CommentFilterOptions>({
@@ -38,6 +39,10 @@ export class CommentsList {
       scoreOrder === 'asc' ? a.score - b.score : b.score - a.score
     );
   })
+
+  hasUnsavedChanges(): boolean {
+    return this.commentCards().some(card => card.hasUnsavedChanges());
+  }
 
   changeFilters(value: CommentFilterOptions) {
     this.filterOptions.set(value);

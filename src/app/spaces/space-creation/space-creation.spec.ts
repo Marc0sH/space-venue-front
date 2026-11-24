@@ -33,6 +33,29 @@ describe('SpaceCreation', () => {
     expect(component).toBeTruthy();
   });
 
+  it('tracks unsaved fields, services, and selected images', () => {
+    expect(component.hasUnsavedChanges()).toBe(false);
+
+    component.model.update(current => ({ ...current, nameSpace: 'Salón' }));
+    expect(component.hasUnsavedChanges()).toBe(true);
+
+    component.model.update(current => ({ ...current, nameSpace: '' }));
+    component.addServices({ description: 'Proyector', price: 250 });
+    expect(component.hasUnsavedChanges()).toBe(true);
+
+    component.removeService(0);
+    expect(component.hasUnsavedChanges()).toBe(false);
+
+    component.imagenes.set([{
+      file: new File(['image'], 'espacio.jpg', { type: 'image/jpeg' }),
+      preview: 'blob:preview',
+    }]);
+    expect(component.hasUnsavedChanges()).toBe(true);
+
+    component.imagenes.set([]);
+    expect(component.hasUnsavedChanges()).toBe(false);
+  });
+
   it('requires a location picked on the map', () => {
     expect(component.formSpaceCreation.location().invalid()).toBe(true);
 

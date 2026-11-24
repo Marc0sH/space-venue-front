@@ -2,10 +2,11 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Header } from './common/header/header';
 import { Session } from './auth/session/session';
+import { UnsavedChangesDialog } from './common/unsaved-changes-dialog/unsaved-changes-dialog';
 
 
 @Component({
-  imports: [RouterOutlet, Header],
+  imports: [RouterOutlet, Header, UnsavedChangesDialog],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',

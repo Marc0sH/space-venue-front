@@ -1,5 +1,15 @@
-import { CanActivateFn } from '@angular/router';
+import { CanDeactivateFn } from '@angular/router';
+import { inject } from '@angular/core';
+import { UnsavedChangesDialogService } from '../common/unsaved-changes-dialog';
 
-export const formularioGuard: CanActivateFn = (route, state) => {
-  return true;
+export interface FormularioConCambiosPendientes {
+  hasUnsavedChanges(): boolean;
+}
+
+export const formularioGuard: CanDeactivateFn<FormularioConCambiosPendientes> = (formulario) => {
+  if (!formulario.hasUnsavedChanges()) {
+    return true;
+  }
+
+  return inject(UnsavedChangesDialogService).confirm();
 };
