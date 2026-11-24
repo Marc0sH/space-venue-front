@@ -18,6 +18,8 @@ export class Session {
     isAdmin = computed(() => this._session()?.rol === 'ROLE_ADMIN');
     //Solo ADMIN y OFFERER pueden crear, publicar y gestionar espacios (el back también lo exige)
     puedePublicar = computed(() => this.isAdmin() || this._session()?.rol === 'ROLE_OFFERER');
+    private _username = signal<string | null>(null);
+    username = this._username.asReadonly();
 
     registerUser(user: CredentialRegister) {
         return this.http.post(`${this.baseUrl}/register`, user);
@@ -32,18 +34,23 @@ export class Session {
             tap(res =>{
                 localStorage.setItem('session', JSON.stringify(res));
                 this._session.set(res);
+                this.refrescarRolyUsername(); //Trae el nombre de usuario para la cabecera
             })
         );
     }
 
     //El rol guardado en la sesion es el que se tenia al loguearse. Si un admin lo cambia despues
     //(por ej. de cliente a oferente), el back aplica el cambio enseguida, pero el front no se entera.
-    //Esto vuelve a pedir el usuario y actualiza el rol guardado. Se llama al iniciar la app.
-    refrescarRol(){
+    //Esto vuelve a pedir el usuario y actualiza el rol guardado. Se llama al iniciar la app y al loguearse.
+    //De paso guarda el nombre de usuario, que se muestra en la cabecera.
+    refrescarRolyUsername(){
         const id = this._session()?.consumerId;
         if (id == null) return;
         this.http.get<UserProfileData>(`${environment.apiUrl}/usuarios/${id}`).subscribe({
-            next: u => this.actualizarRol(u.credentials?.rol),
+            next: u => {
+                this._username.set(u.credentials?.username ?? null);
+                this.actualizarRol(u.credentials?.rol);
+            },
             error: () => {} //Si falla (sin red, token vencido) se queda con el rol que tenia; el 401 lo maneja el interceptor
         });
     }
@@ -74,6 +81,7 @@ export class Session {
     clearSession(){
         localStorage.removeItem('session');
         this._session.set(null);
+        this._username.set(null);
         this.router.navigateByUrl('login');
     }
 

@@ -153,6 +153,38 @@ header {
   border-color: var(--theme-accent);
 }
 
+/* Nombre y rol del usuario logueado */
+.profile-separator {
+  width: 1px;
+  height: 1rem;
+  background-color: var(--theme-border-control);
+}
+
+.profile-name {
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-role {
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background-color: var(--theme-badge);
+  color: var(--theme-accent);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.mobile-profile-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 16px 8px;
+  color: var(--theme-text);
+  font-weight: 600;
+}
+
 /* Caja flotante del menú */
 .dropdown-menu {
   position: absolute;

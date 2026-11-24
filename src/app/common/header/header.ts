@@ -5,6 +5,7 @@ import { NavigationStart, Router, RouterLink } from '@angular/router';
 import { filter } from 'rxjs';
 import { Session } from '../../auth/session/session';
 import { Notificationservice } from '../../user/user-notifications/notificationservice';
+import { etiquetaRol } from '../../models/user.model';
 
 @Component({
   imports: [RouterLink],
@@ -28,6 +29,9 @@ export class Header {
 
   // Controla qué desplegable está abierto ('perfil' | 'admin' | null)
   readonly openDropdown = signal<'perfil' | 'admin' | null>(null);
+
+  // Rol del usuario logueado para mostrar junto a su nombre
+  readonly rolLabel = computed(() => etiquetaRol(this.sessionService.session()?.rol));
 
   readonly notificaciones = this.notiService.getUnseen();
   readonly notificacionesCount = computed(
