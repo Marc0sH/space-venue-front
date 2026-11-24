@@ -18,6 +18,10 @@ export class ServiceCreation {
 
   dataEntry = output<ServiceReg>()
 
+  hasUnsavedChanges(): boolean {
+    return this.serviceModel().description.trim() !== '' || this.serviceModel().price !== 0;
+  }
+
   updateDescription(value: string){
     this.serviceModel.update((current) => ({
       ...current, description: value

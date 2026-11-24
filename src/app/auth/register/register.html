@@ -1,4 +1,4 @@
-<div class="register-container">
+<div class="register-container" [appUnsavedChanges]="hasUnsavedChanges()">
     <h2>Registro de usuario</h2>
 
     <form (submit)="onSubmit($event)">

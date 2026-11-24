@@ -1,4 +1,4 @@
-<div class="register-container">
+<div class="register-container" [appUnsavedChanges]="hasUnsavedChanges()">
   <h2>Editar perfil</h2>
 
   @if (perfil.isLoading()) {

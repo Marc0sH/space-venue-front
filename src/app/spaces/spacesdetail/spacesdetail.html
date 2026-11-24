@@ -1,4 +1,4 @@
-<div class="spaceDetail">
+<div class="spaceDetail" [appUnsavedChanges]="hasUnsavedChanges()">
   @if (space.isLoading()) {
     <div class="status-message">
       <p>Cargando...</p>

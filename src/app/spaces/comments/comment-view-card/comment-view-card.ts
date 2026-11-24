@@ -21,11 +21,16 @@ export class CommentViewCard {
   readonly deleted = output<void>()
   readonly updated = output<void>()
   readonly editing = signal(false)
+  private readonly commentCreation = viewChild(CommentCreation)
 
   readonly spaceId = computed(() => this.comment().idSpace.toString());
   // Los comentarios que eliminó el propio autor no se pueden reactivar (solo los desactivados por un admin)
   readonly eliminadoPorAutor = computed(() => !this.comment().isActive && this.comment().deactivationReason === 'AUTHOR_REQUEST');
   readonly space = this.spaceService.getById(this.spaceId);
+
+  hasUnsavedChanges(): boolean {
+    return this.editing() && (this.commentCreation()?.hasUnsavedChanges() ?? false);
+  }
 
   onUpdated(){
     this.editing.set(false)

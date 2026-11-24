@@ -1,4 +1,4 @@
-<div class="create-space-container">
+<div class="create-space-container" [appUnsavedChanges]="hasUnsavedChanges()">
     <h2>Editar espacio</h2>
 
     @if (space.isLoading()) {

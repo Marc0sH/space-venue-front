@@ -5,10 +5,12 @@ import { UserUpdate } from '../../models/user.model';
 import { email, form, FormField, required } from '@angular/forms/signals';
 import { FormErrorMessage } from '../../common/form-error-message/form-error-message';
 import { mensajeDeError } from '../../common/http-error';
+import { hasChangedFrom } from '../../common/unsaved-changes';
+import { UnsavedChangesDirective } from '../../common/unsaved-changes.directive';
 
 
 @Component({
-  imports: [FormField, FormErrorMessage, RouterLink],
+  imports: [FormField, FormErrorMessage, RouterLink, UnsavedChangesDirective],
   selector: 'app-user-edit',
   styleUrl: './user-edit.css',
   templateUrl: './user-edit.html',
@@ -28,6 +30,15 @@ export class UserEdit {
       phone: p?.phone ?? '',
     };
   });
+  private readonly savedModel = linkedSignal<UserUpdate | null>(() => {
+    const p = this.perfil.value();
+    return p ? {
+      firstname: p.firstname ?? '',
+      lastname: p.lastname ?? '',
+      email: p.email ?? '',
+      phone: p.phone ?? '',
+    } : null;
+  });
 
   formEdit = form(this.model, (path) => {
     required(path.firstname, {message: 'El primer nombre es requerido'});
@@ -40,11 +51,24 @@ export class UserEdit {
   error = signal('');
   guardando = signal(false);
 
+  hasUnsavedChanges(): boolean {
+    const savedModel = this.savedModel();
+    if (!savedModel) {
+      return false;
+    }
+
+    return hasChangedFrom(this.model(), savedModel);
+  }
+
   onSubmit(event: Event) {
     event.preventDefault();
+    const submittedModel = { ...this.model() };
     this.guardando.set(true);
-    this.servicioUsuario.updateLoggedUser(this.model()).subscribe({
-      next: () => this.router.navigate(['/perfil']),
+    this.servicioUsuario.updateLoggedUser(submittedModel).subscribe({
+      next: () => {
+        this.savedModel.set(submittedModel);
+        this.router.navigate(['/perfil']);
+      },
       error: (err) => {
         this.error.set(mensajeDeError(err, 'No se pudo actualizar el perfil'));
         this.guardando.set(false);
