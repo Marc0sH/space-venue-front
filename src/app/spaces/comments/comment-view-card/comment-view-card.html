@@ -50,7 +50,7 @@
                 <button class="delete-button" type="button" (click)="openDeleteConfirmation()">Desactivar</button>            
             } @else {
                 @if (!eliminadoPorAutor()) {
-                    <button class="activate-button" type="button" (click)="onActivate()">Activar</button>
+                    <button class="activate-button" type="button" (click)="openActivateConfirmation()">Activar</button>
                 }            
             }
         }
@@ -76,6 +76,25 @@
             </button>
             <button class="confirm-delete-button" type="button" [disabled]="deleting()" (click)="onDelete()">
                 {{ deleting() ? 'Procesando...' : (esPropio ? 'Sí, eliminar' : 'Sí, desactivar') }}
+            </button>
+        </div>
+    </dialog>
+
+    <dialog #activateDialog class="confirm-dialog" aria-labelledby="activate-dialog-title"
+        (click)="onActivateDialogClick($event)" (cancel)="activating() && $event.preventDefault()">
+        <h2 id="activate-dialog-title" class="confirm-dialog-title">¿Reactivar comentario?</h2>
+        <p class="confirm-dialog-text">
+            ¿Estás seguro de que querés reactivar este comentario? Volverá a ser visible para todos los usuarios y se le notificará al autor.
+        </p>
+        @if (activateError()) {
+            <p class="confirm-dialog-error" role="alert">{{ activateError() }}</p>
+        }
+        <div class="confirm-dialog-actions">
+            <button class="cancel-button" type="button" [disabled]="activating()" (click)="closeActivateConfirmation()" autofocus>
+                Cancelar
+            </button>
+            <button class="confirm-activate-button" type="button" [disabled]="activating()" (click)="onActivate()">
+                {{ activating() ? 'Procesando...' : 'Sí, reactivar' }}
             </button>
         </div>
     </dialog>

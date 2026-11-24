@@ -74,14 +74,40 @@ export class CommentViewCard {
     })
   }
 
+  // Pop-up de confirmación antes de que el admin reactive un comentario que había desactivado
+  private readonly activateDialog = viewChild.required<ElementRef<HTMLDialogElement>>('activateDialog')
+  readonly activating = signal(false)
+  readonly activateError = signal('')
+
+  openActivateConfirmation(){
+    this.activateError.set('')
+    this.activateDialog().nativeElement.showModal()
+  }
+
+  closeActivateConfirmation(){
+    if (this.activating()) return
+    this.activateDialog().nativeElement.close()
+  }
+
+  // Cierra el pop-up al hacer clic en el fondo oscuro (fuera del contenido)
+  onActivateDialogClick(event: MouseEvent){
+    if (event.target === this.activateDialog().nativeElement) {
+      this.closeActivateConfirmation()
+    }
+  }
+
   onActivate(){
+    this.activating.set(true)
+    this.activateError.set('')
     this.commentService.activateComment(this.comment().idComment.toString()).subscribe({
       next: () => {
-        console.log("Comentario activado exitosamente")
+        this.activating.set(false)
+        this.activateDialog().nativeElement.close()
         this.deleted.emit()
       },
-      error: (e) => {
-        console.error("Hubo un error al activar el comentario")
+      error: () => {
+        this.activating.set(false)
+        this.activateError.set('No se pudo reactivar el comentario. Intentá de nuevo.')
       }
     })
   }
