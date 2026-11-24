@@ -88,6 +88,17 @@ export class Spaceservice {
       return this.http.delete<{ mensaje: string }>(`${environment.apiUrl}/spaces/ownedspace/${id}`);
     }
 
+    pauseOwnedSpace(id: number) {
+      return this.http.delete<{ mensaje: string }>(`${environment.apiUrl}/spaces/ownedspace/pause/${id}`);
+    }
+
+    reactiveOwnedSpace(id: number) {
+      return this.http.put<{ mensaje: string }>(
+        `${environment.apiUrl}/spaces/ownedspace/reactive/${id}`,
+        null
+      );
+    }
+
     //Borra la imagen de la base y de S3. Si la borra el dueño, el back deja el espacio inactivo
     deleteImage(idImage: number) {
       return this.http.delete<void>(`${environment.apiUrl}/spaceimages/${idImage}`);
