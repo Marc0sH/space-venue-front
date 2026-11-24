@@ -10,6 +10,7 @@ import { FormErrorMessage } from '../../common/form-error-message/form-error-mes
 import { Spaceservice } from '../../spaces/spaceservice';
 import { mensajeDeError } from '../../common/http-error';
 import { hasChangedFrom } from '../../common/unsaved-changes';
+import { ToastService } from '../../common/toast-service';
 
 const MIN_DURATION_MINUTES = 10;
 const INITIAL_RESERVATION_FIELDS = {
@@ -28,6 +29,7 @@ const INITIAL_RESERVATION_FIELDS = {
   templateUrl: './reservation-create.html',
 })
 export class ReservationCreate {
+  private readonly toastService = inject(ToastService);
   private session = inject(Session);
   private reservationService = inject(Reservation);
   private spaceService = inject(Spaceservice)
@@ -225,6 +227,7 @@ export class ReservationCreate {
           }
         })
 
+        this.toastService.success('La reserva se creó correctamente.')
         this.router.navigate(['/espacios'])
       },
       error: (error) => {

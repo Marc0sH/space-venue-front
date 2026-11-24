@@ -7,6 +7,7 @@ import { Session } from '../session/session';
 import { mensajeDeError } from '../../common/http-error';
 import { hasChangedFrom } from '../../common/unsaved-changes';
 import { UnsavedChangesDirective } from '../../common/unsaved-changes.directive';
+import { ToastService } from '../../common/toast-service';
 
 const INITIAL_REGISTER_MODEL: CredentialRegister = {
   firstname: '',
@@ -38,6 +39,7 @@ export class Register {
   })
 
   private sessionProvider = inject(Session);
+  private readonly toastService = inject(ToastService);
   private router = inject(Router)
 
   error = signal("")
@@ -56,6 +58,7 @@ export class Register {
         this.error.set("");
         this.savedModel.set(submittedModel);
         console.log('Usuario registrado con éxito:', response);
+        this.toastService.success('Tu cuenta se creó correctamente. Ya podés iniciar sesión.');
         this.router.navigate(['/login']);
 
       },

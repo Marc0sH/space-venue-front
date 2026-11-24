@@ -3,10 +3,11 @@ import { RouterOutlet } from '@angular/router';
 import { Header } from './common/header/header';
 import { Session } from './auth/session/session';
 import { UnsavedChangesDialog } from './common/unsaved-changes-dialog/unsaved-changes-dialog';
+import { Toast } from './common/toast/toast';
 
 
 @Component({
-  imports: [RouterOutlet, Header, UnsavedChangesDialog],
+  imports: [RouterOutlet, Header, UnsavedChangesDialog, Toast],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',

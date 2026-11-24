@@ -16,6 +16,7 @@ import { catchError, concat, concatMap, from, map, Observable, of, switchMap, to
 import { mensajeDeError } from '../../common/http-error';
 import { hasChangedFrom } from '../../common/unsaved-changes';
 import { UnsavedChangesDirective } from '../../common/unsaved-changes.directive';
+import { ToastService } from '../../common/toast-service';
 
 // La ubicación puede quedar vacía si el espacio se creó antes del mapa
 type SpaceEditForm = Omit<SpaceUpdate, 'location'> & { location: Coordinates | null }
@@ -40,6 +41,7 @@ export class SpaceEdit {
   private readonly spaceService = inject(Spaceservice);
   private readonly serviciosService = inject(ServiceServicios);
   private readonly session = inject(Session);
+  private readonly toastService = inject(ToastService);
   private readonly router = inject(Router);
 
   readonly id = input.required<string>();
@@ -193,6 +195,7 @@ export class SpaceEdit {
       next: (fallidos) => {
         const { imagenesBorrado, imagenesSubida, serviciosBorrado, serviciosAlta } = fallidos;
         if (Object.values(fallidos).every(lista => lista.length === 0)) {
+          this.toastService.success('El espacio se actualizó correctamente.');
           this.router.navigate(['/espacios', idSpace]);
           return;
         }

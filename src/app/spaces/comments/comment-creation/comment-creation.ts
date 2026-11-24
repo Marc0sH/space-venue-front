@@ -5,6 +5,7 @@ import { form, max, maxLength, min, required, FormField } from '@angular/forms/s
 import { FormErrorMessage } from '../../../common/form-error-message/form-error-message';
 import { Comment } from '../comment';
 import { hasChangedFrom } from '../../../common/unsaved-changes';
+import { ToastService } from '../../../common/toast-service';
 
 @Component({
   imports: [FormField, FormErrorMessage],
@@ -13,6 +14,7 @@ import { hasChangedFrom } from '../../../common/unsaved-changes';
   templateUrl: './comment-creation.html',
 })
 export class CommentCreation {
+  private readonly toastService = inject(ToastService);
   private readonly commentService = inject(Comment)
   readonly idSpace = input.required<string>()
   readonly isEditing = input(false)
@@ -42,7 +44,6 @@ export class CommentCreation {
   })
 
   readonly enviando = signal(false)
-  readonly mensajeExito = signal('')
   readonly error = signal('')
   private readonly savedModel = signal<{ description: string; score: number } | null>(null)
 
@@ -72,7 +73,6 @@ export class CommentCreation {
     }
 
     this.enviando.set(true)
-    this.mensajeExito.set('')
     this.error.set('')
     const submittedModel = { ...this.model() };
 
@@ -86,9 +86,9 @@ export class CommentCreation {
           description: submittedModel.description,
           score: submittedModel.score,
         })
-        this.mensajeExito.set(editing
-          ? 'Tu comentario se modificó correctamente.'
-          : 'Tu comentario se publicó correctamente.')
+        this.toastService.success(editing
+          ? 'Tu reseña se modificó correctamente.'
+          : 'Tu reseña se publicó correctamente.')
         this.enviando.set(false)
         this.saved.emit()
       },
