@@ -1,5 +1,6 @@
 import { Component, ElementRef, computed, effect, inject, input, output, signal, viewChild } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { CommentComplete } from '../../../models/comment.model';
 import { Session } from '../../../auth/session/session';
 import { Comment } from '../comment';
@@ -8,7 +9,7 @@ import { Spaceservice } from '../../spaceservice';
 import { Space } from '../../../models/space.model';
 
 @Component({
-  imports: [DatePipe, CommentCreation],
+  imports: [DatePipe, CommentCreation, RouterLink],
   selector: 'app-comment-view-card',
   styleUrl: './comment-view-card.css',
   templateUrl: './comment-view-card.html',
@@ -18,6 +19,8 @@ export class CommentViewCard {
   private readonly commentService = inject(Comment)
   readonly session = inject(Session)
   comment = input.required<CommentComplete>()
+  // Si es true, el admin ve el nombre del espacio como enlace a su detalle (usado en el perfil del usuario)
+  readonly showSpace = input(false)
   readonly deleted = output<void>()
   readonly updated = output<void>()
   readonly editing = signal(false)
@@ -26,7 +29,10 @@ export class CommentViewCard {
   readonly spaceId = computed(() => this.comment().idSpace.toString());
   // Los comentarios que eliminó el propio autor no se pueden reactivar (solo los desactivados por un admin)
   readonly eliminadoPorAutor = computed(() => !this.comment().isActive && this.comment().deactivationReason === 'AUTHOR_REQUEST');
-  readonly space = this.spaceService.getById(this.spaceId);
+  // Solo se pide el espacio cuando se va a mostrar su nombre
+  readonly space = this.spaceService.getById(
+    computed(() => this.showSpace() && this.session.isAdmin() ? this.spaceId() : undefined)
+  );
 
   hasUnsavedChanges(): boolean {
     return this.editing() && (this.commentCreation()?.hasUnsavedChanges() ?? false);

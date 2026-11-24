@@ -66,8 +66,8 @@ export class Spaceservice {
       return this.http.put<{ mensaje: string }>(`${environment.apiUrl}/spaces/${id}/active`, null, { params: { active } });
     }
 
-    getById(id: Signal<string>) {
-     return httpResource<Space>(() => `${environment.apiUrl}/spaces/${id()}`);
+    getById(id: Signal<string | undefined>) {
+     return httpResource<Space>(() => id() ? `${environment.apiUrl}/spaces/${id()}` : undefined);
     }
 
     createSpace(space : NewSpace){

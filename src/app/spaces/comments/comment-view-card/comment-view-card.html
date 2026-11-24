@@ -29,9 +29,9 @@
 
     <footer class="comment-meta">
         <span>Publicado: {{ comment().created_at | date:'medium' }}</span>
-        @if (session.isAdmin()) {
+        @if (showSpace() && session.isAdmin()) {
             @if (space.hasValue()) {
-                <span>Espacio: {{ space.value().nameSpace }}</span>
+                <span>Espacio: <a class="comment-space-link" [routerLink]="['/espacios', spaceId()]">{{ space.value().nameSpace }}</a></span>
             } @else if (space.isLoading()) {
                 <span>Espacio: Cargando...</span>
             } @else if (space.error()) {
