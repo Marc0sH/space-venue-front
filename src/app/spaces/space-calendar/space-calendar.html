@@ -14,6 +14,9 @@
   <div class="legend">
     <span class="legend-item"><span class="dot confirmed"></span>Confirmada</span>
     <span class="legend-item"><span class="dot pending"></span>Pendiente</span>
+    @if (bufferTime() > 0) {
+      <span class="legend-item"><span class="swatch buffer"></span>Receso entre reservas ({{ bufferLabel() }})</span>
+    }
   </div>
 
   @if (reservations.error()) {
@@ -39,17 +42,22 @@
             [class.today]="day.isToday"
             [class.past]="day.isPast"
             [class.selected]="selectedKey() === day.key"
-            [class.has-entries]="day.entries.length > 0"
+            [class.has-entries]="day.entries.length > 0 || day.carriedBuffers.length > 0"
             [attr.aria-label]="dayAriaLabel(day)"
             [attr.aria-selected]="selectedKey() === day.key"
             (click)="selectDay(day)">
             <span class="day-number">{{ day.date.getDate() }}</span>
 
-            @if (day.entries.length > 0) {
+            @if (day.entries.length > 0 || day.carriedBuffers.length > 0) {
               <!-- Escritorio: horarios. Mobile: solo puntos -->
               <span class="pills">
+                <!-- Receso de una reserva del día anterior que pasa la medianoche -->
+                @for (block of day.carriedBuffers; track $index) {
+                  <span class="pill buffer">{{ bufferPillText(block) }}</span>
+                }
                 @for (entry of day.entries.slice(0, 2); track $index) {
-                  <span class="pill" [class.pending]="entry.status === 'TENTATIVE'">
+                  <span class="pill" [class.pending]="entry.status === 'TENTATIVE'"
+                        [class.with-buffer]="bufferTime() > 0" [attr.title]="pillTitle(entry)">
                     {{ formatTime(entry.fromDate) }}
                   </span>
                 }
@@ -60,6 +68,9 @@
               <span class="dots" aria-hidden="true">
                 @for (entry of day.entries.slice(0, 3); track $index) {
                   <span class="dot" [class.pending]="entry.status === 'TENTATIVE'" [class.confirmed]="entry.status !== 'TENTATIVE'"></span>
+                }
+                @if (day.entries.length === 0 && day.carriedBuffers.length > 0) {
+                  <span class="dot buffer"></span>
                 }
               </span>
             }
@@ -79,11 +90,27 @@
         </button>
       </div>
 
-      @if (sel.entries.length === 0) {
+      @if (sel.items.length === 0) {
         <p class="empty">No hay reservas para este día. El espacio está libre.</p>
       } @else {
+        @if (bufferTime() > 0) {
+          <p class="buffer-note">
+            <span class="material-symbols-outlined">info</span>
+            Después de cada reserva hay {{ bufferLabel() }} de receso para preparar el espacio.
+          </p>
+        }
         <ol class="entry-list">
-          @for (entry of sel.entries; track $index) {
+          @for (item of sel.items; track $index) {
+            @if (item.kind === 'buffer') {
+              <li class="entry buffer">
+                <span class="entry-time">{{ formatSpan(item.block.from, item.block.until, sel.key) }}</span>
+                <div class="entry-body">
+                  <span class="status-badge buffer">Receso</span>
+                  <span class="entry-consumer">No disponible · libre desde las {{ formatTime(item.block.until) }}</span>
+                </div>
+              </li>
+            } @else {
+            @let entry = item.entry;
             <li class="entry" [class.pending]="entry.status === 'TENTATIVE'">
               <span class="entry-time">{{ formatRange(entry, sel.key) }}</span>
               <div class="entry-body">
@@ -106,6 +133,7 @@
                 </a>
               }
             </li>
+            }
           }
         </ol>
       }
