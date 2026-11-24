@@ -8,6 +8,8 @@ export interface CommentComplete {
     isActive: boolean;
     deactivationReason: string | null;
     created_at: string;
+    // false si el espacio del comentario está desactivado (solo el admin recibe esos comentarios)
+    spaceActive?: boolean;
 }
 
 export type CommentInsertion = Pick<CommentComplete, 'description' | 'score' > & {
