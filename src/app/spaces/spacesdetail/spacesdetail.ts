@@ -28,15 +28,15 @@ export class Spacesdetail {
   protected readonly isLoggedIn = this.session.isLoggedIn;
   private readonly commentService = inject(Comment)
 
-  readonly hasComment = this.commentService.hasCommentOnSpace(this.id);
+  readonly commentStatus = this.commentService.commentStatusOnSpace(this.id);
   readonly canComment = this.commentService.canCommentOnSpace(this.id);
 
   readonly canWriteComment = computed(() => {
-    if (!this.hasComment.hasValue() || !this.canComment.hasValue()) {
+    if (!this.commentStatus.hasValue() || !this.canComment.hasValue()) {
       return false;
     }
 
-    return !this.hasComment.value() && this.canComment.value();
+    return this.commentStatus.value() === 'NONE' && this.canComment.value();
   });
 
   private readonly commentsList = viewChild(CommentsList); //viewChild le da acceso a spacesDetail al primer componente de de cierto tipo, aca lo uso para que spacesDetail pueda recargar la lista de cometarios caundo se publica una resenia
@@ -51,13 +51,13 @@ export class Spacesdetail {
 
   // Al publicar un comentario: se oculta el formulario y la reseña nueva aparece en la lista
   protected onCommentCreated(): void {
-    this.hasComment.reload();
+    this.commentStatus.reload();
     this.commentsList()?.reload();
   }
 
   // Al eliminar o modificar un comentario se vuelve a consultar si el usuario puede comentar
   protected onCommentsChanged(): void {
-    this.hasComment.reload();
+    this.commentStatus.reload();
   }
 
   //Solo el dueño puede editar, y no si ya eliminó el espacio. Además tiene que poder gestionar espacios (ADMIN u OFFERER)

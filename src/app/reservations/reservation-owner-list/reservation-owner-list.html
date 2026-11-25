@@ -1,0 +1,288 @@
+<div class="owner-dashboard">
+  <!-- Encabezado + Sub-navegación horizontal -->
+  <header class="dashboard-top">
+    <div class="dashboard-title-row">
+      <div>
+        <h1 class="title">Panel de Control del Oferente</h1>
+        <p class="subtitle">Gestioná las solicitudes de tus espacios y visualizá la ocupación mensual.</p>
+      </div>
+    </div>
+
+
+    <nav class="panel-tabs" role="tablist" aria-label="Secciones del panel de oferente">
+      <button
+        type="button"
+        role="tab"
+        class="tab-btn"
+        [class.active]="activeTab() === 'solicitudes'"
+        [attr.aria-selected]="activeTab() === 'solicitudes'"
+        (click)="activeTab.set('solicitudes')"
+      >
+        Solicitudes de reserva
+      </button>
+
+      <button
+        type="button"
+        role="tab"
+        class="tab-btn"
+        [class.active]="activeTab() === 'espacios'"
+        [attr.aria-selected]="activeTab() === 'espacios'"
+        (click)="activeTab.set('espacios')"
+      >
+        Mis espacios
+      </button>
+          <a class="btn-publish" routerLink="/espacios/crear">
+    <span aria-hidden="true">+</span> Publicar espacio
+  </a>
+    </nav>
+  </header>
+
+  @if (activeTab() === 'solicitudes') {
+    <!-- Grid principal: Izquierda (Solicitudes estilo tabla) | Derecha (Calendario) -->
+    <div class="dashboard-grid">
+      <!-- Columna Izquierda: Solicitudes de reserva recientes -->
+      <section class="panel-card">
+        <div class="panel-card-header">
+          <div>
+            <h2 class="panel-title">Solicitudes de reserva recientes</h2>
+            <p class="panel-subtitle">Revisá el estado de cada reserva o ingresá al espacio correspondiente.</p>
+          </div>
+          @if (!reservations.isLoading() && !reservations.error()) {
+            <span class="count-pill">{{ reservations.value().length }} reservas</span>
+          }
+        </div>
+
+        <!-- Pills rápidas de estado -->
+        <div class="status-pills" role="tablist" aria-label="Filtrar por estado">
+          @for (item of quickStatuses; track item.value) {
+            <button
+              type="button"
+              class="pill-btn"
+              [class.active]="filters().status === item.value"
+              (click)="setFilter('status', item.value)"
+            >
+              {{ item.label }}
+            </button>
+          }
+        </div>
+
+        <!-- Barra compacta de búsqueda, espacio y fecha -->
+        <div class="compact-filters">
+          <input
+            type="text"
+            placeholder="Buscar por título..."
+            [value]="filters().title"
+            (input)="setFilter('title', $any($event.target).value)"
+            aria-label="Buscar por título"
+          />
+
+          <select
+            [value]="filters().idSpace"
+            (change)="setFilter('idSpace', $any($event.target).value)"
+            aria-label="Filtrar por espacio"
+          >
+            <option value="">Todos los espacios</option>
+            @for (s of spaces(); track s.idSpace) {
+              <option [value]="s.idSpace">{{ s.nameSpace }}</option>
+            }
+          </select>
+
+          <input
+            type="date"
+            [value]="filters().date"
+            (change)="setFilter('date', $any($event.target).value)"
+            aria-label="Filtrar por fecha"
+          />
+
+          @if (filters().title || filters().idSpace || filters().status || filters().date) {
+            <button type="button" class="btn-clear" (click)="clearFilters()">
+              Limpiar
+            </button>
+          }
+        </div>
+
+        <!-- Encabezado de columnas (desktop) -->
+        @if (!reservations.isLoading() && !reservations.error() && reservations.value().length > 0) {
+          <div class="table-header" aria-hidden="true">
+            <span>RESERVA / CLIENTE</span>
+            <span>ESPACIO</span>
+            <span>FECHA Y HORARIO</span>
+            <span>MONTO</span>
+            <span>ESTADO</span>
+            <span class="text-right">ACCIONES</span>
+          </div>
+        }
+
+        <!-- Listado de filas limpias -->
+        <div class="reservations-table-body">
+          @if (reservations.isLoading()) {
+            <p class="list-message">Cargando solicitudes de reserva...</p>
+          } @else if (reservations.error()) {
+            <p class="list-message fail">No se pudieron cargar las reservas. Intentá nuevamente.</p>
+          } @else {
+            @for (r of reservations.value(); track r.id) {
+              <article class="reservation-row">
+                <!-- Columna 1: Título de la reserva y consumidor -->
+                <div class="col-main">
+                  <a class="res-title" [routerLink]="['/reservas', r.id]">{{ r.title || 'Reserva #' + r.id }}</a>
+                  <span class="res-client">
+                    {{ r.consumer.firstname }} {{ r.consumer.lastname }}
+                  </span>
+                </div>
+
+                <!-- Columna 2: Enlace directo al detalle del espacio (/espacios/{id}) -->
+                <div class="col-space">
+                  <a
+                    class="space-link"
+                    [routerLink]="['/espacios', r.space.idSpace]"
+                    title="Ir al detalle de {{ r.space.nameSpace }}"
+                  >
+                    {{ r.space.nameSpace }}
+                    <span class="arrow" aria-hidden="true">↗</span>
+                  </a>
+                </div>
+
+                <!-- Columna 3: Fecha y rango horario (fromDate / untilDate) -->
+                <div class="col-date">
+                  <span class="date-primary">{{ r.fromDate | date: 'dd MMM yyyy' }}</span>
+                  <span class="date-secondary">
+                    {{ r.fromDate | date: 'HH:mm' }} – {{ r.untilDate | date: 'HH:mm' }} hs
+                  </span>
+                </div>
+
+                <!-- Columna 4: Precio final -->
+                <div class="col-price">
+                  <span class="price-text">{{ r.finalPrice | currency: 'ARS' : 'symbol-narrow' : '1.0-0' }}</span>
+                </div>
+
+                <!-- Columna 5: Badge de estado -->
+                <div class="col-status">
+                  <span class="status-badge" [class]="getStatusClass(r.status)">
+                    <span class="status-dot"></span>
+                    {{ etiqueta(r) }}
+                  </span>
+                </div>
+
+                <!-- Columna 6: Acciones contextuales -->
+                <div class="col-actions">
+                  @if (r.status === 'TENTATIVE') {
+                    <button
+                      type="button"
+                      class="btn-accept"
+                      [disabled]="processingId() === r.id"
+                      (click)="confirmReservation(r)"
+                    >
+                      Aceptar
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-reject"
+                      [disabled]="processingId() === r.id"
+                      (click)="rejectReservation(r)"
+                    >
+                      Rechazar
+                    </button>
+                  } @else {
+                    <a
+                      class="btn-detail"
+                      [routerLink]="['/reservas', r.id]"
+                    >
+                      Ver detalle
+                    </a>
+                  }
+                </div>
+              </article>
+            } @empty {
+              <div class="empty-state">
+                <p>No hay reservas que coincidan con los filtros seleccionados.</p>
+              </div>
+            }
+          }
+        </div>
+      </section>
+
+      <!-- Columna Derecha: Calendario de Ocupación -->
+      <aside class="panel-card calendar-card">
+        <div class="calendar-top">
+          <div class="calendar-month-bar">
+            <span class="calendar-month-title">{{ monthLabel() }}</span>
+            <div class="calendar-nav-btns">
+              <button type="button" class="nav-btn" (click)="prevMonth()" aria-label="Mes anterior">
+                ‹
+              </button>
+              <button type="button" class="nav-btn" (click)="nextMonth()" aria-label="Mes siguiente">
+                ›
+              </button>
+            </div>
+          </div>
+
+          <select
+            class="calendar-space-select"
+            aria-label="Seleccionar espacio para el calendario"
+            [value]="calendarSpaceId()"
+            (change)="calendarSpaceId.set($any($event.target).value)"
+          >
+            @for (s of spaces(); track s.idSpace) {
+              <option [value]="s.idSpace">{{ s.nameSpace }}</option>
+            } @empty {
+              <option value="">Sin espacios disponibles</option>
+            }
+          </select>
+
+          <div class="calendar-legend">
+            <span class="legend-item"><i class="dot occupied"></i> Confirmada</span>
+            <span class="legend-item"><i class="dot tentative"></i> Pendiente</span>
+            <span class="legend-item"><i class="dot free"></i> Disponible</span>
+          </div>
+        </div>
+
+        <div class="calendar-weekdays">
+          <span>LU</span>
+          <span>MA</span>
+          <span>MI</span>
+          <span>JU</span>
+          <span>VI</span>
+          <span>SÁ</span>
+          <span>DO</span>
+        </div>
+
+        <div class="calendar-days" [class.loading]="calendarEntries.isLoading()">
+          @for (day of calendarDays(); track day.dateStr) {
+            <button
+              type="button"
+              class="day-cell"
+              [class.outside]="!day.isCurrentMonth"
+              [class.today]="day.isToday"
+              [class.selected]="filters().date === day.dateStr"
+              [class.occupied]="day.status === 'CONFIRMED'"
+              [class.tentative]="day.status === 'TENTATIVE'"
+              (click)="toggleDateFilter(day.dateStr)"
+              [title]="
+                day.status === 'CONFIRMED'
+                  ? 'Ocupado (Confirmada) - Clic para filtrar'
+                  : day.status === 'TENTATIVE'
+                    ? 'Pendiente de aprobación - Clic para filtrar'
+                    : 'Disponible - Clic para filtrar'
+              "
+            >
+              <span class="day-num">{{ day.dayNumber }}</span>
+              @if (day.status !== 'FREE' && day.isCurrentMonth) {
+                <span class="day-bar"></span>
+              }
+            </button>
+          }
+        </div>
+
+        <p class="calendar-hint">
+          @if (filters().date) {
+            Mostrando reservas del <strong>{{ filters().date }}</strong>. Clic de nuevo para quitar.
+          } @else {
+            Hacé clic en un día para filtrar sus reservas.
+          }
+        </p>
+      </aside>
+    </div>
+  } @else {
+    <app-list-my-spaces [embedded]="true" />
+  }
+</div>

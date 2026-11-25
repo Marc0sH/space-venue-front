@@ -9,6 +9,9 @@
             @if (!comment().isActive) {
                 <span class="comment-status-badge">{{ eliminadoPorAutor() ? 'Eliminado por el autor' : 'Desactivado' }}</span>
             }
+            @if (comment().spaceActive === false) {
+                <span class="comment-status-badge space-inactive-badge">Espacio desactivado</span>
+            }
         </div>
         <span class="comment-score" aria-label="Calificación">
             {{ comment().score }}

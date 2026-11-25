@@ -12,7 +12,7 @@
       <nav class="desktop-navigation" aria-label="Navegación principal">
       @if (sessionService.isLoggedIn()) {
         @if (sessionService.puedePublicar()) {
-          <a class="nav-link" routerLink="/espacios/crear" (click)="closeDropdowns()">Publicar espacio</a>
+          <a class="nav-link" routerLink="/reservas/recibidas" (click)="closeDropdowns()">Panel Oferente</a>
         }
 
         <!-- Desplegable: Panel admin -->
@@ -59,9 +59,6 @@
             <div class="dropdown-menu">
               <a routerLink="/perfil" (click)="closeDropdowns()">Perfil</a>
               <a routerLink="/reservas" (click)="closeDropdowns()">Mis reservas</a>
-              @if (sessionService.puedePublicar()) {
-                <a routerLink="/espacios/espaciospropios" (click)="closeDropdowns()">Mis espacios</a>
-              }
               <div class="dropdown-divider"></div>
               <button
                 type="button"

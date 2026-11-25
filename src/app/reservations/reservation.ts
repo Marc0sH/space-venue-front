@@ -1,6 +1,6 @@
 import { HttpClient, httpResource } from '@angular/common/http';
 import { inject, Service, Signal } from '@angular/core';
-import { NewReservation, ReservationCalendarEntry, ReservationComplete } from '../models/reservation.model';
+import { NewReservation, OwnerReservationFilters, ReservationCalendarEntry, ReservationComplete } from '../models/reservation.model';
 import { environment } from '../../environments/enviroment';
 import { ServiceSelected, ServiceSpace } from '../models/service.model';
 
@@ -69,4 +69,16 @@ export class Reservation {
     cancelReservation(idReservation : string){
         return this.http.put(`${environment.apiUrl}/reservations/cancel/${idReservation}`, idReservation)
     }
+
+    getOwnerReservations(filters: Signal<OwnerReservationFilters>) {
+    return httpResource<ReservationComplete[]>(() => {
+        const f = filters();
+        const params: Record<string, string> = {};
+        if (f.idSpace) params['idSpace'] = f.idSpace;
+        if (f.status) params['status'] = f.status;
+        if (f.title.trim()) params['title'] = f.title.trim();
+        if (f.date) params['date'] = f.date;
+        return { url: `${environment.apiUrl}/reservations/owner`, params };
+    }, { defaultValue: [] });
+}
 }
