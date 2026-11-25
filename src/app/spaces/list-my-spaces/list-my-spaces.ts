@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { Spacescard } from '../spacescard/spacescard';
 import { Spaceservice } from '../spaceservice';
 import { Space } from '../../models/space.model';
@@ -16,6 +16,8 @@ export class ListMySpaces {
   lista = signal<Space[]>([] as Space[]);
   error = signal<string | null>(null);
   cargando = signal<boolean>(true);
+  readonly embedded = input(false)
+
 
   readonly orden = signal('Sin ordenar');
   readonly spacesOrdenados = computed(() =>

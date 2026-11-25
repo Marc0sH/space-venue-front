@@ -127,3 +127,7 @@
     .spaces-section { padding-left: 3rem; padding-right: 3rem; }
     .spaces-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
+:host(.embedded) .spaces-section {
+    max-width: none;
+    padding: 0;
+}

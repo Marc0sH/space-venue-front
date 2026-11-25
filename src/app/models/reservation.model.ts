@@ -83,3 +83,9 @@ export interface ReservationCalendarEntry {
     title: string | null,
     consumerName: string | null
 }
+export interface OwnerReservationFilters {
+    idSpace: string,
+    status: string,
+    title: string,
+    date: string
+}
