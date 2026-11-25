@@ -38,13 +38,14 @@ export interface SpaceSearch {
     calificacionMin: number | null
 }
 
-export type SpaceDeactivationReason = 'OWNER_DELETED' | 'ADMIN' | 'PENDING_APPROVAL';
+export type SpaceDeactivationReason = 'OWNER_DELETED' | 'OWNER_PAUSED' | 'ADMIN' | 'PENDING_APPROVAL';
 
 //Texto del estado de un espacio para mostrar en la tabla del admin y en las tarjetas
 export function etiquetaEstadoEspacio(s: Pick<Space, 'isActive' | 'deactivationReason' | 'ownerAvailable'>): string {
     if (s.isActive) return s.ownerAvailable === false ? 'Oculto: dueño no disponible' : 'Activo';
     switch (s.deactivationReason) {
         case 'OWNER_DELETED': return 'Eliminado por el dueño';
+        case 'OWNER_PAUSED': return 'Pausado'
         case 'ADMIN': return 'Desactivado por el admin';
         case 'PENDING_APPROVAL': return 'Pendiente de aprobación';
         default: return 'Inactivo'; //Espacios desactivados antes de que existiera el motivo

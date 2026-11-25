@@ -41,6 +41,11 @@
   font-weight: 600;
 }
 
+.space-inactive-badge {
+  background-color: rgb(245 158 11 / 15%);
+  color: #b45309;
+}
+
 .comment-username,
 .comment-author-unavailable,
 .comment-meta {

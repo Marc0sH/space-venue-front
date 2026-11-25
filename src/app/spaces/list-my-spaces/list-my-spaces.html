@@ -11,7 +11,13 @@
         <app-space-filter (ordenSalida)="cambiarOrden($event)"></app-space-filter>
  
         @if (errorBaja()) {
-            <p class="error">{{ errorBaja() }}</p>
+            <p class="error" role="alert">{{ errorBaja() }}</p>
+        }
+        @if (errorPausa()) {
+            <p class="error" role="alert">{{ errorPausa() }}</p>
+        }
+        @if (errorReactivacion()) {
+            <p class="error" role="alert">{{ errorReactivacion() }}</p>
         }
 
         <div class="spaces-grid">
@@ -19,8 +25,8 @@
                 <div class="space-item">
                     <app-spacescard [space]="s"></app-spacescard>
 
-                    @if (confirmando() !== s.idSpace) {
-                        <button type="button" class="redBtn" (click)="pedirConfirmacion(s.idSpace)">
+                    @if (confirmandoEliminacion() !== s.idSpace) {
+                        <button type="button" class="redBtn" (click)="pedirConfirmacionDeEliminacion(s.idSpace)">
                             Dar de baja
                         </button>
                     } @else {
@@ -33,13 +39,62 @@
                             </p>
                             <div class="confirm-actions">
                                 <button type="button" class="secondaryBtn" [disabled]="eliminando() === s.idSpace"
-                                    (click)="confirmando.set(null)">Cancelar</button>
+                                    (click)="confirmandoEliminacion.set(null)">Cancelar</button>
                                 <button type="button" class="redBtn solid" [disabled]="eliminando() === s.idSpace"
                                     (click)="darDeBaja(s.idSpace)">
                                     {{ eliminando() === s.idSpace ? 'Dando de baja...' : 'Confirmar' }}
                                 </button>
                             </div>
                         </div>
+                    }
+
+                    @if (s.isActive) {
+                        @if (confirmandoPausa() !== s.idSpace) {
+                            <button type="button" class="yellowBtn" (click)="pedirConfirmacionDePausa(s.idSpace)">
+                                Pausar
+                            </button>
+                        } @else {
+                            <div class="confirmacion-pausa">
+                                <p>¿Pausar este espacio? Dejará de estar visible para otros usuarios.</p>
+                                <p class="advertencia">
+                                    La pausa de un espacio no es permanente, puede reactivarlo cuando usted lo requiera.
+                                    Úselo cuando el espacio no pueda ser utilizado durante cierto tiempo (ya sea por vacaciones u otro motivo).
+                                </p>
+                                <div class="confirm-actions">
+                                    <button type="button" class="secondaryBtn" [disabled]="pausando() === s.idSpace"
+                                        (click)="confirmandoPausa.set(null)">Cancelar</button>
+                                    <button type="button" class="yellowBtn solid" [disabled]="pausando() === s.idSpace"
+                                        (click)="pausar(s.idSpace)">
+                                        {{ pausando() === s.idSpace ? 'Pausando...' : 'Confirmar' }}
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    } @else if (estaEnPausa(s.idSpace)) {
+                        @if (confirmandoReactivacion() !== s.idSpace) {
+                            <button type="button" class="yellowBtn" (click)="pedirConfirmacionReactivacion(s.idSpace)">
+                                Reactivar
+                            </button>
+                        } @else {
+                            <div class="confirmacion-reactivacion">
+                                <p>¿Reactivar este espacio? Podrá ser visible para otros usuarios.</p>
+                                <p class="advertencia">
+                                    La pausa de un espacio no es permanente, con esta opción puede reactivarlo cuando usted lo requiera.
+                                </p>
+                                <div class="confirm-actions">
+                                    <button type="button" class="secondaryBtn" [disabled]="reactivando() === s.idSpace"
+                                        (click)="confirmandoReactivacion.set(null)">Cancelar</button>
+                                    <button type="button" class="yellowBtn solid" [disabled]="reactivando() === s.idSpace"
+                                        (click)="reactivar(s.idSpace)">
+                                        {{ reactivando() === s.idSpace ? 'Reactivando...' : 'Confirmar' }}
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    } @else {
+                        <p class="estado-no-reactivable">
+                            Estado: {{ etiquetaEstado(s) }}. Solo se pueden reactivar desde acá los espacios pausados por el dueño.
+                        </p>
                     }
                 </div>
             } @empty {
