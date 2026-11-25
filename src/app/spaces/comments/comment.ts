@@ -1,7 +1,7 @@
 import { HttpClient, httpResource } from '@angular/common/http';
 import { inject, Service, Signal } from '@angular/core';
 import { environment } from '../../../environments/enviroment';
-import { CommentComplete, CommentForm } from '../../models/comment.model';
+import { CommentComplete, CommentForm, CommentStatus } from '../../models/comment.model';
 
 @Service()
 export class Comment {
@@ -20,8 +20,9 @@ export class Comment {
         return httpResource<CommentComplete[]>(() => `${this.baseUrl}/byconsumerid/${idUser()}`)
     }
 
-    hasCommentOnSpace(idSpace: Signal<string>){
-        return httpResource<boolean>(() => `${this.baseUrl}/spaces/${idSpace()}/has-comment`)
+    // NONE: puede escribir uno nuevo · ACTIVE: ya tiene su reseña publicada · MODERATED: un admin la desactivó
+    commentStatusOnSpace(idSpace: Signal<string>){
+        return httpResource<CommentStatus>(() => `${this.baseUrl}/spaces/${idSpace()}/comment-status`)
     }
 
     canCommentOnSpace(idSpace: Signal<string>){
