@@ -9,8 +9,17 @@ import { Router } from '@angular/router';
 import { FormErrorMessage } from '../../common/form-error-message/form-error-message';
 import { Spaceservice } from '../../spaces/spaceservice';
 import { mensajeDeError } from '../../common/http-error';
+import { hasChangedFrom } from '../../common/unsaved-changes';
 
 const MIN_DURATION_MINUTES = 10;
+const INITIAL_RESERVATION_FIELDS = {
+  title: '',
+  description: '',
+  fromDate: '',
+  durationHours: 1,
+  durationMinutes: 0,
+  idServicesSelect: [] as number[],
+};
 
 @Component({
   imports: [FormField, CurrencyPipe, DatePipe, FormErrorMessage],
@@ -124,6 +133,16 @@ export class ReservationCreate {
   })
 
   error = signal<string>("")
+  private readonly savedModel = signal({ ...INITIAL_RESERVATION_FIELDS })
+
+  hasUnsavedChanges(): boolean {
+    const { title, description, fromDate, durationHours, durationMinutes, idServicesSelect } = this.model();
+    return hasChangedFrom(
+      { title, description, fromDate, durationHours, durationMinutes, idServicesSelect },
+      this.savedModel(),
+    );
+  }
+
   finalPrice = computed(() => {
     const space = this.spaceToReserve.value();
     const { idServicesSelect } = this.model();
@@ -162,6 +181,7 @@ export class ReservationCreate {
 
   onSubmit(event: Event){
     event.preventDefault()
+    const submittedModel = { ...this.model() };
 
     if (!this.session.session()) {
       const e = "Necesita iniciar sesión para reservar un espacio"
@@ -170,7 +190,7 @@ export class ReservationCreate {
       return;
     }
 
-    const { durationHours, durationMinutes, ...reservation } = this.model();
+    const { durationHours, durationMinutes, ...reservation } = submittedModel;
     const untilDate = this.untilDate();
 
     if (!untilDate) {
@@ -186,8 +206,17 @@ export class ReservationCreate {
     }).subscribe({
       next: response => {
         console.log("La reserva fue creada con éxito: " + response);
+        const { title, description, fromDate, idServicesSelect } = submittedModel;
+        this.savedModel.set({
+          title,
+          description,
+          fromDate,
+          durationHours: submittedModel.durationHours,
+          durationMinutes: submittedModel.durationMinutes,
+          idServicesSelect,
+        });
 
-        this.reservationService.insertServicesSelected(response.id, this.model().idServicesSelect).subscribe({
+        this.reservationService.insertServicesSelected(response.id, submittedModel.idServicesSelect).subscribe({
           next: (res) => {
             console.log("Los servicios se ingresaron con éxito");
           },

@@ -1,4 +1,4 @@
-<div class="spaceDetail">
+<div class="spaceDetail" [appUnsavedChanges]="hasUnsavedChanges()">
   @if (space.isLoading()) {
     <div class="status-message">
       <p>Cargando...</p>
@@ -113,7 +113,7 @@
             <span class="material-symbols-outlined title-icon">calendar_month</span>
           </div>
           @if (isLoggedIn()) {
-            <app-space-calendar [idSpace]="id()"></app-space-calendar>
+            <app-space-calendar [idSpace]="id()" [bufferTime]="space.value()?.bufferTime ?? 0"></app-space-calendar>
           } @else {
             <p class="muted">
               <a routerLink="/login">Iniciá sesión</a> para ver el calendario de reservas de este espacio.

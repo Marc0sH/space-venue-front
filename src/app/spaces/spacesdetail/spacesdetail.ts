@@ -9,9 +9,10 @@ import { Comment } from '../comments/comment';
 import { CommentCreation } from '../comments/comment-creation/comment-creation';
 import { CommentsList } from '../comments/comments-list/comments-list';
 import { SpaceCalendar } from '../space-calendar/space-calendar';
+import { UnsavedChangesDirective } from '../../common/unsaved-changes.directive';
 
 @Component({
-   imports: [LocationMap, RouterLink, CommentCreation, CommentsList, ReservationCreate, SpaceCalendar],  selector: 'app-spacesdetail',
+   imports: [LocationMap, RouterLink, CommentCreation, CommentsList, ReservationCreate, SpaceCalendar, UnsavedChangesDirective],  selector: 'app-spacesdetail',
   styleUrl: './spacesdetail.css',
   templateUrl: './spacesdetail.html',
 })
@@ -39,6 +40,14 @@ export class Spacesdetail {
   });
 
   private readonly commentsList = viewChild(CommentsList); //viewChild le da acceso a spacesDetail al primer componente de de cierto tipo, aca lo uso para que spacesDetail pueda recargar la lista de cometarios caundo se publica una resenia
+  private readonly reservationCreation = viewChild(ReservationCreate);
+  private readonly commentCreation = viewChild(CommentCreation);
+
+  hasUnsavedChanges(): boolean {
+    return (this.reservationCreation()?.hasUnsavedChanges() ?? false)
+      || (this.commentCreation()?.hasUnsavedChanges() ?? false)
+      || (this.commentsList()?.hasUnsavedChanges() ?? false);
+  }
 
   // Al publicar un comentario: se oculta el formulario y la reseña nueva aparece en la lista
   protected onCommentCreated(): void {

@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, input, linkedSignal, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, input, linkedSignal, signal, viewChild } from '@angular/core';
 import { form, FormField, maxLength, min, minLength, required } from '@angular/forms/signals';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
@@ -14,12 +14,23 @@ import { ServiceCreation } from '../Servicios/service-creation/service-creation'
 import { ServiceReg } from '../../models/service.model';
 import { catchError, concat, concatMap, from, map, Observable, of, switchMap, toArray } from 'rxjs';
 import { mensajeDeError } from '../../common/http-error';
+import { hasChangedFrom } from '../../common/unsaved-changes';
+import { UnsavedChangesDirective } from '../../common/unsaved-changes.directive';
 
 // La ubicación puede quedar vacía si el espacio se creó antes del mapa
 type SpaceEditForm = Omit<SpaceUpdate, 'location'> & { location: Coordinates | null }
 
+const EMPTY_SPACE_EDIT_FORM: SpaceEditForm = {
+  nameSpace: '',
+  description: '',
+  basePrice: 0,
+  bufferTime: 0,
+  cancellationPolicies: 'FLEXIBLE',
+  location: null,
+};
+
 @Component({
-  imports: [FormField, FormErrorMessage, RouterLink, LocationPicker, ServiceCreation],
+  imports: [FormField, FormErrorMessage, RouterLink, LocationPicker, ServiceCreation, UnsavedChangesDirective],
   selector: 'app-space-edit',
   // Mismo diseño que el formulario de creación
   styleUrls: ['../space-creation/space-creation.css', './space-edit.css'],
@@ -35,6 +46,7 @@ export class SpaceEdit {
   protected readonly space = this.spaceService.getById(this.id);
   protected readonly images = this.spaceService.getImagesBySpaceId(this.id);
   protected readonly servicios = this.serviciosService.getServicio(this.id);
+  private readonly serviceCreation = viewChild(ServiceCreation);
 
   //Solo el dueño puede editar, y no si ya eliminó el espacio (el back también lo valida)
   protected readonly esDuenio = computed(() => {
@@ -44,18 +56,24 @@ export class SpaceEdit {
   });
 
   //Se precarga con los datos actuales del espacio
-  model = linkedSignal<SpaceEditForm>(() => {
+  private readonly persistedModel = computed<SpaceEditForm | null>(() => {
     const s = this.space.hasValue() ? this.space.value() : undefined;
+    if (!s) {
+      return null;
+    }
+
     return {
-      nameSpace: s?.nameSpace ?? '',
-      description: s?.description ?? '',
-      basePrice: s?.basePrice ?? 0,
-      bufferTime: s?.bufferTime ?? 0,
+      nameSpace: s.nameSpace ?? '',
+      description: s.description ?? '',
+      basePrice: s.basePrice ?? 0,
+      bufferTime: s.bufferTime ?? 0,
       //No se edita desde el formulario, pero el back la exige: se reenvía la política actual
-      cancellationPolicies: s?.cancellationPolicies?.type ?? 'FLEXIBLE',
+      cancellationPolicies: s.cancellationPolicies?.type ?? 'FLEXIBLE',
       location: hasLocation(s?.location) ? { latitude: s.location.latitude, longitude: s.location.longitude } : null,
     };
   });
+  model = linkedSignal<SpaceEditForm>(() => this.persistedModel() ?? EMPTY_SPACE_EDIT_FORM);
+  private readonly savedModel = linkedSignal<SpaceEditForm | null>(() => this.persistedModel());
 
   formEdit = form(this.model, (path) => {
     required(path.nameSpace, { message: 'El nombre del espacio es obligatorio' });
@@ -72,6 +90,16 @@ export class SpaceEdit {
 
   error = signal('');
   guardando = signal(false);
+
+  hasUnsavedChanges(): boolean {
+    const savedModel = this.savedModel();
+    return (savedModel !== null && hasChangedFrom(this.model(), savedModel))
+      || this.aEliminar().size > 0
+      || this.nuevas().length > 0
+      || this.serviciosAEliminar().size > 0
+      || this.serviciosNuevos().length > 0
+      || (this.serviceCreation()?.hasUnsavedChanges() ?? false);
+  }
 
   // Los cambios de imágenes se aplican recién al guardar
   readonly aEliminar = signal<Set<number>>(new Set());
@@ -149,14 +177,18 @@ export class SpaceEdit {
 
   onSubmit(event: Event) {
     event.preventDefault();
-    const { location, ...datos } = this.model();
+    const submittedModel = { ...this.model() };
+    const { location, ...datos } = submittedModel;
     if (!location || this.formEdit().invalid()) return;
     const idSpace = Number(this.id());
     this.guardando.set(true);
     this.error.set('');
 
     this.spaceService.updateOwnedSpace(idSpace, { ...datos, location }).pipe(
-      switchMap(() => this.aplicarCambiosPendientes(idSpace))
+      switchMap(() => {
+        this.savedModel.set(submittedModel);
+        return this.aplicarCambiosPendientes(idSpace);
+      })
     ).subscribe({
       next: (fallidos) => {
         const { imagenesBorrado, imagenesSubida, serviciosBorrado, serviciosAlta } = fallidos;

@@ -1,0 +1,11 @@
+<dialog #dialog class="unsaved-dialog" aria-labelledby="unsaved-dialog-title"
+    (cancel)="cancel($event)">
+    <h2 id="unsaved-dialog-title">¿Salir sin guardar?</h2>
+    <p>Tenés cambios sin guardar. Si salís de esta vista, los vas a perder.</p>
+    <div class="unsaved-dialog-actions">
+        <button type="button" class="continue-button" autofocus
+            (click)="dialogService.answer(false)">Seguir editando</button>
+        <button type="button" class="leave-button"
+            (click)="dialogService.answer(true)">Salir sin guardar</button>
+    </div>
+</dialog>

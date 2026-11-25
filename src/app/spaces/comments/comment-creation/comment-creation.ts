@@ -4,6 +4,7 @@ import { CommentComplete, CommentForm } from '../../../models/comment.model';
 import { form, max, maxLength, min, required, FormField } from '@angular/forms/signals';
 import { FormErrorMessage } from '../../../common/form-error-message/form-error-message';
 import { Comment } from '../comment';
+import { hasChangedFrom } from '../../../common/unsaved-changes';
 
 @Component({
   imports: [FormField, FormErrorMessage],
@@ -43,6 +44,18 @@ export class CommentCreation {
   readonly enviando = signal(false)
   readonly mensajeExito = signal('')
   readonly error = signal('')
+  private readonly savedModel = signal<{ description: string; score: number } | null>(null)
+
+  hasUnsavedChanges(): boolean {
+    const comment = this.isEditing() ? this.commentToEdit() : null;
+    const savedModel = this.savedModel() ?? (comment
+      ? { description: comment.description, score: comment.score }
+      : { description: '', score: 1 });
+    return hasChangedFrom(
+      { description: this.model().description, score: this.model().score },
+      savedModel,
+    );
+  }
 
   onSubmit(event: Event){
     event.preventDefault()
@@ -61,13 +74,18 @@ export class CommentCreation {
     this.enviando.set(true)
     this.mensajeExito.set('')
     this.error.set('')
+    const submittedModel = { ...this.model() };
 
     const request = editing && comment
-      ? this.commentService.modifyComment(comment.idComment, this.model())
-      : this.commentService.createComment(this.model())
+      ? this.commentService.modifyComment(comment.idComment, submittedModel)
+      : this.commentService.createComment(submittedModel)
 
     request.subscribe({
       next: () => {
+        this.savedModel.set({
+          description: submittedModel.description,
+          score: submittedModel.score,
+        })
         this.mensajeExito.set(editing
           ? 'Tu comentario se modificó correctamente.'
           : 'Tu comentario se publicó correctamente.')

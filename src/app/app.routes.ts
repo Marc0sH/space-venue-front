@@ -3,7 +3,6 @@ import { NotFound } from './not-found/not-found';
 import { Register } from './auth/register/register';
 import { Login } from './auth/login/login';
 import { Spaceslist } from './spaces/spaceslist/spaceslist';
-import { Spacescard } from './spaces/spacescard/spacescard';
 import { Spacesdetail } from './spaces/spacesdetail/spacesdetail';
 import { SpaceCreation } from './spaces/space-creation/space-creation';
 import { SpaceEdit } from './spaces/space-edit/space-edit';
@@ -17,27 +16,30 @@ import { AdminSpaces } from './spaces/admin-spaces/admin-spaces';
 import { adminGuard } from './guard/admin-guard';
 import { publicadorGuard } from './guard/publicador-guard';
 import { AdminUsers } from './user/admin-users/admin-users';
-import { ReservationCreate } from './reservations/reservation-create/reservation-create';
+
 import { ReservationList } from './reservations/reservation-list/reservation-list';
+
 import { ReservationDetails } from './reservations/reservation-details/reservation-details';
 import { ReservationOwnerList } from './reservations/reservation-owner-list/reservation-owner-list';
+import { formularioGuard } from './guard/formulario-guard';
+
 
 export const routes: Routes = [
     {path: '', redirectTo: 'espacios', pathMatch: 'full'},
     {path: 'login', component: Login},
-    {path: 'registro', component: Register},
+    {path: 'registro', component: Register, canDeactivate: [formularioGuard]},
     {path: 'espacios', component: Spaceslist},
     {path: 'espacios/todos', component: AllSpaces},
-    {path: 'espacios/crear', component: SpaceCreation, canActivate: [publicadorGuard]},
+    {path: 'espacios/crear', component: SpaceCreation, canActivate: [publicadorGuard], canDeactivate: [formularioGuard]},
     {path: 'espacios/espaciospropios', component: ListMySpaces, canActivate: [publicadorGuard]},
-    {path: 'espacios/:id/editar', component: SpaceEdit, canActivate: [publicadorGuard]},
-    {path: 'espacios/:id', component: Spacesdetail},
+    {path: 'espacios/:id/editar', component: SpaceEdit, canActivate: [publicadorGuard], canDeactivate: [formularioGuard]},
+    {path: 'espacios/:id', component: Spacesdetail, canDeactivate: [formularioGuard]},
     {path: 'reservas', component: ReservationList, canActivate: [logInGuard]},
     {path: 'reservas/recibidas', component: ReservationOwnerList, canActivate: [publicadorGuard]},
     {path: 'reservas/:idReservation', component: ReservationDetails, canActivate: [logInGuard]},
     {path: 'reservas/byspace/:idSpace', component: ReservationList, canActivate: [publicadorGuard]},
     {path: 'perfil', component: UserProfile, canActivate: [logInGuard]},
-    {path: 'perfil/editar', component: UserEdit, canActivate: [logInGuard]},
+    {path: 'perfil/editar', component: UserEdit, canActivate: [logInGuard], canDeactivate: [formularioGuard]},
     {path: 'notificaciones', component: NotificationList, canActivate: [logInGuard]},
     {path: 'admin/espacios', component: AdminSpaces, canActivate: [adminGuard]},
     {path: 'admin/usuarios', component: AdminUsers, canActivate: [adminGuard]},

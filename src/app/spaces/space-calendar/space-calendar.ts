@@ -10,7 +10,20 @@ interface CalendarDay {
   isToday: boolean;
   isPast: boolean;
   entries: ReservationCalendarEntry[];
+  //Recesos que empiezan en un día anterior (la reserva terminó cerca de la medianoche)
+  carriedBuffers: BufferBlock[];
 }
+
+//Tiempo de receso después de una reserva, en el que el espacio sigue sin estar disponible
+interface BufferBlock {
+  from: Date;
+  until: Date;
+  entry: ReservationCalendarEntry;
+}
+
+type DayItem =
+  | { kind: 'reservation'; start: number; entry: ReservationCalendarEntry }
+  | { kind: 'buffer'; start: number; block: BufferBlock };
 
 const MONTHS = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio',
   'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -44,6 +57,8 @@ export class SpaceCalendar {
   private readonly reservationService = inject(Reservation);
 
   readonly idSpace = input.required<string>();
+  //Minutos de receso entre reservas configurados en el espacio
+  readonly bufferTime = input<number>(0);
 
   protected readonly weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
   protected readonly statusLabels = STATUS_LABELS;
@@ -94,24 +109,52 @@ export class SpaceCalendar {
     return map;
   });
 
+  //Bloques de receso agrupados por día. Si el receso cruza la medianoche aparece también en el día siguiente.
+  private readonly buffersByDay = computed(() => {
+    const map = new Map<string, BufferBlock[]>();
+    const minutes = this.bufferTime();
+    if (!minutes || minutes <= 0) return map;
+    const list = this.reservations.hasValue() ? this.reservations.value() : [];
+    for (const entry of list) {
+      const from = new Date(entry.untilDate);
+      const until = new Date(from.getTime() + minutes * 60_000);
+      const block: BufferBlock = { from, until, entry };
+      const last = new Date(until.getTime() - 1);
+      for (let day = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+           day <= last;
+           day = addDays(day, 1)) {
+        const key = toKey(day);
+        const dayList = map.get(key);
+        if (dayList) dayList.push(block);
+        else map.set(key, [block]);
+      }
+    }
+    return map;
+  });
+
+  protected readonly bufferLabel = computed(() => this.formatDuration(this.bufferTime()));
+
   protected readonly weeks = computed<CalendarDay[][]>(() => {
     const start = this.gridStart();
     const month = this.month().getMonth();
     const todayKey = toKey(new Date());
     const byDay = this.entriesByDay();
+    const buffers = this.buffersByDay();
     const weeks: CalendarDay[][] = [];
     for (let w = 0; w < 6; w++) {
       const week: CalendarDay[] = [];
       for (let d = 0; d < 7; d++) {
         const date = addDays(start, w * 7 + d);
         const key = toKey(date);
+        const entries = byDay.get(key) ?? [];
         week.push({
           key,
           date,
           inMonth: date.getMonth() === month,
           isToday: key === todayKey,
           isPast: key < todayKey,
-          entries: byDay.get(key) ?? [],
+          entries,
+          carriedBuffers: (buffers.get(key) ?? []).filter(b => !entries.includes(b.entry)),
         });
       }
       weeks.push(week);
@@ -123,7 +166,13 @@ export class SpaceCalendar {
     const key = this.selectedKey();
     if (!key) return null;
     const [y, m, d] = key.split('-').map(Number);
-    return { key, date: new Date(y, m - 1, d), entries: this.entriesByDay().get(key) ?? [] };
+    const entries = this.entriesByDay().get(key) ?? [];
+    //Reservas y recesos intercalados en orden cronológico
+    const items: DayItem[] = [
+      ...entries.map(entry => ({ kind: 'reservation' as const, start: new Date(entry.fromDate).getTime(), entry })),
+      ...(this.buffersByDay().get(key) ?? []).map(block => ({ kind: 'buffer' as const, start: block.from.getTime(), block })),
+    ].sort((a, b) => a.start - b.start);
+    return { key, date: new Date(y, m - 1, d), entries, items };
   });
 
   protected previousMonth(): void {
@@ -155,18 +204,41 @@ export class SpaceCalendar {
     this.selectedKey.set(null);
   }
 
-  protected formatTime(value: string): string {
+  protected formatTime(value: string | Date): string {
     const date = new Date(value);
     return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
   }
 
   //Hora de inicio/fin dentro del día mostrado; si la reserva viene de otro día o sigue en otro, se aclara la fecha
   protected formatRange(entry: ReservationCalendarEntry, dayKey: string): string {
-    const from = new Date(entry.fromDate);
-    const until = new Date(entry.untilDate);
-    const fromText = toKey(from) === dayKey ? this.formatTime(entry.fromDate) : `${this.shortDate(from)} ${this.formatTime(entry.fromDate)}`;
-    const untilText = toKey(until) === dayKey ? this.formatTime(entry.untilDate) : `${this.shortDate(until)} ${this.formatTime(entry.untilDate)}`;
+    return this.formatSpan(new Date(entry.fromDate), new Date(entry.untilDate), dayKey);
+  }
+
+  protected formatSpan(from: Date, until: Date, dayKey: string): string {
+    const fromText = toKey(from) === dayKey ? this.formatTime(from) : `${this.shortDate(from)} ${this.formatTime(from)}`;
+    const untilText = toKey(until) === dayKey ? this.formatTime(until) : `${this.shortDate(until)} ${this.formatTime(until)}`;
     return `${fromText} – ${untilText}`;
+  }
+
+  //Tooltip de la pastilla de la celda: horario completo y hasta cuándo dura el receso
+  protected pillTitle(entry: ReservationCalendarEntry): string {
+    const range = `${this.formatTime(entry.fromDate)} – ${this.formatTime(entry.untilDate)}`;
+    const minutes = this.bufferTime();
+    if (!minutes || minutes <= 0) return range;
+    const freeAt = new Date(new Date(entry.untilDate).getTime() + minutes * 60_000);
+    return `${range} · Receso hasta ${this.formatTime(freeAt)}`;
+  }
+
+  //Texto para la celda: hasta qué hora no está disponible el espacio por el receso
+  protected bufferPillText(block: BufferBlock): string {
+    return `Receso hasta ${this.formatTime(block.until)}`;
+  }
+
+  protected formatDuration(minutes: number): string {
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    if (h === 0) return `${m} min`;
+    return m === 0 ? `${h} h` : `${h} h ${m} min`;
   }
 
   protected longDate(date: Date): string {
