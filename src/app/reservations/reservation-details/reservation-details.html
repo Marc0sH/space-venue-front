@@ -37,7 +37,34 @@
                 <p><span>Hasta</span>{{reservation.value()?.untilDate | date:'dd/MM/yyyy HH:mm'}}</p>
             </div>
             <p class="payment"><span>Pago total</span><strong>${{reservation.value()?.finalPrice}}</strong></p>
+
+            @if (puedePagar()) {
+                <section class="reservation-actions" aria-label="Pagar reserva">
+                    <p class="actions-text">El dueño confirmó tu reserva. Pagala para asegurarla.</p>
+                    <div class="actions-buttons">
+                        <button class="action-button accept-button" type="button" [disabled]="pagando()" (click)="onPay()">
+                            {{ pagando() ? 'Procesando...' : 'Pagar (simulado)' }}
+                        </button>
+                    </div>
+                    @if (pagoError()) {
+                        <p class="action-error" role="alert">{{ pagoError() }}</p>
+                    }
+                </section>
+            }
         </section>
+
+        @if (reembolso(); as r) {
+            <section class="space-details refund-details" aria-label="Reembolso por cancelación">
+                <h3>Reembolso por cancelación</h3>
+                <p>
+                    <strong>Reintegro al cliente:</strong>
+                    {{ r.refundPercentage }}% ({{ pesos(r.refundAmount) }})
+                    @if (r.refundPending) {
+                        <span class="refund-pending">Pendiente</span>
+                    }
+                </p>
+            </section>
+        }
 
         @if (esDuenio()) {
             <section class="space-details">

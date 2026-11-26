@@ -3,6 +3,10 @@ import { inject, Service, Signal } from '@angular/core';
 import { NewReservation, OwnerReservationFilters, ReservationCalendarEntry, ReservationComplete } from '../models/reservation.model';
 import { environment } from '../../environments/enviroment';
 import { ServiceSelected, ServiceSpace } from '../models/service.model';
+import { CancellationRefund } from '../models/cancellation-refund.model';
+
+//Los pagos simulados usan ids altos para no chocar con ids reales de Mercado Pago
+const ID_PAGO_SIMULADO_BASE = 9_000_000_000;
 
 @Service()
 export class Reservation {
@@ -67,7 +71,25 @@ export class Reservation {
     }
     
     cancelReservation(idReservation : string){
-        return this.http.put(`${environment.apiUrl}/reservations/cancel/${idReservation}`, idReservation)
+        return this.http.put<ReservationComplete>(`${environment.apiUrl}/reservations/cancel/${idReservation}`, idReservation)
+    }
+
+    //Lo que le correspondería al cliente si quien consulta cancelara la reserva ahora (no modifica nada)
+    getCancellationPreview(idReservation : string){
+        return this.http.get<CancellationRefund>(`${environment.apiUrl}/reservations/${idReservation}/cancellation-preview`)
+    }
+
+    //PAGO SIMULADO: marca la reserva como pagada usando la simulación del webhook (no pasa por Mercado Pago).
+    //Reemplazar por el checkout real cuando se integre Mercado Pago.
+    //El id de pago es fijo por reserva: si se paga dos veces se actualiza el mismo pago en vez de crear otro
+    //(el back espera un solo pago por reserva)
+    simulatePayment(idReservation : number){
+        return this.http.post<void>(`${environment.apiUrl}/v1/payments/webhook`, {
+            type: 'payment',
+            data: { id: ID_PAGO_SIMULADO_BASE + idReservation },
+            isSimulation: true,
+            reservationId: idReservation,
+        })
     }
 
     getOwnerReservations(filters: Signal<OwnerReservationFilters>) {

@@ -1,0 +1,20 @@
+<section class="policy" aria-labelledby="policy-title">
+    <h3 id="policy-title" class="policy-title">Política de cancelación</h3>
+    <p class="policy-intro">Si cancelás una reserva ya pagada, se te reintegra según la anticipación. Si la cancela el dueño del espacio, se te reintegra el total.</p>
+    <table class="policy-table">
+        <thead>
+            <tr>
+                <th scope="col">Cancelación</th>
+                <th scope="col">Reembolso</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (fila of filas; track fila.anticipacion) {
+                <tr>
+                    <td>{{ fila.anticipacion }}</td>
+                    <td>{{ fila.reembolso }}</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>

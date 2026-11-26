@@ -25,7 +25,6 @@ const EMPTY_SPACE_EDIT_FORM: SpaceEditForm = {
   description: '',
   basePrice: 0,
   bufferTime: 0,
-  cancellationPolicies: 'FLEXIBLE',
   location: null,
 };
 
@@ -67,8 +66,6 @@ export class SpaceEdit {
       description: s.description ?? '',
       basePrice: s.basePrice ?? 0,
       bufferTime: s.bufferTime ?? 0,
-      //No se edita desde el formulario, pero el back la exige: se reenvía la política actual
-      cancellationPolicies: s.cancellationPolicies?.type ?? 'FLEXIBLE',
       location: hasLocation(s?.location) ? { latitude: s.location.latitude, longitude: s.location.longitude } : null,
     };
   });

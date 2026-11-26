@@ -10,6 +10,7 @@ import { FormErrorMessage } from '../../common/form-error-message/form-error-mes
 import { Spaceservice } from '../../spaces/spaceservice';
 import { mensajeDeError } from '../../common/http-error';
 import { hasChangedFrom } from '../../common/unsaved-changes';
+import { CancellationPolicy } from '../../common/cancellation-policy/cancellation-policy';
 
 const MIN_DURATION_MINUTES = 10;
 const INITIAL_RESERVATION_FIELDS = {
@@ -22,7 +23,7 @@ const INITIAL_RESERVATION_FIELDS = {
 };
 
 @Component({
-  imports: [FormField, CurrencyPipe, DatePipe, FormErrorMessage],
+  imports: [FormField, CurrencyPipe, DatePipe, FormErrorMessage, CancellationPolicy],
   selector: 'app-reservation-create',
   styleUrl: './reservation-create.css',
   templateUrl: './reservation-create.html',

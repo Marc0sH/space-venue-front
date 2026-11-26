@@ -20,7 +20,6 @@ type SpaceForm = Omit<NewSpace, 'location'> & { location: Coordinates | null }
 
 const INITIAL_SPACE_FORM: SpaceForm = {
   location: null,
-  cancellationPolicies: 'FLEXIBLE',
   nameSpace: '',
   description: '',
   basePrice: 0,
