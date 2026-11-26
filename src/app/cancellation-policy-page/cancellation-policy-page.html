@@ -1,0 +1,52 @@
+<article class="policy-page">
+    <h2>Política de cancelación</h2>
+    <p class="lead">
+        Esta política aplica a todas las reservas de Space&amp;Venue, sin importar el espacio.
+        Solo hay reembolso si la reserva ya estaba pagada: mientras la reserva está pendiente de aprobación
+        o confirmada sin pagar, cancelarla no tiene ningún costo.
+    </p>
+
+    <section>
+        <h3>Si cancelás vos (cliente)</h3>
+        <p>El reembolso depende de cuánto falte para el inicio de la reserva en el momento en que cancelás:</p>
+        <table class="policy-table">
+            <thead>
+                <tr>
+                    <th scope="col">Anticipación</th>
+                    <th scope="col">Reembolso</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (fila of filas; track fila.anticipacion) {
+                    <tr>
+                        <td>{{ fila.anticipacion }}</td>
+                        <td>{{ fila.reembolso }}</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <ul>
+            <li>Si cancelás con exactamente 7 días de anticipación, se te reintegra el 100%.</li>
+            <li>Si cancelás con exactamente 48 horas de anticipación, se te reintegra el 50%.</li>
+            <li>Los horarios se toman según la hora de Argentina.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Si cancela el dueño del espacio o la plataforma</h3>
+        <p>
+            Si la reserva la cancela el dueño del espacio o la administración de Space&amp;Venue
+            (por ejemplo, porque el espacio se da de baja), se te reintegra el <strong>100%</strong> de lo pagado,
+            sin importar la anticipación.
+        </p>
+    </section>
+
+    <section>
+        <h3>¿Cómo se calcula?</h3>
+        <ul>
+            <li>El porcentaje se aplica sobre el total que pagaste por la reserva, incluidos los servicios adicionales.</li>
+            <li>Antes de confirmar una cancelación, la app te muestra cuánto se te va a reintegrar.</li>
+            <li>Una vez cancelada, el porcentaje y el monto del reintegro quedan visibles en el detalle de la reserva.</li>
+        </ul>
+    </section>
+</article>

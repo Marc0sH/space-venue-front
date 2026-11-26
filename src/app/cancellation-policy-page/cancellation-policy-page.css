@@ -1,0 +1,96 @@
+:host {
+  display: block;
+  background-color: var(--theme-background);
+  color: var(--theme-text);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+.policy-page {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  box-sizing: border-box;
+  line-height: 1.6;
+}
+
+.policy-page h2 {
+  margin: 0 0 1rem;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+}
+
+.policy-page h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.lead,
+.policy-page p,
+.policy-page li {
+  color: var(--theme-muted);
+}
+
+.lead {
+  margin: 0 0 2rem;
+}
+
+.policy-page section {
+  margin-bottom: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 0.75rem;
+  background-color: var(--theme-surface);
+}
+
+.policy-page section p {
+  margin: 0 0 0.75rem;
+}
+
+.policy-page ul {
+  margin: 0.75rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.policy-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.policy-table th,
+.policy-table td {
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid var(--theme-border);
+  text-align: left;
+}
+
+.policy-table th {
+  color: var(--theme-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.policy-table td:last-child,
+.policy-table th:last-child {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.policy-table td:last-child {
+  font-weight: 600;
+  color: var(--theme-text);
+}
+
+.policy-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+@media (max-width: 480px) {
+  .policy-page section {
+    padding: 1rem;
+  }
+}
