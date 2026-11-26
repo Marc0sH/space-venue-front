@@ -66,8 +66,6 @@
             <strong>{{finalPrice() | currency:'ARS':'symbol':'1.2-2' }}</strong>
         </div>
 
-        <app-cancellation-policy />
-
         <button type="submit" [disabled]="formReservation().invalid()">Reservar espacio</button>
 
         @if (error()) {

@@ -6,7 +6,7 @@
         <p class="list-message error" role="alert">Error al cargar los comentarios.</p>
     } @if(comments.hasValue()) {
         @for (c of commentsListFiltered(); track c.idComment) {
-            <app-comment-view-card [comment]="c" (deleted)="onCommentChanged()"></app-comment-view-card>
+            <app-comment-view-card [comment]="c" [showSpace]="true" (deleted)="onCommentChanged()"></app-comment-view-card>
         } @empty {
             <p class="list-message">No hay comentarios realizados.</p>
         }

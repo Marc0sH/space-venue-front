@@ -44,12 +44,18 @@
             type="button"
             class="dropdown-trigger profile-pill"
             [class.active]="openDropdown() === 'perfil'"
+            [attr.aria-label]="'Mi perfil: ' + (sessionService.username() ?? '') + ' (' + rolLabel() + ')'"
             (click)="toggleDropdown('perfil', $event)">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
               <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
               <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
             </svg>
             <span>Mi perfil</span>
+            @if (sessionService.username()) {
+              <span class="profile-separator" aria-hidden="true"></span>
+              <span class="profile-name">{{ sessionService.username() }}</span>
+            }
+            <span class="profile-role">{{ rolLabel() }}</span>
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
               <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
             </svg>
@@ -150,6 +156,10 @@
 
       <div class="mobile-menu-section">
         <span class="mobile-menu-heading">Mi perfil</span>
+        <div class="mobile-profile-info">
+          <span class="profile-name">{{ sessionService.username() ?? '' }}</span>
+          <span class="profile-role">{{ rolLabel() }}</span>
+        </div>
         <a class="mobile-nav-link" routerLink="/perfil" (click)="closeMobileMenu()">Perfil</a>
         <a class="mobile-nav-link" routerLink="/reservas" (click)="closeMobileMenu()">Mis reservas</a>
         @if (sessionService.puedePublicar()) {

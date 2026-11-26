@@ -20,10 +20,6 @@
         <button type="button" [disabled]="enviando()" (click)="onCancel()">Cancelar</button>
     }
 
-    @if (mensajeExito()) {
-        <p class="mensaje-exito" role="status">{{ mensajeExito() }}</p>
-    }
-
     @if (error()) {
         <p class="mensaje-error" role="alert">{{ error() }}</p>
     }

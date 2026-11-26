@@ -14,6 +14,7 @@ import { CANTIDAD_MAX_IMAGENES, ImagenSeleccionada, seleccionarImagenes } from '
 import { mensajeDeError } from '../../common/http-error';
 import { hasChangedFrom } from '../../common/unsaved-changes';
 import { UnsavedChangesDirective } from '../../common/unsaved-changes.directive';
+import { ToastService } from '../../common/toast-service';
 
 // La ubicación queda vacía hasta que se marca en el mapa
 type SpaceForm = Omit<NewSpace, 'location'> & { location: Coordinates | null }
@@ -55,6 +56,7 @@ mostrarFormServicio = signal(false)
   });
 
 
+  private readonly toastService = inject(ToastService);
   private spaceService = inject(Spaceservice)
   private router = inject(Router)
   private readonly serviceCreation = viewChild(ServiceCreation);
@@ -151,6 +153,7 @@ mostrarFormServicio = signal(false)
       this.pendingImages.set(fallidas > 0)
 
       if (fallidas === 0) {
+        this.toastService.success('El espacio se creó correctamente.')
         this.router.navigate(['/espacios'])
       } else {
         this.espacioCreado.set(true)
