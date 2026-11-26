@@ -1,21 +1,81 @@
-@if (idSpace()) {
-    <h2 class="title">Reservas de espacio</h2>
-}@else {
-    <h2 class="title">Reservas hechas</h2>
-}
-<section class="reservations-list">
-    @if (isLoading()) {
-        <p class="list-message">Cargando reservas...</p>
-    } @else if (error()) {
-        <p class="list-message fail">{{error()}}</p>
-    } @else if (reservations()) {
-        @for (r of reservations(); track r.id) {
-            <app-reservation-card
-                [reservation]="r"
-                (statusChange)="onStatusChange(r.id, $event)"
-            ></app-reservation-card>
-        }@empty { 
-            <p>No hay reservas a mostrar</p>
+<div class="my-reservations">
+    <header class="page-header">
+        @if (idSpace()) {
+            <h2 class="title">Reservas de espacio</h2>
+        } @else {
+            <h2 class="title">Mis reservas</h2>
+            <p class="subtitle">Gestioná tus solicitudes, pagos y reservas activas.</p>
         }
-    }
-</section>
+    </header>
+
+    <!-- Pills rápidas de estado, con la cantidad de reservas de cada una -->
+    <div class="status-pills" role="tablist" aria-label="Filtrar por estado">
+        @for (item of quickStatuses; track item.value) {
+            <button
+                type="button"
+                class="pill-btn"
+                [class.active]="filters().status === item.value"
+                (click)="setFilter('status', item.value)"
+            >
+                {{ item.label }}
+                <span class="pill-count">{{ counts()[item.value] ?? 0 }}</span>
+            </button>
+        }
+    </div>
+
+    <!-- Barra compacta: búsqueda, espacio, fecha y orden -->
+    <div class="compact-filters">
+        <input
+            type="text"
+            placeholder="Buscar por reserva, espacio o código..."
+            [value]="filters().text"
+            (input)="setFilter('text', $any($event.target).value)"
+            aria-label="Buscar por reserva, espacio o código"
+        />
+
+        <select (change)="setFilter('idSpace', $any($event.target).value)" aria-label="Filtrar por espacio">
+            <option value="" [selected]="!filters().idSpace">Todos los espacios</option>
+            @for (s of spaceOptions(); track s.id) {
+                <option [value]="s.id" [selected]="filters().idSpace === s.id">{{ s.name }}</option>
+            }
+        </select>
+
+        <input
+            type="date"
+            [value]="filters().date"
+            (change)="setFilter('date', $any($event.target).value)"
+            aria-label="Filtrar por fecha"
+        />
+
+        <select (change)="setFilter('sort', $any($event.target).value)" aria-label="Ordenar reservas">
+            <option value="recent" [selected]="filters().sort === 'recent'">Más recientes</option>
+            <option value="upcoming" [selected]="filters().sort === 'upcoming'">Próxima fecha</option>
+            <option value="price-high" [selected]="filters().sort === 'price-high'">Mayor importe</option>
+        </select>
+
+        @if (hayFiltros()) {
+            <button type="button" class="btn-clear" (click)="clearFilters()">Limpiar</button>
+        }
+    </div>
+
+    <section class="reservations-list">
+        @if (isLoading()) {
+            <p class="list-message">Cargando reservas...</p>
+        } @else if (error()) {
+            <p class="list-message fail">{{error()}}</p>
+        } @else {
+            @for (r of visibleReservations(); track r.id) {
+                <app-reservation-card
+                    [reservation]="r"
+                    (statusChange)="onStatusChange(r.id, $event)"
+                ></app-reservation-card>
+            } @empty {
+                @if (reservations().length === 0) {
+                    <p class="list-message">No hay reservas a mostrar</p>
+                } @else {
+                    <p class="list-message">No hay reservas que coincidan con los filtros seleccionados.</p>
+                }
+            }
+        }
+    </section>
+</div>
