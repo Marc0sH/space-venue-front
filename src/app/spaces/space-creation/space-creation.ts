@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject, signal, viewChild } from '@angular/core';
-import { form, FormField, maxLength, min, minLength, required } from '@angular/forms/signals';
+import { form, FormField, maxLength, min, minLength, required, validate } from '@angular/forms/signals';
 import { NewSpace } from '../../models/space.model';
 import { ServiceReg } from '../../models/service.model';
 import { FormErrorMessage } from '../../common/form-error-message/form-error-message';
@@ -17,10 +17,11 @@ import { UnsavedChangesDirective } from '../../common/unsaved-changes.directive'
 import { ToastService } from '../../common/toast-service';
 
 // La ubicación queda vacía hasta que se marca en el mapa
-type SpaceForm = Omit<NewSpace, 'location'> & { location: Coordinates | null }
+type SpaceForm = Omit<NewSpace, 'location' | 'floor'> & { location: Coordinates | null; floor: number | null }
 
 const INITIAL_SPACE_FORM: SpaceForm = {
   location: null,
+  floor: null,
   nameSpace: '',
   description: '',
   basePrice: 0,
@@ -53,6 +54,9 @@ mostrarFormServicio = signal(false)
     required(path.bufferTime, { message: 'El tiempo de receso es obligatorio' });
     min(path.bufferTime, 1, { message: 'El tiempo de receso debe ser mayor a 0' });
     required(path.location, { message: 'Marcá la ubicación del espacio en el mapa' });
+    validate(path.floor, (ctx) => ctx.value() === null || Number.isInteger(ctx.value())
+      ? null
+      : { kind: 'piso-invalido', message: 'El piso debe ser un número entero' });
   });
 
 
@@ -117,11 +121,11 @@ mostrarFormServicio = signal(false)
   onSubmit(event: Event) {
     event.preventDefault();
     const submittedModel = { ...this.model() };
-    const { location, ...datos } = submittedModel;
+    const { location, floor, ...datos } = submittedModel;
     if (!location) return;
     this.saving.set(true);
 
-    this.spaceService.createSpace({ ...datos, location }).subscribe({
+    this.spaceService.createSpace({ ...datos, ...(floor === null ? {} : { floor }), location }).subscribe({
       next: (res) => {
         this.error.set('');
         this.savedModel.set(submittedModel);

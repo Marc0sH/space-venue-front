@@ -64,6 +64,26 @@ describe('SpaceCreation', () => {
     expect(component.formSpaceCreation.location().invalid()).toBe(false);
   });
 
+  it('accepts only an integer floor and sends it when provided', () => {
+    component.model.update(current => ({ ...current, floor: 1.5 }));
+    expect(component.formSpaceCreation.floor().invalid()).toBe(true);
+
+    component.model.update(current => ({
+      ...current,
+      nameSpace: 'Salón',
+      description: 'Salón de eventos',
+      basePrice: 100,
+      bufferTime: 0,
+      location: { latitude: -34, longitude: -58 },
+      floor: 2,
+    }));
+
+    expect(component.formSpaceCreation.floor().invalid()).toBe(false);
+    component.onSubmit(new Event('submit'));
+
+    expect(createSpace).toHaveBeenCalledWith(expect.objectContaining({ floor: 2 }));
+  });
+
   it('sends staged services as space service items', () => {
     component.model.update((current) => ({
       ...current,
