@@ -9,21 +9,19 @@ import { Notificationservice } from './notificationservice';
 
 describe('Notificationservice', () => {
     const unseenUrl = `${environment.apiUrl}/notifications/consumer/onlyunseen`;
+    const streamUrl = `${environment.apiUrl}/notifications/stream`;
     const fakeSession: LoginResponse = {
         token: 'token',
         tipo: 'Bearer',
         rol: 'ROLE_CLIENT',
         consumerId: 1,
     };
-    const POLL_INTERVAL_MS = 10_000;
 
     let service: Notificationservice;
     let http: HttpTestingController;
-    let setIntervalSpy: ReturnType<typeof vi.spyOn>;
+    let streamController: ReadableStreamDefaultController<Uint8Array> | undefined;
 
     beforeEach(() => {
-        vi.useFakeTimers();
-        setIntervalSpy = vi.spyOn(globalThis, 'setInterval');
         TestBed.configureTestingModule({
             providers: [
                 provideHttpClient(),
@@ -36,120 +34,101 @@ describe('Notificationservice', () => {
 
     afterEach(() => {
         http.verify();
-        setIntervalSpy.mockRestore();
+        vi.unstubAllGlobals();
         localStorage.clear();
-        vi.useRealTimers();
     });
 
-    // httpResource exige contexto de inyección, igual que en el constructor del header
     function crearRecurso() {
         return TestBed.runInInjectionContext(() => service.getUnseen());
     }
 
-    // El recurso pasa a 'resolved' en una microtarea; hasta entonces reload() se ignora.
-    async function resolverRespuesta() {
-        await vi.advanceTimersByTimeAsync(0);
+    function mockStream() {
+        const body = new ReadableStream<Uint8Array>({
+            start(controller) {
+                streamController = controller;
+            },
+        });
+        vi.stubGlobal('fetch', vi.fn().mockResolvedValue(
+            new Response(body, { headers: { 'Content-Type': 'text/event-stream' } })
+        ));
     }
 
-    it('should be created', () => {
-        service = TestBed.inject(Notificationservice);
-        expect(service).toBeTruthy();
-    });
+    async function esperarRefresco(recurso: ReturnType<typeof crearRecurso>) {
+        let request: ReturnType<typeof http.expectOne> | undefined;
+        await vi.waitFor(() => {
+            TestBed.flushEffects();
+            request = http.expectOne(unseenUrl);
+        });
+        request!.flush([]);
+        await vi.waitFor(() => expect(recurso.status()).toBe('resolved'));
+    }
 
-    it('refresca las notificaciones no vistas cada 10s mientras hay sesión', async () => {
+    it('se conecta al stream SSE autenticado y refresca por ambos eventos', async () => {
         localStorage.setItem('session', JSON.stringify(fakeSession));
+        mockStream();
         service = TestBed.inject(Notificationservice);
-        crearRecurso();
+        const recurso = crearRecurso();
 
         TestBed.flushEffects();
         http.expectOne(unseenUrl).flush([]);
-        await resolverRespuesta();
+        await vi.waitFor(() => expect(recurso.status()).toBe('resolved'));
 
-        vi.advanceTimersByTime(POLL_INTERVAL_MS);
-        TestBed.flushEffects();
-        http.expectOne(unseenUrl).flush([]);
-        await resolverRespuesta();
+        expect(globalThis.fetch).toHaveBeenCalledWith(streamUrl, expect.objectContaining({
+            headers: {
+                Accept: 'text/event-stream',
+                Authorization: 'Bearer token',
+            },
+            signal: expect.any(AbortSignal),
+        }));
 
-        vi.advanceTimersByTime(POLL_INTERVAL_MS);
-        TestBed.flushEffects();
-        http.expectOne(unseenUrl).flush([]);
-        await resolverRespuesta();
+        streamController!.enqueue(new TextEncoder().encode('event: notification\ndata: {}\n\n'));
+        await esperarRefresco(recurso);
+
+        streamController!.enqueue(new TextEncoder().encode('event: unread-count\ndata: 0\n\n'));
+        await esperarRefresco(recurso);
     });
 
-    it('no crea el timer de polling si no hay sesión', () => {
+    it('no abre el stream SSE si no hay sesión', () => {
+        mockStream();
         service = TestBed.inject(Notificationservice);
         crearRecurso();
 
         TestBed.flushEffects();
-        vi.advanceTimersByTime(60_000);
-        TestBed.flushEffects();
 
+        expect(globalThis.fetch).not.toHaveBeenCalled();
         http.expectNone(unseenUrl);
-        expect(setIntervalSpy).not.toHaveBeenCalled();
     });
 
-    it('detiene el polling al cerrar la sesión', async () => {
+    it('actualiza el recurso al marcar una notificación como vista', async () => {
         localStorage.setItem('session', JSON.stringify(fakeSession));
+        mockStream();
         service = TestBed.inject(Notificationservice);
-        crearRecurso();
+        const recurso = crearRecurso();
 
         TestBed.flushEffects();
         http.expectOne(unseenUrl).flush([]);
-        await resolverRespuesta();
-
-        vi.advanceTimersByTime(POLL_INTERVAL_MS);
-        TestBed.flushEffects();
-        http.expectOne(unseenUrl).flush([]);
-        await resolverRespuesta();
-
-        const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigateByUrl')
-            .mockResolvedValue(true);
-        TestBed.inject(Session).clearSession();
-        TestBed.flushEffects();
-
-        vi.advanceTimersByTime(60_000);
-        TestBed.flushEffects();
-
-        expect(navigateSpy).toHaveBeenCalled();
-        http.expectNone(unseenUrl);
-        expect(setIntervalSpy).toHaveBeenCalledTimes(1); // el timer del primer login; el del logout no existe
-    });
-
-    it('sigue refrescando al marcar una notificación como leída', async () => {
-        localStorage.setItem('session', JSON.stringify(fakeSession));
-        service = TestBed.inject(Notificationservice);
-        crearRecurso();
-
-        TestBed.flushEffects();
-        http.expectOne(unseenUrl).flush([]);
-        await resolverRespuesta();
+        await vi.waitFor(() => expect(recurso.status()).toBe('resolved'));
 
         service.markAsSeen(7).subscribe();
         const markRequest = http.expectOne(`${environment.apiUrl}/notifications/7`);
         expect(markRequest.request.method).toBe('POST');
         markRequest.flush({});
 
-        // markAsSeen incrementa refreshTick, lo que también dispara el refetch
-        TestBed.flushEffects();
-        http.expectOne(unseenUrl).flush([]);
-        await resolverRespuesta();
+        await esperarRefresco(recurso);
     });
 
-    it('conserva las notificaciones mientras refresca (el badge no vuelve a 0)', async () => {
+    it('cancela el stream al cerrar la sesión', () => {
         localStorage.setItem('session', JSON.stringify(fakeSession));
+        mockStream();
         service = TestBed.inject(Notificationservice);
-        const recurso = crearRecurso();
 
         TestBed.flushEffects();
-        http.expectOne(unseenUrl).flush([{ idNotification: 1 }]);
-        await resolverRespuesta();
-        expect(recurso.value()?.length).toBe(1);
-
-        vi.advanceTimersByTime(POLL_INTERVAL_MS);
+        const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigateByUrl')
+            .mockResolvedValue(true);
+        TestBed.inject(Session).clearSession();
         TestBed.flushEffects();
-        const pendiente = http.expectOne(unseenUrl);
-        expect(recurso.status()).toBe('reloading');
-        expect(recurso.value()?.length).toBe(1);
-        pendiente.flush([]);
+
+        expect(navigateSpy).toHaveBeenCalled();
+        expect(globalThis.fetch).toHaveBeenCalledTimes(1);
     });
 });
