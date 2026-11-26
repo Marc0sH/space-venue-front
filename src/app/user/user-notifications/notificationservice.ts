@@ -2,7 +2,7 @@ import { effect, inject, Service, signal, untracked } from '@angular/core';
 import { environment } from '../../../environments/enviroment';
 import { HttpClient, httpResource } from '@angular/common/http';
 import { Session } from '../../auth/session/session';
-import { Notificacion, NotificacionCount } from '../../models/notification.model';
+import { Notificacion } from '../../models/notification.model';
 import { tap } from 'rxjs';
 
 @Service()
@@ -11,38 +11,114 @@ export class Notificationservice {
     private http = inject(HttpClient);
     private sessionService = inject(Session);
 
-    // Cada incremento dispara un reload() de getUnseen() en el header:
-    // lo incrementan el polling y markAsSeen/markAllAsSeen.
     private refreshTick = signal(0);
-    private static readonly POLL_INTERVAL_MS = 10_000;
+    private static readonly RECONNECT_DELAY_MS = 3_000;
 
     constructor() {
-        // Mientras haya sesión, refresca las notificaciones no vistas cada POLL_INTERVAL_MS,
-        // para que el contador del header llegue en tiempo real sin recargar la página.
-        // onCleanup detiene el timer al cambiar de sesión (login/logout) o al destruir el servicio,
-        // así nunca queda un intervalo colgado.
         effect((onCleanup) => {
-            if (!this.sessionService.session()) return;
-            const id = setInterval(
-                () => {
-                    // Con la pestaña oculta no se consulta; al volver se refresca enseguida.
-                    if (document.visibilityState === 'visible') this.bumpRefresh();
-                },
-                Notificationservice.POLL_INTERVAL_MS
-            );
-            const onVisible = () => {
-                if (document.visibilityState === 'visible') this.bumpRefresh();
-            };
-            document.addEventListener('visibilitychange', onVisible);
-            onCleanup(() => {
-                clearInterval(id);
-                document.removeEventListener('visibilitychange', onVisible);
-            });
+            const session = this.sessionService.session();
+            if (!session) return;
+
+            // EventSource no permite configurar Authorization. fetch permite enviar el bearer
+            // token que exige el backend y leer su respuesta como un stream SSE.
+            const controller = new AbortController();
+            void this.connectToNotificationStream(session.tipo, session.token, controller.signal);
+            // El stream solo debe vivir mientras esta sesión siga activa; al cerrar o cambiar
+            // la sesión se aborta la conexión para no conservar una suscripción con otro token.
+            onCleanup(() => controller.abort());
         });
     }
 
     private bumpRefresh(){
         this.refreshTick.update(version => version + 1);
+    }
+
+    private async connectToNotificationStream(tipo: string, token: string, signal: AbortSignal): Promise<void> {
+        while (!signal.aborted) {
+            try {
+                const response = await fetch(`${this.baseUrl}/stream`, {
+                    headers: {
+                        Accept: 'text/event-stream',
+                        Authorization: `${tipo} ${token}`,
+                    },
+                    signal,
+                });
+
+                if (response.status === 401) {
+                    this.sessionService.clearSession();
+                    return;
+                }
+                if (!response.ok) {
+                    throw new Error(`SSE request failed with status ${response.status}`);
+                }
+                if (!response.body) {
+                    throw new Error('SSE response has no readable body');
+                }
+
+                await this.readNotificationEvents(response.body, signal);
+                if (!signal.aborted) {
+                    // Si el servidor cierra el stream, se considera una desconexión y se reintenta.
+                    throw new Error('SSE connection closed unexpectedly');
+                }
+            } catch (error) {
+                if (signal.aborted) return;
+                console.error('Error en el flujo SSE de notificaciones', error);
+                // Evita reintentos continuos cuando hay un fallo temporal de red o del servidor.
+                await this.waitBeforeReconnect(signal);
+            }
+        }
+    }
+
+    private async readNotificationEvents(body: ReadableStream<Uint8Array>, signal: AbortSignal): Promise<void> {
+        const reader = body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        try {
+            while (!signal.aborted) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+                const events = buffer.split(/\r\n\r\n|\n\n|\r\r/);
+                buffer = events.pop() ?? '';
+                events.forEach(event => this.handleNotificationEvent(event));
+            }
+
+            buffer += decoder.decode();
+            if (buffer) this.handleNotificationEvent(buffer);
+        } finally {
+            reader.releaseLock();
+        }
+    }
+
+    private handleNotificationEvent(eventData: string): void {
+        const eventType = eventData
+            .split(/\r\n|\n|\r/)
+            .find(line => line.startsWith('event:'))
+            ?.slice('event:'.length)
+            .trim();
+
+        if (eventType === 'notification' || eventType === 'unread-count') {
+            // Una notificación nueva o marcarla como vista cambia el total no leído;
+            // bumpRefresh hace que getUnseen recargue la lista usada por el badge del header.
+            this.bumpRefresh();
+        }
+    }
+
+    private waitBeforeReconnect(signal: AbortSignal): Promise<void> {
+        if (signal.aborted) return Promise.resolve();
+        return new Promise(resolve => {
+            const timeout = setTimeout(() => {
+                signal.removeEventListener('abort', onAbort);
+                resolve();
+            }, Notificationservice.RECONNECT_DELAY_MS);
+            const onAbort = () => {
+                clearTimeout(timeout);
+                resolve();
+            };
+            signal.addEventListener('abort', onAbort, { once: true });
+        });
     }
 
     getNotification(){

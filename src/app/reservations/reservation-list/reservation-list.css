@@ -2,31 +2,133 @@
   display: block;
   background-color: var(--theme-background);
   color: var(--theme-text);
-}
-
-.title {
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 64rem;
-  margin: 0 auto;
-  padding: 2rem 1.25rem 0;
-  color: var(--theme-text);
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 2rem;
 }
 
-.reservations-list {
+.my-reservations {
   box-sizing: border-box;
-  display: grid;
-  gap: 1rem;
   width: 100%;
   max-width: 64rem;
   margin: 0 auto;
   padding: 2rem 1.25rem 3rem;
+}
+
+/* Encabezado */
+.page-header {
+  margin-bottom: 1.25rem;
+}
+
+.title {
+  margin: 0;
   color: var(--theme-text);
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-size: 1.65rem;
+  font-weight: 700;
+  line-height: 2.1rem;
+}
+
+.subtitle {
+  margin: 0.3rem 0 0;
+  color: var(--theme-muted);
+  font-size: 0.9rem;
+}
+
+/* Pills rápidas de estado (mismo estilo que el panel del oferente) */
+.status-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 9999px;
+  background-color: var(--theme-surface-raised);
+  color: var(--theme-muted);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pill-btn:hover {
+  background-color: var(--theme-surface-hover);
+  color: var(--theme-text);
+}
+
+.pill-btn.active {
+  background-color: var(--theme-cta-btn-bg);
+  color: var(--theme-cta-btn-text);
+  border-color: var(--theme-cta-btn-bg);
+}
+
+.pill-count {
+  padding: 0 0.4rem;
+  border-radius: 9999px;
+  background-color: color-mix(in srgb, currentColor 16%, transparent);
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.15rem;
+}
+
+/* Filtros compactos */
+.compact-filters {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.65rem;
+  margin-bottom: 1.5rem;
+}
+
+.compact-filters input,
+.compact-filters select {
+  box-sizing: border-box;
+  width: 100%;
+  height: 2.35rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--theme-border-control);
+  border-radius: 0.6rem;
+  background-color: var(--theme-surface-raised);
+  color: var(--theme-text);
+  font-family: inherit;
+  font-size: 0.85rem;
+  transition: border-color 0.15s ease;
+}
+
+.compact-filters input:focus,
+.compact-filters select:focus {
+  outline: none;
+  border-color: var(--theme-accent);
+}
+
+.btn-clear {
+  height: 2.35rem;
+  padding: 0 0.85rem;
+  border: 1px solid var(--theme-border-control);
+  border-radius: 0.6rem;
+  background-color: transparent;
+  color: var(--theme-muted);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-clear:hover {
+  background-color: var(--theme-surface-hover);
+  color: var(--theme-text);
+}
+
+/* Lista */
+.reservations-list {
+  display: grid;
+  gap: 1rem;
+  color: var(--theme-text);
 }
 
 .reservations-list app-reservation-card {
@@ -50,12 +152,17 @@
 }
 
 @media (min-width: 640px) {
-  .title {
-    padding: 2.5rem 1.5rem 0;
+  .my-reservations {
+    padding: 2.5rem 1.5rem 3.5rem;
   }
 
   .reservations-list {
     gap: 1.25rem;
-    padding: 2.5rem 1.5rem 3.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .compact-filters {
+    grid-template-columns: 1.6fr 1.1fr 0.9fr 0.9fr auto;
   }
 }

@@ -77,13 +77,12 @@
           />
 
           <select
-            [value]="filters().idSpace"
             (change)="setFilter('idSpace', $any($event.target).value)"
             aria-label="Filtrar por espacio"
           >
-            <option value="">Todos los espacios</option>
+            <option value="" [selected]="!filters().idSpace">Todos los espacios</option>
             @for (s of spaces(); track s.idSpace) {
-              <option [value]="s.idSpace">{{ s.nameSpace }}</option>
+              <option [value]="s.idSpace" [selected]="filters().idSpace === '' + s.idSpace">{{ s.nameSpace }}</option>
             }
           </select>
 
@@ -183,12 +182,7 @@
                       Rechazar
                     </button>
                   } @else {
-                    <a
-                      class="btn-detail"
-                      [routerLink]="['/reservas', r.id]"
-                    >
-                      Ver detalle
-                    </a>
+                    <span class="muted-text" aria-label="Sin acciones disponibles">—</span>
                   }
                 </div>
               </article>
@@ -219,11 +213,10 @@
           <select
             class="calendar-space-select"
             aria-label="Seleccionar espacio para el calendario"
-            [value]="calendarSpaceId()"
             (change)="calendarSpaceId.set($any($event.target).value)"
           >
             @for (s of spaces(); track s.idSpace) {
-              <option [value]="s.idSpace">{{ s.nameSpace }}</option>
+              <option [value]="s.idSpace" [selected]="calendarSpaceId() === '' + s.idSpace">{{ s.nameSpace }}</option>
             } @empty {
               <option value="">Sin espacios disponibles</option>
             }
