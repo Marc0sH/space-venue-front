@@ -157,7 +157,7 @@ mostrarFormServicio = signal(false)
       this.pendingImages.set(fallidas > 0)
 
       if (fallidas === 0) {
-        this.toastService.success('El espacio se creó correctamente.')
+        this.toastService.success('El espacio se creó correctamente. Un administrador tiene que activarlo antes de que aparezca publicado y se pueda reservar.')
         this.router.navigate(['/espacios'])
       } else {
         this.espacioCreado.set(true)

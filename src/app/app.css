@@ -56,3 +56,14 @@ app-header {
 @media (min-width: 1024px) {
     .footer-inner { padding-left: 3rem; padding-right: 3rem; }
 }
+.footer-link {
+    margin-left: auto;
+    color: var(--theme-muted);
+    text-decoration: none;
+}
+
+.footer-link:hover,
+.footer-link:focus-visible {
+    color: var(--theme-accent);
+    text-decoration: underline;
+}
