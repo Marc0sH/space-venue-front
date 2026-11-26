@@ -2,13 +2,14 @@ import { Component, ElementRef, computed, inject, input, output, signal, viewChi
 import { Observable } from 'rxjs';
 import { ReservationChange, ReservationComplete, etiquetaEstadoReserva } from '../../models/reservation.model';
 import { CancellationRefund, textoVistaPrevia } from '../../models/cancellation-refund.model';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Session } from '../../auth/session/session';
 import { Reservation } from '../reservation';
 import { mensajeDeError } from '../../common/http-error';
+import { Spaceservice } from '../../spaces/spaceservice';
 
 @Component({
-  imports: [],
+  imports: [RouterLink],
   selector: 'app-reservation-card',
   styleUrl: './reservation-card.css',
   templateUrl: './reservation-card.html',
@@ -17,6 +18,7 @@ export class ReservationCard {
   private readonly router = inject(Router)
   private readonly session = inject(Session)
   private readonly reservationService = inject(Reservation)
+  protected readonly spaceService = inject(Spaceservice)
   readonly reservation = input.required<ReservationComplete>()
   //El back devuelve la reserva actualizada: se emite el estado y, si se canceló, el motivo y el reembolso
   readonly statusChange = output<ReservationChange>()
@@ -29,6 +31,80 @@ export class ReservationCard {
     const idLogueado = this.session.session()?.consumerId;
     return !!s && idLogueado != null && s.consumerOwner?.idConsumer === idLogueado && !s.deletedByOwner;
   });
+
+  // ---- Foto del espacio (primera imagen, igual que en la tarjeta de espacios) ----
+  private readonly images = this.spaceService.getImagesBySpaceId(
+    computed(() => String(this.reservation().space.idSpace))
+  )
+  protected readonly firstImage = computed(() => {
+    const lista = this.images.hasValue() ? this.images.value() : undefined
+    return lista && lista.length > 0 ? lista[0] : null
+  })
+
+  // ---- Formato de fecha, horario y montos ----
+  private static readonly fechaFmt = new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' })
+  private static readonly fechaCortaFmt = new Intl.DateTimeFormat('es-AR', { day: 'numeric', month: 'short' })
+  private static readonly horaFmt = new Intl.DateTimeFormat('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false })
+  private static readonly montoFmt = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0, maximumFractionDigits: 2 })
+
+  //Ej: "Sábado, 14 nov 2026"
+  protected readonly fecha = computed(() => {
+    const texto = ReservationCard.fechaFmt.format(new Date(this.reservation().fromDate))
+    return texto.charAt(0).toUpperCase() + texto.slice(1)
+  })
+
+  //Ej: "15:00 a 21:00 (6 hs)"; si termina otro día: "22:00 a 2 nov, 02:00 (4 hs)"
+  protected readonly horario = computed(() => {
+    const r = this.reservation()
+    const desde = new Date(r.fromDate)
+    const hasta = new Date(r.untilDate)
+    const hora = (d: Date) => ReservationCard.horaFmt.format(d)
+    const mismoDia = desde.toDateString() === hasta.toDateString()
+    const fin = mismoDia ? hora(hasta) : `${ReservationCard.fechaCortaFmt.format(hasta)}, ${hora(hasta)}`
+    return `${hora(desde)} a ${fin} (${this.duracion(desde, hasta)})`
+  })
+
+  private duracion(desde: Date, hasta: Date): string {
+    const min = Math.max(0, Math.round((hasta.getTime() - desde.getTime()) / 60000))
+    const h = Math.floor(min / 60)
+    const m = min % 60
+    if (!h) return `${m} min`
+    if (m) return `${h} h ${m} min`
+    return h === 1 ? '1 h' : `${h} hs`
+  }
+
+  protected monto(valor: number | null | undefined): string {
+    return ReservationCard.montoFmt.format(valor ?? 0)
+  }
+
+  protected readonly etiquetaPrecio = computed(() => {
+    const r = this.reservation()
+    if (r.paid) return 'Total abonado'
+    if (r.status === 'TENTATIVE') return 'Presupuesto estimado'
+    return 'Precio total'
+  })
+
+  //Reserva cancelada estando pagada: tiene guardado el resultado de la política de cancelación
+  protected readonly reembolso = computed(() => {
+    const r = this.reservation()
+    return r.status === 'CANCELLED' && r.refundPercentage != null ? r : null
+  })
+
+  //Si no hay ninguna acción para mostrar en esta reserva, no se dibuja el pie de la card
+  protected readonly hayAcciones = computed(() => {
+    const status = this.reservation().status
+    switch (status) {
+      case 'TENTATIVE':
+      case 'CONFIRMED':
+        return true
+      case 'COMPLETED':
+      case 'CANCELLED':
+      case 'REJECTED':
+        return !this.esDuenio() //"Volver a reservar" no tiene sentido para el dueño
+      default:
+        return false
+    }
+  })
 
   // Confirmación de cancelación: antes de cancelar se muestra cuánto se reintegra
   private readonly cancelDialog = viewChild.required<ElementRef<HTMLDialogElement>>('cancelDialog')

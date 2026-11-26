@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Reservation } from '../reservation';
 import { Spaceservice } from '../../spaces/spaceservice';
@@ -29,10 +29,18 @@ interface CalendarDay {
 export class ReservationOwnerList {
   private readonly reservationService = inject(Reservation);
   private readonly spaceService = inject(Spaceservice);
+  private readonly route = inject(ActivatedRoute);
   readonly activeTab = signal<'solicitudes' | 'espacios'>('solicitudes');
 
+  // Si se llega desde el detalle de un espacio (?idSpace=5) el panel arranca filtrado por ese espacio.
+  // Solo se acepta un número, para no mandarle cualquier cosa al back.
+  private readonly initialSpaceId = (() => {
+    const id = this.route.snapshot.queryParamMap.get('idSpace');
+    return id && /^\d+$/.test(id) ? id : '';
+  })();
+
   readonly filters = signal<OwnerReservationFilters>({
-    idSpace: '',
+    idSpace: this.initialSpaceId,
     status: '',
     title: '',
     date: '',

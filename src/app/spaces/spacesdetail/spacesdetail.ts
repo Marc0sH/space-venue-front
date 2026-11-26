@@ -111,7 +111,9 @@ export class Spacesdetail {
   }
 
   navToReservations(){
-    this.router.navigate(['/reservas/byspace', this.space.value()?.idSpace])
+    this.router.navigate(['/reservas', 'recibidas'], {
+      queryParams: { idSpace: this.space.value()?.idSpace },
+    })
   }
 protected readonly lightboxOpen = signal(false);
 

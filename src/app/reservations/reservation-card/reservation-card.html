@@ -1,31 +1,95 @@
-<div class="card">
-    <p class="card-title" (click)="onDetails()">{{reservation().title}}</p>
+<article class="card" [class.in-progress]="reservation().status === 'IN_PROGRESS'">
+    <div class="card-main">
+        <div class="card-media">
+            @if (firstImage(); as image) {
+                <img [src]="spaceService.imageUrl(image.urlImage)" [alt]="image.fileName" loading="lazy">
+            } @else {
+                <span class="media-empty">Sin imágenes</span>
+            }
+            <span class="code-badge">#{{ reservation().id }}</span>
+        </div>
 
-    @if(esDuenio()){
-        @if (reservation().status === 'TENTATIVE') {
-            <div class="reservation-actions">
-                <button class="action-button reject-button" type="button" [disabled]="isUpdating()" (click)="onReject()">Rechazar</button>
-                <button class="action-button accept-button" type="button" [disabled]="isUpdating()" (click)="onAccept()">Aceptar</button>
+        <div class="card-body">
+            <div class="card-top">
+                <a class="space-name" [routerLink]="['/espacios', reservation().space.idSpace]">{{ reservation().space.nameSpace }}</a>
+
+                <p class="status"
+                    [class.tentative]="reservation().status === 'TENTATIVE'"
+                    [class.accepted]="reservation().status === 'CONFIRMED' || reservation().status === 'COMPLETED'"
+                    [class.negative]="reservation().status === 'REJECTED' || reservation().status === 'CANCELLED'"
+                    [class.progress]="reservation().status === 'IN_PROGRESS'">
+                    {{ etiquetaEstado(reservation()) }}
+                </p>
             </div>
-        }
-    }
 
-    @if (reservation().status === 'CONFIRMED') {
-        <button class="action-button cancel-button" type="button" [disabled]="isUpdating()" (click)="openCancelConfirmation()">Cancelar</button>
+            <h3 class="card-title" (click)="onDetails()">{{ reservation().title }}</h3>
+
+            <div class="card-meta">
+                <span class="meta-item">
+                    <span class="material-symbols-outlined" aria-hidden="true">calendar_today</span>
+                    {{ fecha() }}
+                </span>
+                <span class="meta-item">
+                    <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+                    {{ horario() }}
+                </span>
+                @if (reembolso(); as r) {
+                    <span class="meta-item">
+                        <span class="material-symbols-outlined" aria-hidden="true">currency_exchange</span>
+                        Reembolso {{ r.refundPercentage }}% · {{ monto(r.refundAmount) }}
+                        @if (r.refundPending) {
+                            <span class="refund-pending">Pendiente</span>
+                        }
+                    </span>
+                }
+            </div>
+
+            <div class="card-price">
+                <span class="price-label">{{ etiquetaPrecio() }}</span>
+                <span class="price-amount">{{ monto(reservation().finalPrice) }} <small>ARS</small></span>
+            </div>
+        </div>
+    </div>
+
+    @if (hayAcciones()) {
+        <div class="card-actions">
+            @if (reservation().status === 'TENTATIVE' && !esDuenio()) {
+                <p class="actions-note">Esperando la respuesta del dueño del espacio.</p>
+            }
+
+            <div class="actions-buttons">
+                @if (esDuenio() && reservation().status === 'TENTATIVE') {
+                    <button class="action-button reject-button" type="button" [disabled]="isUpdating()" (click)="onReject()">Rechazar</button>
+                    <button class="action-button accept-button" type="button" [disabled]="isUpdating()" (click)="onAccept()">Aceptar</button>
+                }
+
+                @if (!esDuenio() && reservation().status === 'TENTATIVE') {
+                    <button class="action-button ghost-button" type="button" (click)="onDetails()">Ver detalle de solicitud</button>
+                }
+
+                @if (reservation().status === 'CONFIRMED') {
+                    <button class="action-button cancel-button" type="button" [disabled]="isUpdating()" (click)="openCancelConfirmation()">Cancelar reserva</button>
+
+                    <!-- Todavía sin funcionalidad: se conecta cuando se integre Mercado Pago -->
+                    @if (!esDuenio() && !reservation().paid) {
+                        <button class="action-button pay-button" type="button" title="Próximamente">
+                            <span class="material-symbols-outlined" aria-hidden="true">payments</span>
+                            Pagar con Mercado Pago
+                        </button>
+                    }
+                }
+
+                @if (!esDuenio() && (reservation().status === 'COMPLETED' || reservation().status === 'CANCELLED' || reservation().status === 'REJECTED')) {
+                    <a class="action-button ghost-button" [routerLink]="['/espacios', reservation().space.idSpace]">Volver a reservar</a>
+                }
+            </div>
+        </div>
     }
 
     @if (actionError()) {
         <p class="fail" role="alert">{{actionError()}}</p>
     }
-
-    <p class="status"
-        [class.tentative]="reservation().status === 'TENTATIVE'"
-        [class.accepted]="reservation().status === 'CONFIRMED' || reservation().status === 'COMPLETED'"
-        [class.negative]="reservation().status === 'REJECTED' || reservation().status === 'CANCELLED'"
-        [class.progress]="reservation().status === 'IN_PROGRESS'">
-        {{ etiquetaEstado(reservation()) }}
-    </p>
-</div>
+</article>
 
 <dialog #cancelDialog class="confirm-dialog" aria-labelledby="cancel-dialog-title"
     (click)="onCancelDialogClick($event)" (cancel)="isUpdating() && $event.preventDefault()">
