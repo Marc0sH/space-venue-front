@@ -221,7 +221,7 @@ export class ReservationCreate {
         // Se redirige al detalle de la reserva recién creada una vez guardados los servicios,
         // para que el detalle ya los muestre. Si fallan, igual se redirige pq la reserva ya existe
         const irAlDetalle = () => {
-          this.toastService.success('La reserva se creó correctamente.')
+          this.toastService.success('La reserva se creó correctamente. Queda pendiente hasta que el dueño del espacio la apruebe; te vamos a avisar cuando responda.')
           this.router.navigate(['/reservas', response.id])
         }
 
