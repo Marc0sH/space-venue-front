@@ -22,6 +22,7 @@ import { ReservationList } from './reservations/reservation-list/reservation-lis
 import { ReservationDetails } from './reservations/reservation-details/reservation-details';
 import { ReservationOwnerList } from './reservations/reservation-owner-list/reservation-owner-list';
 import { formularioGuard } from './guard/formulario-guard';
+import { CancellationPolicyPage } from './cancellation-policy-page/cancellation-policy-page';
 
 
 export const routes: Routes = [
@@ -44,5 +45,6 @@ export const routes: Routes = [
     {path: 'admin/espacios', component: AdminSpaces, canActivate: [adminGuard]},
     {path: 'admin/usuarios', component: AdminUsers, canActivate: [adminGuard]},
     {path: 'admin/usuarios/:id', component: UserProfile, canActivate: [adminGuard]},
+    {path: 'politica-de-cancelacion', component: CancellationPolicyPage},
     {path:'**', component: NotFound}
 ];

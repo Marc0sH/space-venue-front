@@ -65,6 +65,8 @@
 
                 @if (!esDuenio() && reservation().status === 'TENTATIVE') {
                     <button class="action-button ghost-button" type="button" (click)="onDetails()">Ver detalle de solicitud</button>
+                    <!-- El cliente puede cancelar su solicitud mientras sigue pendiente (el dueño la rechaza con "Rechazar") -->
+                    <button class="action-button cancel-button" type="button" [disabled]="isUpdating()" (click)="openCancelConfirmation()">Cancelar solicitud</button>
                 }
 
                 @if (reservation().status === 'CONFIRMED') {
