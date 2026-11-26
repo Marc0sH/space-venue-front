@@ -10,6 +10,7 @@ import { FormErrorMessage } from '../../common/form-error-message/form-error-mes
 import { Spaceservice } from '../../spaces/spaceservice';
 import { mensajeDeError } from '../../common/http-error';
 import { hasChangedFrom } from '../../common/unsaved-changes';
+import { ToastService } from '../../common/toast-service';
 
 const MIN_DURATION_MINUTES = 10;
 const INITIAL_RESERVATION_FIELDS = {
@@ -28,6 +29,7 @@ const INITIAL_RESERVATION_FIELDS = {
   templateUrl: './reservation-create.html',
 })
 export class ReservationCreate {
+  private readonly toastService = inject(ToastService);
   private session = inject(Session);
   private reservationService = inject(Reservation);
   private spaceService = inject(Spaceservice)
@@ -216,16 +218,23 @@ export class ReservationCreate {
           idServicesSelect,
         });
 
+        // Se redirige al detalle de la reserva recién creada una vez guardados los servicios,
+        // para que el detalle ya los muestre. Si fallan, igual se redirige pq la reserva ya existe
+        const irAlDetalle = () => {
+          this.toastService.success('La reserva se creó correctamente.')
+          this.router.navigate(['/reservas', response.id])
+        }
+
         this.reservationService.insertServicesSelected(response.id, submittedModel.idServicesSelect).subscribe({
           next: (res) => {
             console.log("Los servicios se ingresaron con éxito");
+            irAlDetalle();
           },
           error: (e) => {
             console.error("Hubo un error: " + e);
+            irAlDetalle();
           }
         })
-
-        this.router.navigate(['/espacios'])
       },
       error: (error) => {
         const e = mensajeDeError(error, 'No se pudo crear la reserva')

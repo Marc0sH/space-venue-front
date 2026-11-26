@@ -7,6 +7,7 @@ import { FormErrorMessage } from '../../common/form-error-message/form-error-mes
 import { mensajeDeError } from '../../common/http-error';
 import { hasChangedFrom } from '../../common/unsaved-changes';
 import { UnsavedChangesDirective } from '../../common/unsaved-changes.directive';
+import { ToastService } from '../../common/toast-service';
 
 
 @Component({
@@ -17,6 +18,7 @@ import { UnsavedChangesDirective } from '../../common/unsaved-changes.directive'
 })
 export class UserEdit {
   private servicioUsuario = inject(User);
+  private readonly toastService = inject(ToastService);
   private router = inject(Router);
 
   protected readonly perfil = this.servicioUsuario.getLoggedProfile();
@@ -67,6 +69,7 @@ export class UserEdit {
     this.servicioUsuario.updateLoggedUser(submittedModel).subscribe({
       next: () => {
         this.savedModel.set(submittedModel);
+        this.toastService.success('Tu perfil se actualizó correctamente.');
         this.router.navigate(['/perfil']);
       },
       error: (err) => {
