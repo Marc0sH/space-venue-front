@@ -4,6 +4,7 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Session } from '../../auth/session/session';
 import { mensajeDeError } from '../../common/http-error';
 import { etiquetaEstadoReserva } from '../../models/reservation.model';
+import { pesos } from '../../models/cancellation-refund.model';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -17,7 +18,8 @@ export class ReservationDetails {
   private readonly session = inject(Session)
   readonly idReservation = input.required<string>()
   protected readonly etiquetaEstado = etiquetaEstadoReserva
-    protected readonly isUpdating = signal(false)
+  protected readonly pesos = pesos
+  protected readonly isUpdating = signal(false)
   protected readonly actionError = signal('')
 
   
@@ -57,6 +59,36 @@ export class ReservationDetails {
     const idCliente = consumer && 'idConsumer' in consumer ? consumer.idConsumer : undefined;
     return idLogueado != null && typeof idCliente === 'number' && idCliente === idLogueado;
   });
+
+  //Reserva cancelada estando pagada: tiene guardado el resultado de la política de cancelación
+  protected readonly reembolso = computed(() => {
+    const r = this.reservation.hasValue() ? this.reservation.value() : undefined;
+    return r?.status === 'CANCELLED' && r.refundPercentage != null ? r : null;
+  });
+
+  //PAGO SIMULADO (hasta integrar Mercado Pago): el cliente puede pagar su reserva una vez que el dueño la confirmó
+  protected readonly puedePagar = computed(() =>
+    this.esCliente() && this.reservation.value()?.status === 'CONFIRMED' && !this.reservation.value()?.paid
+  )
+  protected readonly pagando = signal(false)
+  protected readonly pagoError = signal('')
+
+  onPay() {
+    const r = this.reservation.value()
+    if (!r || this.pagando()) return
+    this.pagando.set(true)
+    this.pagoError.set('')
+    this.reservationService.simulatePayment(r.id).subscribe({
+      next: () => {
+        this.pagando.set(false)
+        this.reservation.reload() //la etiqueta pasa a "Confirmada y pagada" y el botón desaparece
+      },
+      error: (error: unknown) => {
+        this.pagoError.set(mensajeDeError(error, 'No se pudo registrar el pago'))
+        this.pagando.set(false)
+      },
+    })
+  }
 
   //Solo el dueño puede responder, y solo mientras la reserva sigue pendiente (mismo criterio que reservation-card)
   protected readonly puedeResponder = computed(() =>

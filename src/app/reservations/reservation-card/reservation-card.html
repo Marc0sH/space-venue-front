@@ -11,7 +11,7 @@
     }
 
     @if (reservation().status === 'CONFIRMED') {
-        <button class="action-button cancel-button" type="button" [disabled]="isUpdating()" (click)="onCancel()">Cancelar</button>
+        <button class="action-button cancel-button" type="button" [disabled]="isUpdating()" (click)="openCancelConfirmation()">Cancelar</button>
     }
 
     @if (actionError()) {
@@ -26,3 +26,31 @@
         {{ etiquetaEstado(reservation()) }}
     </p>
 </div>
+
+<dialog #cancelDialog class="confirm-dialog" aria-labelledby="cancel-dialog-title"
+    (click)="onCancelDialogClick($event)" (cancel)="isUpdating() && $event.preventDefault()">
+    <h2 id="cancel-dialog-title" class="confirm-dialog-title">¿Cancelar la reserva?</h2>
+    <p class="confirm-dialog-subtitle">{{ reservation().title }}</p>
+
+    @if (previewLoading()) {
+        <p class="confirm-dialog-text">Calculando reembolso...</p>
+    } @else if (previewError()) {
+        <p class="confirm-dialog-error" role="alert">{{ previewError() }}</p>
+    } @else if (textoPreview()) {
+        <p class="confirm-dialog-text refund-preview"
+            [class.no-refund]="preview()?.paid && preview()?.refundPercentage === 0">{{ textoPreview() }}</p>
+    }
+    <p class="confirm-dialog-text">Esta acción no se puede deshacer.</p>
+
+    @if (actionError()) {
+        <p class="confirm-dialog-error" role="alert">{{ actionError() }}</p>
+    }
+    <div class="confirm-dialog-actions">
+        <button class="dialog-secondary-button" type="button" [disabled]="isUpdating()" (click)="closeCancelConfirmation()" autofocus>
+            Volver
+        </button>
+        <button class="dialog-danger-button" type="button" [disabled]="isUpdating() || previewLoading() || !!previewError()" (click)="onCancel()">
+            {{ isUpdating() ? 'Cancelando...' : 'Sí, cancelar' }}
+        </button>
+    </div>
+</dialog>

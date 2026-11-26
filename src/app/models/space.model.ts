@@ -1,5 +1,4 @@
 import { inject } from "@angular/core"
-import { Cancellationpolicies } from "./cancellationpolicies.model"
 import { Coordinates, Location } from "./location.model"
 import { ServiceReg, ServiceSpace } from "./service.model"
 import { consumerOwner } from "./user.model"
@@ -9,9 +8,6 @@ export interface Space{
     idSpace: number,
     consumerOwner: consumerOwner,
     location: Location,
-
-    // El back devuelve la política completa; al crear o editar se manda solo el tipo (FLEXIBLE, MODERATED o STRICT)
-    cancellationPolicies: Cancellationpolicies | null,
 
     nameSpace: string,
     description: string,
@@ -54,9 +50,8 @@ export function etiquetaEstadoEspacio(s: Pick<Space, 'isActive' | 'deactivationR
 
 export type NewSpace = Omit<
     Space,
-    'idSpace' | 'consumerOwner' | 'publicationDate' | 'isActive' | 'deletedByOwner' | 'deactivationReason' | 'ownerAvailable' | 'location' | 'services' | 'cancellationPolicies' | 'rating' | 'commentCount'
+    'idSpace' | 'consumerOwner' | 'publicationDate' | 'isActive' | 'deletedByOwner' | 'deactivationReason' | 'ownerAvailable' | 'location' | 'services' | 'rating' | 'commentCount'
 > & {
-    cancellationPolicies: string
     location: Coordinates
     services: ServiceReg[]
 }

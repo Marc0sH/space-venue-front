@@ -13,6 +13,13 @@ export interface ReservationComplete {
     //Por qué se canceló (ECancellationReason en el back). Solo si status es CANCELLED; null en las canceladas antes de existir el campo
     cancellationReason?: CancellationReason | null,
     createdAt: Date,
+    //Resultado de la política de cancelación, guardado al cancelar una reserva pagada. null en el resto
+    refundPercentage?: number | null,
+    refundAmount?: number | null,
+    //true si tiene un pago aprobado (lo calcula el back al leer la reserva)
+    paid?: boolean | null,
+    //true mientras el reintegro al cliente no se haya hecho (todavía no es automático)
+    refundPending?: boolean | null,
     isActive: boolean,
     consumer: UserComplete,
     space: Space,
@@ -22,9 +29,9 @@ export interface ReservationComplete {
 export type CancellationReason = 'CLIENT' | 'OWNER' | 'EXPIRED' | 'PAYMENT_REJECTED' | 'PLATFORM';
 
 //Texto del estado de una reserva; en las canceladas incluye el motivo
-export function etiquetaEstadoReserva(r: Pick<ReservationComplete, 'status' | 'cancellationReason'> | undefined): string {
+export function etiquetaEstadoReserva(r: Pick<ReservationComplete, 'status' | 'cancellationReason' | 'paid'> | undefined): string {
     switch (r?.status) {
-        case 'CONFIRMED': return 'Confirmada';
+        case 'CONFIRMED': return r.paid ? 'Confirmada y pagada' : 'Confirmada';
         case 'REJECTED': return 'Rechazada';
         case 'TENTATIVE': return 'En espera de validación';
         case 'COMPLETED': return 'Completada';
@@ -42,8 +49,13 @@ export function etiquetaEstadoReserva(r: Pick<ReservationComplete, 'status' | 'c
     }
 }
 
+//Lo que cambia en una reserva al aceptarla, rechazarla o cancelarla (lo emite reservation-card)
+export type ReservationChange = Pick<ReservationComplete, 'status'> & Partial<Pick<ReservationComplete,
+    'cancellationReason' | 'refundPercentage' | 'refundAmount' | 'refundPending'>>;
+
 export interface NewReservation extends Omit<ReservationComplete,
-    'id' | 'consumer' | 'space' | 'servicesSelected' | 'cancellationReason'> {
+    'id' | 'consumer' | 'space' | 'servicesSelected' | 'cancellationReason'
+    | 'refundPercentage' | 'refundAmount' | 'refundPending' | 'paid'> {
   idConsumer: number;
   idSpace: number;
   idServicesSelect: number[];

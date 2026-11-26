@@ -1,7 +1,7 @@
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { Reservation } from '../reservation';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ReservationComplete } from '../../models/reservation.model';
+import { ReservationChange, ReservationComplete } from '../../models/reservation.model';
 import { ReservationCard } from '../reservation-card/reservation-card';
 import { Observable } from 'rxjs';
 import { mensajeDeError } from '../../common/http-error';
@@ -21,7 +21,7 @@ export class ReservationList {
   isLoading = signal(true)
   error = signal('')
 
-  protected onStatusChange(id: number, cambio: Pick<ReservationComplete, 'status' | 'cancellationReason'>): void {
+  protected onStatusChange(id: number, cambio: ReservationChange): void {
     this.reservations.update(reservations =>
       reservations.map(reservation =>
         reservation.id === id ? { ...reservation, ...cambio } : reservation

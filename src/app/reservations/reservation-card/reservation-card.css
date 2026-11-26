@@ -130,6 +130,108 @@
     color: #1e40af;
 }
 
+/* Confirmación de cancelación (mismo estilo que la de comentarios) */
+.confirm-dialog {
+    width: min(26rem, calc(100vw - 2rem));
+    padding: 1.5rem;
+    border: 1px solid var(--theme-border);
+    border-radius: 0.75rem;
+    background-color: var(--theme-surface);
+    color: var(--theme-text);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    box-shadow: 0 10px 30px rgb(0 0 0 / 25%);
+}
+
+.confirm-dialog::backdrop {
+    background-color: rgb(0 0 0 / 50%);
+}
+
+.confirm-dialog-title {
+    margin: 0 0 0.25rem;
+    font-size: 1.125rem;
+}
+
+.confirm-dialog-subtitle {
+    margin: 0 0 1rem;
+    color: var(--theme-muted);
+    font-size: 0.875rem;
+    overflow-wrap: anywhere;
+}
+
+.confirm-dialog-text {
+    margin: 0 0 0.75rem;
+    color: var(--theme-muted);
+    line-height: 1.5;
+}
+
+.refund-preview {
+    padding: 0.75rem 0.875rem;
+    border: 1px solid #bbf7d0;
+    border-radius: 0.5rem;
+    background-color: #f0fdf4;
+    color: #166534;
+    font-weight: 600;
+}
+
+.refund-preview.no-refund {
+    border-color: #fecaca;
+    background-color: #fef2f2;
+    color: #b91c1c;
+}
+
+.confirm-dialog-error {
+    margin: 0 0 0.75rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 0.5rem;
+    background: #fee2e2;
+    color: #991b1b;
+    font-size: 0.875rem;
+}
+
+.confirm-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+}
+
+.dialog-secondary-button,
+.dialog-danger-button {
+    padding: 0.5rem 0.9rem;
+    border-radius: 0.5rem;
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.dialog-secondary-button {
+    border: 1px solid var(--theme-border);
+    background-color: transparent;
+    color: var(--theme-text);
+}
+
+.dialog-secondary-button:hover:not(:disabled) {
+    background-color: var(--theme-surface-raised);
+}
+
+.dialog-danger-button {
+    border: 1px solid #dc2626;
+    background-color: #dc2626;
+    color: #ffffff;
+}
+
+.dialog-danger-button:hover:not(:disabled) {
+    background-color: #b91c1c;
+}
+
+.dialog-secondary-button:disabled,
+.dialog-danger-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
 @media (max-width: 480px) {
     .card {
         align-items: flex-start;
