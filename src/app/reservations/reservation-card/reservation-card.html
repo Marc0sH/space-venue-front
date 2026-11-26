@@ -10,7 +10,8 @@
         }
     }
 
-    @if (reservation().status === 'CONFIRMED') {
+    <!-- Pendiente: el dueño la rechaza (botones de arriba); el cliente puede cancelarla. Confirmada: cualquiera de los dos -->
+    @if (reservation().status === 'CONFIRMED' || (reservation().status === 'TENTATIVE' && !esDuenio())) {
         <button class="action-button cancel-button" type="button" [disabled]="isUpdating()" (click)="openCancelConfirmation()">Cancelar</button>
     }
 
