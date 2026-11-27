@@ -6,11 +6,11 @@
         </button>
 
         <div class="notification-image">
-            <span class="material-symbols-outlined">notifications</span>
+            <span class="material-symbols-outlined">{{ meta().icon }}</span>
         </div>
 
         <div class="detail-title">
-            <div class="subject-container">Notificación</div>
+            <div class="subject-container">{{ meta().title }}</div>
             <time>{{ n.createdAt | date:'dd/MM/yyyy HH:mm' }}</time>
         </div>
     </div>
@@ -18,6 +18,17 @@
     <div class="detail-content">
         <p>{{ n.message }}</p>
     </div>
+
+    @if (links().length) {
+        <nav class="detail-actions" aria-label="Accesos relacionados">
+            @for (link of links(); track link.label) {
+                <a class="action-btn" [class.secondary]="!$first" [routerLink]="link.route">
+                    <span class="material-symbols-outlined">{{ link.icon }}</span>
+                    {{ link.label }}
+                </a>
+            }
+        </nav>
+    }
 } @else {
     <div class="empty-detail">
         <span class="material-symbols-outlined">mark_email_unread</span>
