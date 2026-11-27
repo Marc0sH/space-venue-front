@@ -3,7 +3,7 @@
         [class.selected]="selected()"
         (click)="cambiarEstado()">
     <span class="notification-image">
-        <span class="material-symbols-outlined">notifications</span>
+        <span class="material-symbols-outlined">{{ icon() }}</span>
     </span>
     <span class="content-item-main">
         <span class="notification-message">{{notification().message}}</span>

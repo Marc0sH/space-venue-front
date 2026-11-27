@@ -1,8 +1,9 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { Notificacion } from '../../../models/notification.model';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { Notificationservice } from '../notificationservice';
+import { getNotificationMeta } from '../notification-link';
 
 @Component({
   imports: [DatePipe],
@@ -14,6 +15,9 @@ export class NotificationCard {
   private readonly notificationService = inject(Notificationservice)
 
   notification = input.required<Notificacion>()
+
+  // Ícono según el tipo de notificación
+  protected readonly icon = computed(() => getNotificationMeta(this.notification().type).icon);
 
   // Para resaltar la tarjeta que está abierta en el detalle
   selected = input(false)

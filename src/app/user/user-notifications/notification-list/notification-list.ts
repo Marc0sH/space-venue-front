@@ -19,6 +19,8 @@ export class NotificationList {
       .sort((a, b) => b.createdAt - a.createdAt)
   );
 
+  protected readonly hayNoVistas = computed(() => this.notificacionesOrdenadas().some(n => !n.isSeen));
+
   // Notificación abierta en el panel de la derecha
   protected readonly seleccionadaId = signal<number | null>(null);
 
@@ -36,7 +38,7 @@ export class NotificationList {
     this.notificaciones.reload();
   }
   protected markAllAsSeen(): void {
-    if (!this.notificacionesOrdenadas().some(n => !n.isSeen)) return;
+    if (!this.hayNoVistas()) return;
     this.notiservice.markAllAsSeen().subscribe({
       next: () => this.notificaciones.reload(),
       error: (e) => console.error('Hubo un error al marcar todas las notificaciones como vistas', e),
