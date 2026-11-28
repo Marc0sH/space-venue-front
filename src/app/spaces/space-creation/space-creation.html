@@ -62,6 +62,9 @@
             <span class="titulo-campo">Ubicación</span>
             <app-location-picker [formField]="formSpaceCreation.location"></app-location-picker>
             <app-form-error-message [campo]="formSpaceCreation.location()"></app-form-error-message>
+            <label for="floor">Piso (opcional):</label>
+            <input id="floor" type="number" step="1" [formField]="formSpaceCreation.floor">
+            <app-form-error-message [campo]="formSpaceCreation.floor()"></app-form-error-message>
         </div>
     
         <div class="imagenes">

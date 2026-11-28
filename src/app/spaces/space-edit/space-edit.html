@@ -36,6 +36,9 @@
             <div>
                 <span class="titulo-campo">Ubicación</span>
                 <app-location-picker [formField]="formEdit.location"></app-location-picker>
+                <label for="floor">Piso (opcional):</label>
+                <input id="floor" type="number" step="1" [formField]="formEdit.floor">
+                <app-form-error-message [campo]="formEdit.floor()"></app-form-error-message>
             </div>
 
             <div class="imagenes">

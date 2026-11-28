@@ -1,5 +1,5 @@
 import { Component, computed, DestroyRef, inject, input, linkedSignal, signal, viewChild } from '@angular/core';
-import { form, FormField, maxLength, min, minLength, required } from '@angular/forms/signals';
+import { form, FormField, maxLength, min, minLength, required, validate } from '@angular/forms/signals';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
 import { Spaceservice } from '../spaceservice';
@@ -19,7 +19,7 @@ import { UnsavedChangesDirective } from '../../common/unsaved-changes.directive'
 import { ToastService } from '../../common/toast-service';
 
 // La ubicación puede quedar vacía si el espacio se creó antes del mapa
-type SpaceEditForm = Omit<SpaceUpdate, 'location'> & { location: Coordinates | null }
+type SpaceEditForm = Omit<SpaceUpdate, 'location' | 'floor'> & { location: Coordinates | null; floor: number | null }
 
 const EMPTY_SPACE_EDIT_FORM: SpaceEditForm = {
   nameSpace: '',
@@ -27,6 +27,7 @@ const EMPTY_SPACE_EDIT_FORM: SpaceEditForm = {
   basePrice: 0,
   bufferTime: 0,
   location: null,
+  floor: null,
 };
 
 @Component({
@@ -69,6 +70,7 @@ export class SpaceEdit {
       basePrice: s.basePrice ?? 0,
       bufferTime: s.bufferTime ?? 0,
       location: hasLocation(s?.location) ? { latitude: s.location.latitude, longitude: s.location.longitude } : null,
+      floor: s.floor ?? null,
     };
   });
   model = linkedSignal<SpaceEditForm>(() => this.persistedModel() ?? EMPTY_SPACE_EDIT_FORM);
@@ -85,6 +87,9 @@ export class SpaceEdit {
     required(path.bufferTime, { message: 'El tiempo de receso es obligatorio' });
     min(path.bufferTime, 1, { message: 'El tiempo de receso debe ser mayor a 0' });
     required(path.location, { message: 'Marcá la ubicación del espacio en el mapa' });
+    validate(path.floor, (ctx) => ctx.value() === null || Number.isInteger(ctx.value())
+      ? null
+      : { kind: 'piso-invalido', message: 'El piso debe ser un número entero' });
   });
 
   error = signal('');
@@ -177,13 +182,13 @@ export class SpaceEdit {
   onSubmit(event: Event) {
     event.preventDefault();
     const submittedModel = { ...this.model() };
-    const { location, ...datos } = submittedModel;
+    const { location, floor, ...datos } = submittedModel;
     if (!location || this.formEdit().invalid()) return;
     const idSpace = Number(this.id());
     this.guardando.set(true);
     this.error.set('');
 
-    this.spaceService.updateOwnedSpace(idSpace, { ...datos, location }).pipe(
+    this.spaceService.updateOwnedSpace(idSpace, { ...datos, ...(floor === null ? {} : { floor }), location }).pipe(
       switchMap(() => {
         this.savedModel.set(submittedModel);
         return this.aplicarCambiosPendientes(idSpace);

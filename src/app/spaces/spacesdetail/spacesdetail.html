@@ -154,6 +154,14 @@
               <h3>Ubicación</h3>
               <span class="material-symbols-outlined title-icon">explore</span>
             </div>
+            @if (s.floor != null) {
+              <div class="chips">
+                <span class="chip">
+                  <span class="material-symbols-outlined" aria-hidden="true">stairs</span>
+                  Piso {{ s.floor }}
+                </span>
+              </div>
+            }
             <app-location-map [ubicacion]="s.location"></app-location-map>
           </section>
         }

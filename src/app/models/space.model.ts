@@ -8,6 +8,7 @@ export interface Space{
     idSpace: number,
     consumerOwner: consumerOwner,
     location: Location,
+    floor?: number | null,
 
     nameSpace: string,
     description: string,
